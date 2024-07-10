@@ -1,4 +1,25 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
+  /* Colors */
+  --white-color: #fff;
+  --black-color: #000;
+  --dark-color: rgb(42, 42, 42);
+  --light-color: rgb(228, 225, 219);
+  --light-green-color: rgb(113, 171, 168);
+  --blue-dark-color: rgb(22, 36, 47);
+  --biege-color: rgb(212, 171, 138);
+  --blue-light-color: rgb(54, 167, 198);
+  --pink-light-color: rgb(254, 156, 161);
+  /* Radius */
+  --border-radius-ios: 17.544%;
+
   --max-width: 1100px;
   --border-radius: 12px;
   --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",

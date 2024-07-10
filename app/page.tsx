@@ -1,94 +1,45 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import MyInput from "@/shared/MyInput/MyInput";
+import MyTitle from "@/shared/MyTitle/MyTitle";
+import Logo from "@/shared/Logo/Logo";
+import NewsCard from "@/entities/NewsCard/ui/NewsCard";
 
 export default function Home() {
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <Logo />
+      <div style={{ display: "flex", gap: "20px", justifyContent: "flex-end" }}>
+        <NewsCard
+          id={1}
+          title={"PHARAOH - PHREQUENCY"}
+          anons={
+            "Ни одной зря потраченной минуты, ни одного солганного слова, ни одного даже крохотного сожаления, ни одного разочарования от первого до сиюминутного вздоха. каждой душе чудо, каждому в руки выбор. каждый, кто захочет найти - найдет."
+          }
+          dateCreate={new Date()}
+          preview={"/Test.jpg"}
+          view={"MeetTheFounder"}
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        <NewsCard
+          id={1}
+          title={"PHARAOH - PHREQUENCY"}
+          anons={
+            "Ни одной зря потраченной минуты, ни одного солганного слова, ни одного даже крохотного сожаления, ни одного разочарования от первого до сиюминутного вздоха. каждой душе чудо, каждому в руки выбор. каждый, кто захочет найти - найдет."
+          }
+          dateCreate={new Date()}
+          preview={"/Test.jpg"}
+          view={"StrategyCard"}
+        />
+        <NewsCard
+          id={1}
+          title={"PHARAOH - PHREQUENCY"}
+          anons={
+            "Ни одной зря потраченной минуты, ни одного солганного слова, ни одного даже крохотного сожаления, ни одного разочарования от первого до сиюминутного вздоха. каждой душе чудо, каждому в руки выбор. каждый, кто захочет найти - найдет."
+          }
+          dateCreate={new Date()}
+          preview={"/Test.jpg"}
+          view={"MeetTheFounder"}
+        />
       </div>
     </main>
   );
