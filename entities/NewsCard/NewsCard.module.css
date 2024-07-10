@@ -1,0 +1,11 @@
+.newsCard {
+	width: 340px;
+	height: 340px;
+	text-overflow: clip ellipsis;
+	overflow: hidden;
+}
+
+.newsCard:nth-child(2n) {
+	margin-top: -40px;
+}
+/* -------------------------------- */

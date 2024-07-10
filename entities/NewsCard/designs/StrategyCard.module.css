@@ -1,0 +1,11 @@
+.newsCard-StrategyCard {
+	background-color: var(--light-color);
+	color: var(--dark-color);
+	position: relative;
+	padding: 0px 10px 10px 10px;
+}
+
+.preview-StrategyCard {
+	width: 100%;
+	object-fit: cover;
+}

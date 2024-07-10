@@ -1,0 +1,37 @@
+.newsCard-MeetTheFounder {
+	background-color: var(--dark-color);
+	color: var(--white-color);
+	position: relative;
+	padding: 10px;
+}
+
+.title-MeetTheFounder {
+	font-weight: 800;
+}
+
+.date-MeetTheFounder {
+	font-size: 12px;
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+
+.body-MeetTheFounder {
+	display: flex;
+	gap: 10px;
+}
+.anons-MeetTheFounder {
+	width: 40%;
+	font-size: 12px;
+	margin-top: 10px;
+	-webkit-line-clamp: 11;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+.preview-MeetTheFounder {
+	width: 60%;
+	height: 100%;
+	margin-top: -10px;
+	object-fit: cover;
+}

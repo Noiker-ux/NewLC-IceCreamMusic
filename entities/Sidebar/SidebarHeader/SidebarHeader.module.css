@@ -1,0 +1,10 @@
+.header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	color: var(--dark-color);
+}
+
+.title {
+	font-weight: 700;
+}
