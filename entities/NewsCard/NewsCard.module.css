@@ -3,9 +3,5 @@
 	height: 340px;
 	text-overflow: clip ellipsis;
 	overflow: hidden;
+	border-radius: 5px;
 }
-
-.newsCard:nth-child(2n) {
-	margin-top: -40px;
-}
-/* -------------------------------- */

@@ -11,6 +11,8 @@ import Image from 'next/image';
 import style from './NewsCard.module.css';
 import mtf from './designs/MeetTheFounder.module.css';
 import strtg from './designs/StrategyCard.module.css';
+import coom from './designs/CoomingCard.module.css';
+import { arch } from '@/app/layout';
 
 const NewsCard = ({
 	id,
@@ -45,13 +47,40 @@ const NewsCard = ({
 		case 'StrategyCard':
 			return (
 				<div className={classNames(style.newsCard, strtg[`newsCard-${view}`])}>
+					<div className={strtg['relative']}>
+						<Image
+							className={strtg[`preview-${view}`]}
+							alt='Превью картинка'
+							src={preview}
+							width={150}
+							height={150}
+						/>
+						<span className={strtg[`date-${view}`]}>{formatterDate}</span>
+					</div>
+					<MyTitle className={strtg[`title-${view}`]} Tag='h2'>
+						{title}
+					</MyTitle>
+					<MyText className={strtg[`anons-${view}`]}>{anons}</MyText>
+				</div>
+			);
+
+		case 'CoomingCard':
+			return (
+				<div className={classNames(style.newsCard, coom[`newsCard-${view}`])}>
+					<MyTitle
+						className={classNames(coom[`title-${view}`], arch.className)}
+						Tag='h2'>
+						{title}
+					</MyTitle>
 					<Image
-						className={strtg[`preview-${view}`]}
+						className={coom[`preview-${view}`]}
 						alt='Превью картинка'
 						src={preview}
 						width={150}
 						height={150}
 					/>
+
+					<MyText className={coom[`anons-${view}`]}>{anons}</MyText>
 				</div>
 			);
 		default:

@@ -7,11 +7,16 @@
 }
 
 :root {
+	/* Light Theme */
+
+	--light-color: rgb(243, 243, 243);
+	/* Dark Theme */
+	--dark-color: rgb(42, 42, 42);
+
 	/* Colors */
 	--white-color: #fff;
 	--black-color: #000;
-	--dark-color: rgb(42, 42, 42);
-	--light-color: rgb(228, 225, 219);
+
 	--light-green-color: rgb(113, 171, 168);
 	--blue-dark-color: rgb(22, 36, 47);
 	--biege-color: rgb(212, 171, 138);
@@ -67,11 +72,18 @@
 	margin: 0;
 }
 
-body {
-	color: var(--white-color);
-}
 main {
-	width: calc(100% - 400px);
-	padding: 10px;
+	display: flex;
+	min-height: 100vh;
+}
+
+body {
+	background-color: var(--light-color);
+}
+
+.content {
+	display: block;
+	width: calc(100% - 325px);
 	margin-left: auto;
+	padding: 30px 50px;
 }

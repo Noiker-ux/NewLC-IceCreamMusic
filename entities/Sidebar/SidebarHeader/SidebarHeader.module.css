@@ -3,8 +3,22 @@
 	align-items: center;
 	gap: 10px;
 	color: var(--dark-color);
+	overflow: hidden;
+	position: relative;
 }
 
 .title {
 	font-weight: 700;
+}
+.description {
+	font-size: 13px;
+}
+.text {
+	width: 290px;
+	position: absolute;
+	left: 80px;
+}
+
+.small {
+	overflow: hidden;
 }
