@@ -7,6 +7,9 @@
 }
 
 :root {
+	--gap: 0.5em;
+	--index: calc(1vw+1vh);
+	--color-dark: #000;
 	/* Light Theme */
 
 	--light-color: rgb(243, 243, 243);

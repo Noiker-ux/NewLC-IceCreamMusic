@@ -1,15 +1,11 @@
 import type { Metadata } from 'next';
 import { Roboto } from 'next/font/google';
-import { Archivo_Narrow } from 'next/font/google';
-import './globals.css';
+
+import '../globals.css';
 import Sidebar from '@/entities/Sidebar/Sidebar';
 import { SidebarContextProvider } from '@/context/SidebarContext';
 
 const roboto = Roboto({ weight: ['400', '700'], subsets: ['latin'] });
-export const arch = Archivo_Narrow({
-	weight: ['400', '600', '700'],
-	subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
 	title: 'Create Next App',

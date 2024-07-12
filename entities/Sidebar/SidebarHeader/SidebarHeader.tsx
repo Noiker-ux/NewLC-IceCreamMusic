@@ -1,9 +1,10 @@
 'use client';
-import Logo from '@/shared/Logo/Logo';
+
 import style from './SidebarHeader.module.css';
 import { useContext } from 'react';
 import { SidebarContext } from '@/context/SidebarContext';
 import classNames from 'classnames';
+import Logo from '@/shared/Logo/Logo';
 
 const SidebarHeader = () => {
 	const { size } = useContext(SidebarContext);

@@ -12,7 +12,6 @@ import style from './NewsCard.module.css';
 import mtf from './designs/MeetTheFounder.module.css';
 import strtg from './designs/StrategyCard.module.css';
 import coom from './designs/CoomingCard.module.css';
-import { arch } from '@/app/layout';
 
 const NewsCard = ({
 	id,
@@ -67,9 +66,7 @@ const NewsCard = ({
 		case 'CoomingCard':
 			return (
 				<div className={classNames(style.newsCard, coom[`newsCard-${view}`])}>
-					<MyTitle
-						className={classNames(coom[`title-${view}`], arch.className)}
-						Tag='h2'>
+					<MyTitle className={classNames(coom[`title-${view}`])} Tag='h2'>
 						{title}
 					</MyTitle>
 					<Image

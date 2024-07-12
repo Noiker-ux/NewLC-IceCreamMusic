@@ -1,0 +1,12 @@
+.main {
+	display: flex;
+}
+.view,
+.form {
+	width: 50%;
+	height: 100vh;
+}
+
+.view {
+	border-right: 1px solid black;
+}
