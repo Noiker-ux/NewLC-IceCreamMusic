@@ -1,0 +1,7 @@
+.newsCard {
+	width: 340px;
+	height: 340px;
+	text-overflow: clip ellipsis;
+	overflow: hidden;
+	border-radius: 5px;
+}

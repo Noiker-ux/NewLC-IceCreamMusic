@@ -1,0 +1,42 @@
+.fieldHolder {
+	position: relative;
+	margin-bottom: 1.25em;
+}
+
+.input {
+	border: 0;
+	border-bottom: 3px solid var(--white-color);
+	outline: none;
+	background: transparent;
+	color: var(--white-color);
+}
+
+.label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	color: var(--white-color);
+	display: flex;
+	align-items: center;
+	cursor: text;
+}
+
+.input,
+.label {
+	font-size: 1em;
+	height: 45px;
+	width: 100%;
+	transition: all 0.3s ease;
+}
+
+.input:focus + .label,
+.input:valid + .label {
+	color: #ffffff;
+	font-size: 0.75em;
+	top: -25px;
+}
+
+.input:focus {
+	border-bottom: 3px solid #424242;
+}
