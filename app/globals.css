@@ -42,7 +42,7 @@ main {
 
 body {
   background-color: var(--black-color);
-  background-image: url("/BG.png");
+  background-image: url("/assets/BG.png");
   overflow-x: hidden;
   -webkit-backdrop-filter: blur(55px);
   backdrop-filter: blur(55px);
@@ -54,6 +54,7 @@ body {
   width: calc(100% - 325px);
   margin-left: auto;
   padding: 30px 50px;
+  color: white;
 }
 
 a {

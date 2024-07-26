@@ -3,8 +3,13 @@ import Link from "next/link";
 
 const Logo = () => {
   return (
-    <Link href={"#"}>
-      <Image alt="icecreammusic" src={"/logo.png"} width={60} height={60} />
+    <Link href="/lk">
+      <Image
+        alt="icecreammusic"
+        src="/assets/logo.png"
+        width={60}
+        height={60}
+      />
     </Link>
   );
 };

@@ -4,7 +4,7 @@ import MyText from "@/shared/MyText/MyText";
 import Link from "next/link";
 import { oswald } from "@/fonts";
 import classNames from "classnames";
-import RegistraionWidget from "@/widgets/Registration/Registration";
+import RegistrationWidget from "@/widgets/Registration/Registration";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 
 export default function Registraion() {
@@ -17,7 +17,7 @@ export default function Registraion() {
         Если у вас нет аккаунта - зарегистрируйте его здесь,
         <br /> после авторизуйтесь для доступа в систему
       </MyText>
-      <RegistraionWidget />
+      <RegistrationWidget />
       <MyText className={style.linkReg}>
         Или <Link href={"/signin"}>войдите здесь</Link>, если у Вас есть аккаунт
       </MyText>

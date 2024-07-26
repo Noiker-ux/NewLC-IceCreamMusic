@@ -1,11 +1,12 @@
-import { dataNews } from "@/data/dataNews";
+import { dataNews } from "@/db/dataNews";
 import NewsCard from "@/entities/NewsCard/NewsCard";
 import MyTitle from "@/shared/MyTitle/MyTitle";
 import styles from "./page.module.css";
+import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 
 export default function Home() {
   return (
-    <>
+    <PageTransitionProvider>
       <MyTitle Tag={"h3"}>Новости</MyTitle>
       <div className={styles.news}>
         {dataNews.map((newsItem) => (
@@ -20,6 +21,6 @@ export default function Home() {
           />
         ))}
       </div>
-    </>
+    </PageTransitionProvider>
   );
 }

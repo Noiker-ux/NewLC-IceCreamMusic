@@ -7,8 +7,10 @@ export type RouteType = (typeof routeTypes)[number];
 
 export const routes: Record<RouteType, string[]> = {
   guest: ["/signin", "/signup"],
-  public: [],
+  public: ["/signout"],
 };
+
+export const defaultAuthRedirect = "/account";
 
 export const {
   auth,
@@ -21,7 +23,9 @@ export const {
     signIn: "/signin",
   },
   callbacks: {
-    authorized: ({ auth }) => !!auth,
+    authorized: ({ auth }) => {
+      return !!auth;
+    },
   },
   providers: [
     CredentialsProvider({
@@ -30,7 +34,9 @@ export const {
         email: {},
         password: {},
       },
-      async authorize(_credentials) {
+      async authorize({ email, password }) {
+        // console.log({ email, password });
+
         return {
           id: "1",
           email: "email1@qwe.qwe",

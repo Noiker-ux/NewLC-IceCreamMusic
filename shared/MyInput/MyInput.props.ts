@@ -1,10 +1,10 @@
-import { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, InputHTMLAttributes } from "react";
 
 export default interface IMyInputProps
-	extends DetailedHTMLProps<
-		HTMLAttributes<HTMLInputElement>,
-		HTMLInputElement
-	> {
-	label: string;
-	type: 'text' | 'password' | 'email';
+  extends DetailedHTMLProps<
+    InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  > {
+  label: string;
+  type: "text" | "password" | "email";
 }

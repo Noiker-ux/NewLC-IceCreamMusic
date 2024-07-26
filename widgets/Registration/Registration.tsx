@@ -1,18 +1,37 @@
 "use client";
 
+import { TSignUpSchema } from "@/schema/signup.schema";
 import MyButton from "@/shared/MyButton/MyButton";
 import MyInput from "@/shared/MyInput/MyInput";
+import { useForm } from "react-hook-form";
 import style from "./Registration.module.css";
 
-const RegistraionWidget = () => {
+const RegistrationWidget = () => {
+  const { handleSubmit, register } = useForm<TSignUpSchema>({
+    defaultValues: {
+      confirmPassword: "",
+      email: "",
+      name: "",
+      password: "",
+    },
+    progressive: true,
+  });
+
   return (
-    <form className={style.form}>
-      <MyInput label="Email" type="text" />
-      <MyInput label="Имя" type="text" />
-      <MyInput label="Пароль" type="password" />
-      <MyInput label="Пароль" type="password" />
-      <MyButton text="Регистрация" view="primary" />
+    <form
+      className={style.form}
+      onSubmit={handleSubmit((data) => console.log(data))}
+    >
+      <MyInput {...register("email")} label="Email" type="email" />
+      <MyInput {...register("name")} label="Имя" type="text" />
+      <MyInput {...register("password")} label="Пароль" type="password" />
+      <MyInput
+        {...register("confirmPassword")}
+        label="Подтвердите пароль"
+        type="password"
+      />
+      <MyButton text="Регистрация" view="primary" type="submit" />
     </form>
   );
 };
-export default RegistraionWidget;
+export default RegistrationWidget;

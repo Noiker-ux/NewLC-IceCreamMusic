@@ -1,23 +1,23 @@
 "use server";
 
-import { signIn, signOut } from "@/config/auth";
+import { defaultAuthRedirect, signIn, signOut } from "@/config/auth";
 import { getFullUrl, getSearchParams } from "./url";
+import { TSignInSchema } from "@/schema/signin.schema";
 
-export async function signInAction() {
+export async function signInAction(data: TSignInSchema) {
   const searchParams = await getSearchParams();
 
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/";
+  const callbackUrl = searchParams.get("callbackUrl") ?? defaultAuthRedirect;
 
-  return await signIn("credentials", {
+  return signIn("credentials", {
     redirect: true,
     redirectTo: callbackUrl,
-    // ...data,
+    data,
   });
 }
 
 export async function signOutAction() {
   const callbackUrl = await getFullUrl();
 
-  return (await signOut({ redirectTo: callbackUrl!, redirect: false }))
-    .redirect;
+  return signOut({ redirectTo: callbackUrl!, redirect: true });
 }

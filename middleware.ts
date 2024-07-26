@@ -1,4 +1,4 @@
-import { auth, routes } from "@/config/auth";
+import { auth, defaultAuthRedirect, routes } from "@/config/auth";
 import { NextResponse } from "next/server";
 
 export const middleware = auth(async function (request) {
@@ -17,7 +17,8 @@ export const middleware = auth(async function (request) {
   const isPublicRoute = routes.public.includes(nextUrl.pathname);
 
   if (isAuthenticated && isGuestRoute) {
-    newUrl.pathname = nextUrl.searchParams.get("callbackUrl") ?? "/";
+    newUrl.pathname =
+      nextUrl.searchParams.get("callbackUrl") ?? defaultAuthRedirect;
     return NextResponse.redirect(newUrl, { headers });
   }
 
@@ -31,5 +32,5 @@ export const middleware = auth(async function (request) {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|models).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|models|assets).*)"],
 };

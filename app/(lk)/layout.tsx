@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
 import Sidebar from "@/entities/Sidebar/Sidebar";
 import { SidebarContextProvider } from "@/providers/SidebarContext";
-import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,9 +16,7 @@ export default function RootLayout({
     <SidebarContextProvider>
       <main className="main">
         <Sidebar />
-        <PageTransitionProvider className="content">
-          {children}
-        </PageTransitionProvider>
+        <div className="content">{children}</div>
       </main>
     </SidebarContextProvider>
   );

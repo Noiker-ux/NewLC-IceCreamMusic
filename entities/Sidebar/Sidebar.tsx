@@ -1,4 +1,5 @@
 "use client";
+
 import style from "./Sidebar.module.css";
 import SidebarHeader from "./SidebarHeader/SidebarHeader";
 import SidebarBody from "./SidebarBody/SidebarBody";
