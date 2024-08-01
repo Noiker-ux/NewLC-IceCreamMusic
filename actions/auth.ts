@@ -1,10 +1,37 @@
 "use server";
 
-import { defaultAuthRedirect, signIn, signOut } from "@/config/auth";
+import { authOptions, defaultAuthRedirect, signOut } from "@/config/auth";
 import { getFullUrl, getSearchParams } from "./url";
-import { TSignInSchema } from "@/schema/signin.schema";
+import {
+  signInClientSchema,
+  TSignInClientSchema,
+} from "@/schema/signin.schema";
+import NextAuth, { NextAuthConfig } from "next-auth";
 
-export async function signInAction(data: TSignInSchema) {
+export async function signInAction(data: TSignInClientSchema) {
+  const res = signInClientSchema.safeParse(data);
+
+  if (!res.success) return {};
+
+  const oneDaySeconds = 24 * 60 * 60;
+
+  const params: Pick<NextAuthConfig, "cookies"> = {
+    cookies: {
+      sessionToken: {
+        name: "icecream-auth",
+        options: {
+          httpOnly: true,
+          sameSite: true,
+          maxAge: res.data.rememberMe ? oneDaySeconds * 30 : oneDaySeconds,
+        },
+      },
+    },
+  };
+
+  const authConfig = Object.assign(authOptions, params);
+
+  const { signIn } = await NextAuth(authConfig);
+
   const searchParams = await getSearchParams();
 
   const callbackUrl = searchParams.get("callbackUrl") ?? defaultAuthRedirect;
@@ -12,7 +39,7 @@ export async function signInAction(data: TSignInSchema) {
   return signIn("credentials", {
     redirect: true,
     redirectTo: callbackUrl,
-    data,
+    ...res.data,
   });
 }
 

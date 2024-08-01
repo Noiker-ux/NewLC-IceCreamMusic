@@ -1,6 +1,6 @@
 import MyTitle from "@/shared/MyTitle/MyTitle";
 import style from "./page.module.css";
-import Authtorization from "@/widgets/Auth/Auth";
+import Authorization from "@/widgets/Auth/Auth";
 import MyText from "@/shared/MyText/MyText";
 import Link from "next/link";
 import { oswald } from "@/fonts";
@@ -16,7 +16,7 @@ export default function Auth() {
       <MyText className={style.desc}>
         Вы должны быть авторизованы, чтобы получить доступ к сайту
       </MyText>
-      <Authtorization />
+      <Authorization />
       <MyText className={style.linkReg}>
         Или <Link href="/signup">зарегистрируйте</Link> новый, если у Вас нет
         аккаунта

@@ -1,13 +1,23 @@
 "use client";
 
-import { TSignUpSchema } from "@/schema/signup.schema";
+import { registerUser } from "@/actions/users";
+import {
+  signUpClientSchema,
+  TSignUpClientSchema,
+} from "@/schema/signup.schema";
 import MyButton from "@/shared/MyButton/MyButton";
 import MyInput from "@/shared/MyInput/MyInput";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import style from "./Registration.module.css";
 
 const RegistrationWidget = () => {
-  const { handleSubmit, register } = useForm<TSignUpSchema>({
+  const { handleSubmit, register } = useForm<TSignUpClientSchema>({
+    resolver: zodResolver(
+      signUpClientSchema.refine(
+        (data) => data.confirmPassword === data.password
+      )
+    ),
     defaultValues: {
       confirmPassword: "",
       email: "",
@@ -20,7 +30,7 @@ const RegistrationWidget = () => {
   return (
     <form
       className={style.form}
-      onSubmit={handleSubmit((data) => console.log(data))}
+      onSubmit={handleSubmit((data) => registerUser(data))}
     >
       <MyInput {...register("email")} label="Email" type="email" />
       <MyInput {...register("name")} label="Имя" type="text" />

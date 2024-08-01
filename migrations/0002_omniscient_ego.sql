@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."user" ALTER COLUMN "password" SET NOT NULL;

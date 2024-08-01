@@ -4,7 +4,6 @@ import { forwardRef } from "react";
 import style from "./MyInput.module.css";
 import IMyInputProps from "./MyInput.props";
 import classNames from "classnames";
-// Icons
 
 const MyInput = forwardRef<HTMLInputElement, IMyInputProps>(function Input(
   { label, className, type, ...props },

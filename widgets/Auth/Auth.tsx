@@ -5,17 +5,26 @@ import MyCheckbox from "@/shared/MyCheckbox/MyCheckbox";
 import MyInput from "@/shared/MyInput/MyInput";
 import { useForm } from "react-hook-form";
 import style from "./Auth.module.css";
-import { TSignInSchema } from "@/schema/signin.schema";
+import { TSignInClientSchema } from "@/schema/signin.schema";
 import { signInAction } from "@/actions/auth";
+import { signIn } from "next-auth/react";
 
-const Authtorization = () => {
-  const { handleSubmit, register } = useForm<TSignInSchema>({
+const Authorization = () => {
+  const { handleSubmit, register } = useForm<TSignInClientSchema>({
     defaultValues: {
       email: "",
       password: "",
       rememberMe: false,
     },
   });
+
+  async function qwe() {
+    const qwe = await signIn("credentials", { redirect: false });
+    if (!qwe || qwe.ok) {
+      return;
+    }
+    qwe.url;
+  }
 
   return (
     <form
@@ -34,4 +43,4 @@ const Authtorization = () => {
   );
 };
 
-export default Authtorization;
+export default Authorization;

@@ -7,6 +7,6 @@ export const users = schema.table("user", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   emailVerified: timestamp("emailVerified"),
-  password: text("password"),
+  password: text("password").notNull(),
   avatar: text("avatar"),
 });

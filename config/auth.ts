@@ -1,5 +1,12 @@
-import NextAuth from "next-auth";
+import "server-only";
+import { getAuthUser } from "@/actions/users";
+import NextAuth, { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { signInSchema } from "@/schema/signin.schema";
+import { compare } from "bcrypt-ts";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
 
 export const routeTypes = ["guest", "public"] as const;
 
@@ -12,12 +19,7 @@ export const routes: Record<RouteType, string[]> = {
 
 export const defaultAuthRedirect = "/account";
 
-export const {
-  auth,
-  handlers: { GET, POST },
-  signIn,
-  signOut,
-} = NextAuth({
+export const authOptions: NextAuthConfig = {
   secret: process.env.AUTH_SECRET,
   pages: {
     signIn: "/signin",
@@ -27,6 +29,20 @@ export const {
       return !!auth;
     },
   },
+  cookies: {
+    callbackUrl: {
+      name: "icecream-callback",
+      options: { httpOnly: true, sameSite: true },
+    },
+    csrfToken: {
+      name: "icecream-csrf",
+      options: { httpOnly: true, sameSite: true },
+    },
+    sessionToken: {
+      name: "icecream-auth",
+      options: { httpOnly: true, sameSite: true },
+    },
+  },
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -34,16 +50,42 @@ export const {
         email: {},
         password: {},
       },
-      async authorize({ email, password }) {
-        // console.log({ email, password });
+      async authorize(userData) {
+        const { success, data } = signInSchema.safeParse(userData);
 
-        return {
-          id: "1",
-          email: "email1@qwe.qwe",
-          image: "/image.jpg",
-          name: "User 1",
-        };
+        if (!success) {
+          return null;
+        }
+
+        const { email, password } = data;
+
+        const matchedUser = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, email))
+          .limit(1);
+
+        if (!matchedUser.length) {
+          return null;
+        }
+
+        const user = matchedUser[0];
+
+        const passwordVerified = await compare(password, user.password);
+
+        if (passwordVerified) {
+          return user;
+        }
+
+        return null;
       },
     }),
   ],
-});
+};
+
+export const {
+  auth,
+  handlers: { GET, POST },
+  signIn,
+  signOut,
+} = NextAuth(authOptions);
