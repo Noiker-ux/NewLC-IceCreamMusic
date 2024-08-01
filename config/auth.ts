@@ -1,12 +1,11 @@
 import "server-only";
-import { getAuthUser } from "@/actions/users";
-import NextAuth, { NextAuthConfig } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { db } from "@/db";
+import { users } from "@/db/schema";
 import { signInSchema } from "@/schema/signin.schema";
 import { compare } from "bcrypt-ts";
-import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
+import NextAuth, { NextAuthConfig } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 export const routeTypes = ["guest", "public"] as const;
 

@@ -47,31 +47,31 @@ export async function editUser() {
 export async function getAuthUser(
   userData: Partial<Record<"email" | "password", unknown>>
 ) {
-  // const { success, data } = signInSchema.safeParse(userData);
+  const { success, data } = signInSchema.safeParse(userData);
 
-  // if (!success) {
-  //   return null;
-  // }
+  if (!success) {
+    return null;
+  }
 
-  // const { email, password } = data;
+  const { email, password } = data;
 
-  // const matchedUser = await db
-  //   .select()
-  //   .from(users)
-  //   .where(eq(users.email, email))
-  //   .limit(1);
+  const matchedUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
 
-  // if (!matchedUser.length) {
-  //   return null;
-  // }
+  if (!matchedUser.length) {
+    return null;
+  }
 
-  // const user = matchedUser[0];
+  const user = matchedUser[0];
 
-  // const passwordVerified = await verifyPassword(password, user.password);
+  const passwordVerified = await compare(password, user.password);
 
-  // if (passwordVerified) {
-  //   return user;
-  // }
+  if (passwordVerified) {
+    return user;
+  }
 
   return null;
 }
