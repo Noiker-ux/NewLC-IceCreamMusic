@@ -4,31 +4,31 @@ import { NextResponse } from "next/server";
 export const middleware = auth(async function (request) {
   const { nextUrl } = request;
 
-  const headers = new Headers(request.headers);
-
-  headers.set("x-url", nextUrl.href);
+  request.headers.set("x-url", nextUrl.href);
 
   const newUrl = nextUrl.clone();
 
   const isAuthenticated = !!request.auth;
 
-  const isGuestRoute = routes.guest.includes(nextUrl.pathname);
+  const pathName = nextUrl.pathname;
 
-  const isPublicRoute = routes.public.includes(nextUrl.pathname);
+  const isGuestRoute = routes.guest.some((r) => pathName.includes(r));
+
+  const isPublicRoute = routes.public.some((r) => pathName.includes(r));
 
   if (isAuthenticated && isGuestRoute) {
     newUrl.pathname =
       nextUrl.searchParams.get("callbackUrl") ?? defaultAuthRedirect;
-    return NextResponse.redirect(newUrl, { headers });
+    return NextResponse.redirect(newUrl, request);
   }
 
   if (!isGuestRoute && !isPublicRoute && !isAuthenticated) {
     newUrl.pathname = "/signin";
     newUrl.searchParams.set("callbackUrl", nextUrl.pathname);
-    return NextResponse.redirect(newUrl, { headers });
+    return NextResponse.redirect(newUrl, request);
   }
 
-  return NextResponse.next({ headers });
+  return NextResponse.next({ request });
 });
 
 export const config = {

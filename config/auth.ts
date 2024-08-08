@@ -12,7 +12,7 @@ export const routeTypes = ["guest", "public"] as const;
 export type RouteType = (typeof routeTypes)[number];
 
 export const routes: Record<RouteType, string[]> = {
-  guest: ["/signin", "/signup"],
+  guest: ["/signin", "/signup", "/confirm"],
   public: ["/signout"],
 };
 
@@ -24,12 +24,17 @@ export const authOptions: NextAuthConfig = {
     signIn: "/signin",
   },
   callbacks: {
-    authorized: ({ auth }) => {
+    async authorized({ auth }) {
       return !!auth;
+    },
+    async signIn({ credentials }) {
+      console.log(credentials);
+      return true;
     },
   },
   cookies: {
     callbackUrl: {
+      name: "icecream-callback",
       options: { httpOnly: true, sameSite: true },
     },
     csrfToken: {

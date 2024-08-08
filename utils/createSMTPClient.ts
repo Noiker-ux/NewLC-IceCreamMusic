@@ -1,7 +1,6 @@
-"use server";
 import { createTransport } from "nodemailer";
 
-export async function qwe() {
+export async function createSMTPClient() {
   const transport = createTransport({
     host: process.env.SMTP_HOST!,
     port: process.env.SMTP_PORT!,
@@ -9,7 +8,9 @@ export async function qwe() {
       user: process.env.SMTP_USER!,
       pass: process.env.SMTP_PASSWORD!,
     },
-  });
+  } as any);
 
-  return transport.verify().catch(() => false);
+  await transport.verify();
+
+  return transport;
 }

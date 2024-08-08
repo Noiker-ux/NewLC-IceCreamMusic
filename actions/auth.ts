@@ -19,12 +19,13 @@ export async function signInAction(data: TSignInClientSchema) {
 
   // const cookie;
 
-  if (!!res.data.rememberMe) console.log(oneMonthSeconds);
+  // if (!!res.data.rememberMe) console.log(oneMonthSeconds);
 
-  if (!!!res.data.rememberMe) console.log(oneDaySeconds);
+  // if (!!!res.data.rememberMe) console.log(oneDaySeconds);
 
   const params: Pick<NextAuthConfig, "cookies"> = {
     cookies: {
+      ...authOptions.cookies,
       sessionToken: {
         name: "icecream-auth",
         options: {
@@ -36,9 +37,11 @@ export async function signInAction(data: TSignInClientSchema) {
     },
   };
 
-  const authConfig = Object.assign(authOptions, params);
+  console.log(JSON.stringify(params));
 
-  const { signIn } = await NextAuth(authConfig);
+  const newAuthConfig = Object.assign(authOptions, params);
+
+  const { signIn } = await NextAuth(newAuthConfig);
 
   const searchParams = await getSearchParams();
 

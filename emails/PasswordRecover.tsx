@@ -1,6 +1,11 @@
 import { Button, Html, Text } from "@react-email/components";
 
-export default function EmailPreview() {
+export type TPasswordRecovery = {
+  name: string;
+  link: string;
+};
+
+export default function PasswordRecovery({}: TPasswordRecovery) {
   return (
     <Html>
       <Text>To reset your password, press the button below:</Text>
@@ -8,3 +13,5 @@ export default function EmailPreview() {
     </Html>
   );
 }
+
+export { PasswordRecovery };
