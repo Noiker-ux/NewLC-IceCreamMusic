@@ -1,10 +1,16 @@
-import { db } from "@/db";
-import { users } from "@/db/schema";
+"use client";
+
+import { qwe } from "@/actions/qwe";
+import SignUpConfirm from "@/emails/SignUpConfirm";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
+import { renderAsync } from "@react-email/render";
 
 export default async function NewsPage() {
-  const data = await db.select().from(users);
+  // const data = await db.select().from(users);
+  // const emailString = await renderAsync(<SignUpConfirm />);
   return (
-    <PageTransitionProvider>{JSON.stringify(data)}</PageTransitionProvider>
+    <PageTransitionProvider>
+      <button onClick={() => qwe().then(console.log)}>qwe</button>
+    </PageTransitionProvider>
   );
 }

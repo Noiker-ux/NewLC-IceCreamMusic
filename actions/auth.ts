@@ -15,6 +15,14 @@ export async function signInAction(data: TSignInClientSchema) {
 
   const oneDaySeconds = 24 * 60 * 60;
 
+  const oneMonthSeconds = 30 * oneDaySeconds;
+
+  // const cookie;
+
+  if (!!res.data.rememberMe) console.log(oneMonthSeconds);
+
+  if (!!!res.data.rememberMe) console.log(oneDaySeconds);
+
   const params: Pick<NextAuthConfig, "cookies"> = {
     cookies: {
       sessionToken: {
@@ -22,7 +30,7 @@ export async function signInAction(data: TSignInClientSchema) {
         options: {
           httpOnly: true,
           sameSite: true,
-          maxAge: res.data.rememberMe ? oneDaySeconds * 30 : oneDaySeconds,
+          maxAge: !!res.data.rememberMe ? oneMonthSeconds : oneDaySeconds,
         },
       },
     },

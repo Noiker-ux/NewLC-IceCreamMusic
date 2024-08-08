@@ -30,7 +30,6 @@ export const authOptions: NextAuthConfig = {
   },
   cookies: {
     callbackUrl: {
-      name: "icecream-callback",
       options: { httpOnly: true, sameSite: true },
     },
     csrfToken: {
