@@ -1,0 +1,30 @@
+.avatar {
+  border: 1px solid var(--gray-blue-color);
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+
+  transition: all 0.4s ease;
+  &:hover {
+    filter: contrast(0.55);
+  }
+}
+.labelFile {
+  position: relative;
+}
+
+.uploadText {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  margin: auto;
+  height: 40px;
+  pointer-events: none;
+  width: 100%;
+  background-color: var(--blue-dark-color);
+  padding: 10px;
+  text-align: center;
+}
+.avatarHover {
+  border-radius: 15px;
+}

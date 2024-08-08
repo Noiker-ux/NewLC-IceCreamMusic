@@ -1,0 +1,34 @@
+.MainInfo {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  gap: 50px;
+}
+.social {
+  width: 100%;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 30%;
+}
+.top {
+  display: flex;
+  gap: 20px;
+}
+.title {
+  margin-bottom: 20px;
+}
+.icon {
+  transform: scale(1.8);
+}
+.wrapLink {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.inpLink {
+  width: 100%;
+}

@@ -1,0 +1,37 @@
+.footer {
+  margin-bottom: 25px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--dark-color);
+  overflow: hidden;
+  padding-left: 10px;
+  position: relative;
+  transition: all 0.2s ease;
+  &:hover {
+    background-color: var(--hover-light);
+    border-radius: 5px;
+  }
+}
+
+.title {
+  font-weight: 700;
+}
+.description {
+  font-size: 13px;
+  font-weight: 900;
+}
+.text {
+  width: 290px;
+  position: absolute;
+  left: 80px;
+}
+
+.small {
+  overflow: hidden;
+}
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
