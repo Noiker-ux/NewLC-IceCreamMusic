@@ -28,11 +28,8 @@
     "leva": "^0.9.35",
     "next": "14.2.4",
     "next-auth": "^5.0.0-beta.19",
-<<<<<<< HEAD
     "next-themes": "^0.3.0",
-=======
     "nodemailer": "^6.9.14",
->>>>>>> email
     "pg": "^8.10.0",
     "postgres": "^3.4.4",
     "react": "^18",
