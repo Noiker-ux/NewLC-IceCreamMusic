@@ -1,0 +1,91 @@
+.avatar-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: var(--antique);
+  margin-right: 25px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+.avatar-preview.image:hover:before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgba(254, 117, 117, 0.75);
+}
+.avatar-preview.image:hover:after {
+  content: "×";
+  display: block;
+  font-size: 24px;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.avatar-preview label {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 65px;
+  line-height: 100px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+.add-avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+input.add-avatar {
+  display: none;
+}
+.add-avatar-label {
+  cursor: pointer;
+}
+label.add-avatar-btn {
+  display: block;
+  width: 132px;
+  height: 42px;
+  border-radius: 21px;
+  text-align: center;
+  background-color: #e8faf9;
+  color: var(--accent-color);
+  font-size: 15px;
+  line-height: 42px;
+  margin-bottom: 8px;
+}
+label.add-avatar-btn:hover {
+  background-color: var(--accent-color);
+  color: #fff;
+}
+p.add-avatar-desc {
+  display: block;
+  width: 132px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: var(--gray);
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

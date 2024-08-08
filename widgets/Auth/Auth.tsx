@@ -18,14 +18,6 @@ const Authorization = () => {
     },
   });
 
-  async function qwe() {
-    const qwe = await signIn("credentials", { redirect: false });
-    if (!qwe || qwe.ok) {
-      return;
-    }
-    qwe.url;
-  }
-
   return (
     <form
       className={style.form}

@@ -13,6 +13,7 @@
   /* Light Theme */
 
   --light-color: rgb(243, 243, 243);
+  --hover-light: rgb(212, 210, 210);
   /* Dark Theme */
   --dark-color: rgb(42, 42, 42);
 
@@ -23,6 +24,7 @@
   --light-green-color: rgb(113, 171, 168);
   --blue-dark-color: rgb(22, 36, 47);
   --biege-color: rgb(212, 171, 138);
+  --gray-blue-color: rgba(255, 255, 255, 0.125);
   --blue-light-color: rgb(54, 167, 198);
   --pink-light-color: rgb(254, 156, 161);
   /* Radius */
@@ -51,13 +53,13 @@ body {
 
 .content {
   display: block;
-  width: calc(100% - 325px);
+  width: 100%;
   margin-left: auto;
   padding: 30px 50px;
   color: white;
 }
 
-a {
+/* a {
   color: var(--blue-light-color);
   text-decoration: none;
   position: relative;
@@ -76,4 +78,14 @@ a {
   &:hover::after {
     width: 100%;
   }
+} */
+
+.backdor {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background-color: rgba(17, 25, 40, 0.75);
+  border-radius: 12px;
+  border: 1px solid var(--gray-blue-color);
+  padding: 25px;
+  border-radius: 15px;
 }
