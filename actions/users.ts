@@ -3,18 +3,13 @@
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { signUpSchema, TSignUpClientSchema } from "@/schema/signup.schema";
-import { hash } from "bcrypt-ts";
+import { genSalt, hash } from "bcrypt-ts";
 import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { sendSignUpConfirmEmail } from "./email";
 
 export async function registerUser(userData: TSignUpClientSchema) {
-  const { success, data, error } = signUpSchema.safeParse(userData);
-
-  if (!success) {
-    return { message: error.errors.map((e) => e.message).join("\n") };
-  }
-
-  const { email, name, password } = data;
+  const { email, name, password } = signUpSchema.parse(userData);
 
   const matchedUser = await db
     .select()
@@ -23,23 +18,40 @@ export async function registerUser(userData: TSignUpClientSchema) {
     .limit(1);
 
   if (matchedUser.length) {
-    return { message: "User with this email already exists" };
+    throw new Error(
+      "Учетная запись с данным адресом эл. почты уже существует."
+    );
   }
 
-  const hashedPassword = await hash(password, 12);
+  const hashedPassword = await hashPassword(password);
 
-  const newUsers = await db
-    .insert(users)
-    .values({ email, name, password: hashedPassword })
-    .returning({ id: users.id });
+  const newUser = (
+    await db
+      .insert(users)
+      .values({ email, name, password: hashedPassword })
+      .returning({ id: users.id })
+  ).pop();
 
-  const { id } = newUsers[0];
+  if (!newUser) throw new Error("Что-то пошло не так");
 
-  await sendSignUpConfirmEmail(email, id);
+  await sendSignUpConfirmEmail(email, newUser.id);
 
-  return { message: "success" };
+  return redirect("/signup/complete");
 }
 
-export async function editUser() {
-  return "user updated";
+export async function hashPassword(password: string) {
+  const passwordSalt = await genSalt(Number(process.env.SALT_ROUNDS!));
+
+  const hashedPassword = await hash(password, passwordSalt);
+
+  return hashedPassword;
 }
+
+// export async function updateUser(id: string, data: Partial<TSelectUserSchema>) {
+//   await db
+//     .update(users)
+//     .set(data)
+//     .where(eq(users.id, id))
+//     .returning({ id: users.id });
+//   return "user updated";
+// }

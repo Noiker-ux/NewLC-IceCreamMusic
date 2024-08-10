@@ -1,0 +1,77 @@
+{
+  "id": "b1d3135f-4d36-42d0-8b8d-bf7102da11c7",
+  "prevId": "f2d923e7-623a-401d-be27-0f54cc2bff3d",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "icecream.user": {
+      "name": "user",
+      "schema": "icecream",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "emailVerified": {
+          "name": "emailVerified",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "avatar": {
+          "name": "avatar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "verificationToken": {
+          "name": "verificationToken",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "resetPasswordToken": {
+          "name": "resetPasswordToken",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "icecream": "icecream"
+  },
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

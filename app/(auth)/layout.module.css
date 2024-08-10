@@ -15,4 +15,5 @@
   backdrop-filter: blur(10px);
   height: 100vh;
   border-left: 1px solid #424242;
+  color: white;
 }

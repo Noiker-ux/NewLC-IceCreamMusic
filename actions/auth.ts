@@ -1,61 +1,127 @@
 "use server";
 
-import { authOptions, defaultAuthRedirect, signOut } from "@/config/auth";
-import { getFullUrl, getSearchParams } from "./url";
+import {
+  createSessionOptions,
+  defaultAuthRedirect,
+  defaultSessionOptions,
+  routes,
+  TSessionData,
+} from "@/config/auth";
+import { db } from "@/db";
+import { users } from "@/db/schema";
 import {
   signInClientSchema,
   TSignInClientSchema,
 } from "@/schema/signin.schema";
-import NextAuth, { NextAuthConfig } from "next-auth";
+import { selectUserSchema } from "@/schema/user.schema";
+import { compare } from "bcrypt-ts";
+import { eq } from "drizzle-orm";
+import { getIronSession, SessionOptions } from "iron-session";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { sendResetPasswordEmail } from "./email";
+import { getPathname } from "./url";
+import { hashPassword } from "./users";
 
-export async function signInAction(data: TSignInClientSchema) {
-  const res = signInClientSchema.safeParse(data);
+export async function credentialsSignIn(credentials: TSignInClientSchema) {
+  const validationResult = signInClientSchema.safeParse(credentials);
 
-  if (!res.success) return {};
+  if (!validationResult.success) {
+    throw new Error("Неверные данные для входа");
+  }
+
+  const { email, password, rememberMe } = credentials;
 
   const oneDaySeconds = 24 * 60 * 60;
 
   const oneMonthSeconds = 30 * oneDaySeconds;
 
-  // const cookie;
-
-  // if (!!res.data.rememberMe) console.log(oneMonthSeconds);
-
-  // if (!!!res.data.rememberMe) console.log(oneDaySeconds);
-
-  const params: Pick<NextAuthConfig, "cookies"> = {
-    cookies: {
-      ...authOptions.cookies,
-      sessionToken: {
-        name: "icecream-auth",
-        options: {
-          httpOnly: true,
-          sameSite: true,
-          maxAge: !!res.data.rememberMe ? oneMonthSeconds : oneDaySeconds,
-        },
-      },
+  const sessionOptions = createSessionOptions({
+    cookieOptions: {
+      ...defaultSessionOptions.cookieOptions,
+      maxAge: !!rememberMe ? oneMonthSeconds : oneDaySeconds,
     },
-  };
-
-  console.log(JSON.stringify(params));
-
-  const newAuthConfig = Object.assign(authOptions, params);
-
-  const { signIn } = await NextAuth(newAuthConfig);
-
-  const searchParams = await getSearchParams();
-
-  const callbackUrl = searchParams.get("callbackUrl") ?? defaultAuthRedirect;
-
-  return signIn("credentials", {
-    redirect: true,
-    redirectTo: callbackUrl,
-    ...res.data,
   });
+
+  const user = (
+    await db.select().from(users).where(eq(users.email, email)).limit(1)
+  ).pop();
+
+  if (!user || !!!user.emailVerified) {
+    throw new Error("Неверные данные для входа");
+  }
+
+  const passwordVerified = await compare(password, user.password);
+
+  if (!passwordVerified) {
+    throw new Error("Неверные данные для входа");
+  }
+
+  const session = await getAuthSession();
+
+  session.updateConfig(sessionOptions);
+
+  session.user = selectUserSchema.parse(user);
+
+  await session.save();
+
+  redirect(defaultAuthRedirect);
 }
 
 export async function signOutAction() {
-  const callbackUrl = await getFullUrl();
+  const session = await getAuthSession();
 
-  return signOut({ redirectTo: callbackUrl!, redirect: true });
+  const callbackPath = await getPathname();
+
+  session.destroy();
+
+  redirect(callbackPath);
+}
+
+export async function getAuthSession(options?: SessionOptions) {
+  const cookiesStore = cookies();
+
+  const session = await getIronSession<TSessionData>(
+    cookiesStore,
+    options ?? defaultSessionOptions
+  );
+
+  return session;
+}
+
+export async function authRedirect() {
+  const session = await getAuthSession();
+
+  const isAuthenticated = !!session.user;
+
+  const pathname = await getPathname();
+
+  const isGuestRoute = routes.guest.some((r) => pathname.includes(r));
+
+  const isPublicRoute = routes.public.some((r) => pathname.includes(r));
+
+  if (isAuthenticated && isGuestRoute) {
+    return redirect(defaultAuthRedirect);
+  }
+
+  if (!isGuestRoute && !isPublicRoute && !isAuthenticated) {
+    return redirect("/signin");
+  }
+}
+
+export async function recoverPassword(email: string) {
+  sendResetPasswordEmail(email);
+
+  return redirect("/recover/complete");
+}
+
+export async function resetPassword(newPassword: string, id: string) {
+  const hashedPassword = await hashPassword(newPassword);
+
+  await db
+    .update(users)
+    .set({ password: hashedPassword, resetPasswordToken: null })
+    .where(eq(users.id, id));
+
+  return redirect("/reset/complete");
 }

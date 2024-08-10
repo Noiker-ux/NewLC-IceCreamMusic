@@ -22,6 +22,20 @@
       "when": 1722521045650,
       "tag": "0002_omniscient_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1723190731867,
+      "tag": "0003_romantic_swordsman",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1723225767860,
+      "tag": "0004_typical_pestilence",
+      "breakpoints": true
     }
   ]
 }

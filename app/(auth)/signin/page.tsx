@@ -1,10 +1,10 @@
-import MyTitle from "@/shared/MyTitle/MyTitle";
-import style from "./page.module.css";
-import Authorization from "@/widgets/Auth/Auth";
-import MyText from "@/shared/MyText/MyText";
-import Link from "next/link";
 import { oswald } from "@/fonts";
+import MyText from "@/shared/MyText/MyText";
+import MyTitle from "@/shared/MyTitle/MyTitle";
+import Authorization from "@/widgets/Auth/Auth";
 import classNames from "classnames";
+import Link from "next/link";
+import style from "./page.module.css";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 
 export default function Auth() {
@@ -20,6 +20,10 @@ export default function Auth() {
       <MyText className={style.linkReg}>
         Или <Link href="/signup">зарегистрируйте</Link> новый, если у Вас нет
         аккаунта
+      </MyText>
+
+      <MyText className={style.linkReg}>
+        <Link href="/recover">Не помню пароль</Link>
       </MyText>
     </PageTransitionProvider>
   );

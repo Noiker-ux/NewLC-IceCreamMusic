@@ -1,13 +1,12 @@
 "use client";
 
+import { credentialsSignIn } from "@/actions/auth";
+import { TSignInClientSchema } from "@/schema/signin.schema";
 import MyButton from "@/shared/MyButton/MyButton";
 import MyCheckbox from "@/shared/MyCheckbox/MyCheckbox";
 import MyInput from "@/shared/MyInput/MyInput";
 import { useForm } from "react-hook-form";
 import style from "./Auth.module.css";
-import { TSignInClientSchema } from "@/schema/signin.schema";
-import { signInAction } from "@/actions/auth";
-import { signIn } from "next-auth/react";
 
 const Authorization = () => {
   const { handleSubmit, register } = useForm<TSignInClientSchema>({
@@ -21,7 +20,7 @@ const Authorization = () => {
   return (
     <form
       className={style.form}
-      onSubmit={handleSubmit((data) => signInAction(data))}
+      onSubmit={handleSubmit((data) => credentialsSignIn(data))}
     >
       <MyInput {...register("email")} label="Email" type="text" />
       <MyInput {...register("password")} label="Пароль" type="password" />

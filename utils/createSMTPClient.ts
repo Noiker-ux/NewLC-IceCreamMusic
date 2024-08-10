@@ -10,7 +10,9 @@ export async function createSMTPClient() {
     },
   } as any);
 
-  await transport.verify();
+  await transport.verify().catch(() => {
+    throw new Error("Что-то пошло не так");
+  });
 
   return transport;
 }

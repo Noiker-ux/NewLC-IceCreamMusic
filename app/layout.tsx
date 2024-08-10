@@ -1,7 +1,6 @@
-import { PropsWithChildren } from "react";
+import { authRedirect } from "@/actions/auth";
 import { roboto } from "@/fonts";
-import { SessionProvider } from "next-auth/react";
-import { auth } from "@/config/auth";
+import { PropsWithChildren } from "react";
 import "./globals.css";
 
 export const metadata = {
@@ -12,13 +11,11 @@ export const metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<PropsWithChildren>) {
-  const session = await auth();
+  await authRedirect();
 
   return (
     <html lang="en">
-      <SessionProvider session={session}>
-        <body className={roboto.className}>{children}</body>
-      </SessionProvider>
+      <body className={roboto.className}>{children}</body>
     </html>
   );
 }

@@ -30,7 +30,7 @@ const RegistrationWidget = () => {
   return (
     <form
       className={style.form}
-      onSubmit={handleSubmit((data) => registerUser(data))}
+      onSubmit={handleSubmit((data) => registerUser(data).catch(() => false))}
     >
       <MyInput {...register("email")} label="Email" type="email" />
       <MyInput {...register("name")} label="Имя" type="text" />

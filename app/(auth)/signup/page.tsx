@@ -1,10 +1,10 @@
-import MyTitle from "@/shared/MyTitle/MyTitle";
-import style from "./page.module.css";
-import MyText from "@/shared/MyText/MyText";
-import Link from "next/link";
 import { oswald } from "@/fonts";
-import classNames from "classnames";
+import MyText from "@/shared/MyText/MyText";
+import MyTitle from "@/shared/MyTitle/MyTitle";
 import RegistrationWidget from "@/widgets/Registration/Registration";
+import classNames from "classnames";
+import Link from "next/link";
+import style from "./page.module.css";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 
 export default function Registraion() {
