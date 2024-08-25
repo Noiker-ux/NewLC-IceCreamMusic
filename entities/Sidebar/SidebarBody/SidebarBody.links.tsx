@@ -25,7 +25,7 @@ export const SidebarLinks: ISidebarLinks[] = [
   },
   {
     label: "Загрузить релиз",
-    href: "/upload",
+    href: "/signature",
     icon: <FaPenFancy />,
   },
   {

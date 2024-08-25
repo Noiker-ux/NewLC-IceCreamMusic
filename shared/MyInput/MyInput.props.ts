@@ -6,5 +6,6 @@ export default interface IMyInputProps
     HTMLInputElement
   > {
   label: string;
+  view?: "dls" | "primary";
   type: "text" | "password" | "email" | "date";
 }

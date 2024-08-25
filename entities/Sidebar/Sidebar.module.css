@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: var(--background-primary);
+  color: var(--text-color);
   height: 100vh;
   min-width: 375px;
-  background-color: var(--white-color);
   padding: 30px 10px 10px 10px;
-  border-right: 1px solid black;
+  border-right: 1px solid var(--black-color);
   position: sticky;
   transition: all 0.4s ease;
-
   top: 0;
   left: 0;
 }
@@ -24,12 +24,12 @@
   border-radius: 50%;
   right: -13px;
   top: 50px;
-  background-color: var(--white-color);
+  background-color: var(--background-primary);
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: var(--dark-color);
-    color: var(--white-color);
+    background-color: var(--hover-color);
+    color: var(--text-color);
   }
 }
 

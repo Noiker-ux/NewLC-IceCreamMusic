@@ -1,34 +1,36 @@
-.MainInfo {
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  gap: 50px;
-}
-.social {
-  width: 100%;
-}
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 30%;
-}
-.top {
-  display: flex;
-  gap: 20px;
-}
-.title {
-  margin-bottom: 20px;
-}
-.icon {
-  transform: scale(1.8);
-}
-.wrapLink {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
 .inpLink {
   width: 100%;
+}
+.avatarWrapper {
+  position: relative;
+}
+.avatar {
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.info {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.nickname {
+  font-size: 24px;
+  line-height: 1.25;
+}
+.login {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 24px;
+  color: #778491;
+}
+.btnShow {
+  font-size: 12px !important;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }

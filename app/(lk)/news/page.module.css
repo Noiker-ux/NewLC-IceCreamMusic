@@ -1,6 +1,6 @@
 .news {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 13px;
-	margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 20px;
 }

@@ -6,17 +6,18 @@ import IMyInputProps from "./MyInput.props";
 import classNames from "classnames";
 
 const MyInput = forwardRef<HTMLInputElement, IMyInputProps>(function Input(
-  { label, className, type, ...props },
+  { label, className, type, view, placeholder, ...props },
   ref
 ) {
   return (
     <div className={style.fieldHolder}>
       <input
         type={type}
-        className={classNames(style.input, className)}
+        className={classNames(style.input, className, {
+          [style.dls]: view === "dls",
+        })}
+        placeholder={placeholder}
         ref={ref}
-        required
-        pattern="\S+"
         {...props}
       />
       <label className={style.label}>{label}</label>

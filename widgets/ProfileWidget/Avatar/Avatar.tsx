@@ -34,8 +34,8 @@ const Avatar = () => {
         })}
         src={(avatar as string) ?? "/assets/userAvaStandart.png"}
         alt="Аватар"
-        height={350}
-        width={350}
+        height={250}
+        width={250}
         onMouseEnter={() => {
           setHoverAvatar(true);
         }}

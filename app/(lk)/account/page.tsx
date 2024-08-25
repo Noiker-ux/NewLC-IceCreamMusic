@@ -1,6 +1,6 @@
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 
-export default async function NewsPage() {
+export default function NewsPage() {
   // const data = await db.select().from(users);
 
   return (

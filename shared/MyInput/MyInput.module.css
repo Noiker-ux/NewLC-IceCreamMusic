@@ -41,3 +41,14 @@
 .input:focus {
   border-bottom: 3px solid #424242;
 }
+
+.dls {
+  border: 1px solid var(--text-color);
+  padding: 5px 12px;
+  height: 35px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  background-color: #22272e;
+  color: var(--text-color);
+}

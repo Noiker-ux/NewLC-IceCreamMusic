@@ -2,6 +2,8 @@ import { authRedirect } from "@/actions/auth";
 import { roboto } from "@/fonts";
 import { PropsWithChildren } from "react";
 import "./globals.css";
+import dynamic from "next/dynamic";
+import { cookies } from "next/headers";
 
 export const metadata = {
   title: "Create Next App",
@@ -12,6 +14,11 @@ export default async function RootLayout({
   children,
 }: Readonly<PropsWithChildren>) {
   await authRedirect();
+  const AppThemeProvider = dynamic(() => import("../providers/ThemeContext"), {
+    ssr: false,
+  });
+
+  const theme = cookies().get("__theme__")?.value || "system";
 
   return (
     <html lang="en">

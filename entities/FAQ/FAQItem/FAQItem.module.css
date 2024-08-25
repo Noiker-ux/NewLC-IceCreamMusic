@@ -1,12 +1,16 @@
 .faqItem {
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--blue-dark-color);
+  background-color: var(--glass-color);
+
+  color: var(--text-color);
+  -webkit-box-shadow: 12px -13px 7px 0px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 12px -13px 7px 0px rgba(34, 60, 80, 0.2);
+  box-shadow: 1px 1px 1px 0px rgba(34, 60, 80, 0.2);
   border-radius: 10px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
   &:hover {
-    background-color: #403e3e32;
+    background-color: var(--hover-color);
   }
 }
 .faqQuestion {

@@ -1,6 +1,8 @@
 import Sidebar from "@/entities/Sidebar/Sidebar";
 import { SidebarContextProvider } from "@/providers/SidebarContext";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
+import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -12,12 +14,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const AppThemeProvider = dynamic(
+    () => import("../../providers/ThemeContext"),
+    {
+      ssr: false,
+    }
+  );
+
+  const theme = cookies().get("__theme__")?.value || "system";
+
   return (
-    <SidebarContextProvider>
-      <main className="main">
-        <Sidebar />
-        <div className="content">{children}</div>
-      </main>
-    </SidebarContextProvider>
+    <AppThemeProvider attribute="data-theme" defaultTheme={theme} enableSystem>
+      <SidebarContextProvider>
+        <main className="main">
+          <Sidebar />
+          <div className="content">{children}</div>
+        </main>
+      </SidebarContextProvider>
+    </AppThemeProvider>
   );
 }

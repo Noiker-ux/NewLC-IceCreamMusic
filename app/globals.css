@@ -13,22 +13,38 @@
   /* Light Theme */
 
   --light-color: rgb(243, 243, 243);
-  --hover-light: rgb(212, 210, 210);
+  --light-text-color: rgb(42, 42, 42);
+  --light-hover-color: rgb(217, 214, 214);
+  --light-glass-color: rgba(249, 242, 242, 0.269);
   /* Dark Theme */
-  --dark-color: rgb(42, 42, 42);
+  --dark-color: rgb(33, 32, 32);
+  --dark-text-color: rgb(228, 228, 228);
+  --dark-hover-color: rgb(50, 50, 50);
+  --dark-glass-color: rgba(27, 26, 26, 0.269);
 
   /* Colors */
   --white-color: #fff;
   --black-color: #000;
 
-  --light-green-color: rgb(113, 171, 168);
-  --blue-dark-color: rgb(22, 36, 47);
-  --biege-color: rgb(212, 171, 138);
-  --gray-blue-color: rgba(255, 255, 255, 0.125);
-  --blue-light-color: rgb(54, 167, 198);
-  --pink-light-color: rgb(254, 156, 161);
-  /* Radius */
-  --border-radius-ios: 17.544%;
+  /* Toggle Theme */
+  --hue: 223;
+  --primary: hsl(var(--hue), 90%, 50%);
+  --trans-dur: 0.6s;
+  --trans-timing: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+[data-theme="light"] {
+  --background-primary: var(--light-color);
+  --text-color: var(--light-text-color);
+  --glass-color: var(--light-glass-color);
+  --hover-color: var(--light-hover-color);
+}
+
+[data-theme="dark"] {
+  --background-primary: var(--dark-color);
+  --text-color: var(--dark-text-color);
+  --glass-color: var(--dark-glass-color);
+  --hover-color: var(--dark-hover-color);
 }
 
 * {
@@ -43,8 +59,8 @@ main {
 }
 
 body {
-  background-color: var(--black-color);
-  background-image: url("/assets/BG.png");
+  background-color: var(--background-primary);
+  /* background-image: url("/assets/BG.png"); */
   overflow-x: hidden;
   -webkit-backdrop-filter: blur(55px);
   backdrop-filter: blur(55px);
@@ -59,27 +75,6 @@ body {
   color: white;
 }
 
-/* a {
-  color: var(--blue-light-color);
-  text-decoration: none;
-  position: relative;
-  transition: all 0.3s ease;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 1px;
-    width: 0%;
-    background-color: var(--blue-light-color);
-    transition: all 0.3s ease;
-  }
-  &:hover::after {
-    width: 100%;
-  }
-} */
-
 .backdor {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -88,4 +83,8 @@ body {
   border: 1px solid var(--gray-blue-color);
   padding: 25px;
   border-radius: 15px;
+}
+
+a {
+  text-decoration: none;
 }
