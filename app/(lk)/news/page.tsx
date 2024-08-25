@@ -3,6 +3,7 @@ import NewsCard from "@/entities/NewsCard/NewsCard";
 import MyTitle from "@/shared/MyTitle/MyTitle";
 import styles from "./page.module.css";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -10,15 +11,16 @@ export default function Home() {
       <MyTitle Tag={"h3"}>Новости</MyTitle>
       <div className={styles.news}>
         {dataNews.map((newsItem) => (
-          <NewsCard
-            id={newsItem.id}
-            anons={newsItem.anons}
-            dateCreate={newsItem.dateCreate}
-            preview={newsItem.preview}
-            title={newsItem.title}
-            view={newsItem.view}
-            key={newsItem.id}
-          />
+          <Link href={`/news/${newsItem.id}`} key={newsItem.id}>
+            <NewsCard
+              id={newsItem.id}
+              anons={newsItem.anons}
+              dateCreate={newsItem.dateCreate}
+              preview={newsItem.preview}
+              title={newsItem.title}
+              view={newsItem.view}
+            />
+          </Link>
         ))}
       </div>
     </PageTransitionProvider>

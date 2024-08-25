@@ -1,0 +1,90 @@
+.toggle_checkbox {
+  display: none;
+}
+
+.label {
+  display: block;
+  width: 60px;
+  height: 30px;
+  margin-left: 10px;
+  background-color: #5aa7ff;
+  border-radius: 56px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: 0.3s ease background-color;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  width: 0px;
+  height: 0px;
+  background-color: #fafd0f;
+  transform: scale(1);
+  border-radius: 50%;
+  transition: 0.3s ease top, 0.3s ease left, 0.3s ease transform,
+    0.3s ease background-color;
+  z-index: 1;
+}
+
+.star1 {
+  position: relative;
+}
+
+.star {
+  top: 1px;
+  left: 8px;
+  font-size: 24px;
+  line-height: 28px;
+  color: #fafd0f;
+  transition: 0.3s ease color;
+}
+
+.moon {
+  position: absolute;
+  bottom: -56px;
+  right: 12px;
+  transform: scale(1.1);
+  width: 30px;
+  height: 16px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: 0.3s ease bottom;
+}
+
+.moon:before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: -24px;
+  width: 48px;
+  height: 39px;
+  background-color: #03a9f4;
+  border-radius: 50%;
+  transition: 0.3s ease background-color;
+}
+
+.toggle_checkbox:checked + .label {
+  background-color: #151515;
+}
+
+.toggle_checkbox:checked + .label .star {
+  top: 3px;
+  left: 64px;
+  transform: scale(0.3);
+  background-color: yellow;
+}
+
+.toggle_checkbox:checked + .label .star {
+  color: yellow;
+}
+
+.toggle_checkbox:checked + .label .moon {
+  bottom: 8px;
+}
+
+.toggle_checkbox:checked + label .moon:before {
+  background-color: #151515;
+}

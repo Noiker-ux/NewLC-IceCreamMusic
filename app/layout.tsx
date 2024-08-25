@@ -1,8 +1,10 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useContext } from "react";
 import { roboto } from "@/fonts";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/config/auth";
 import "./globals.css";
+import dynamic from "next/dynamic";
+import { cookies } from "next/headers";
 
 export const metadata = {
   title: "Create Next App",
@@ -12,7 +14,12 @@ export const metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<PropsWithChildren>) {
+  const AppThemeProvider = dynamic(() => import("../providers/ThemeContext"), {
+    ssr: false,
+  });
+
   const session = await auth();
+  const theme = cookies().get("__theme__")?.value || "system";
 
   return (
     <html lang="en">

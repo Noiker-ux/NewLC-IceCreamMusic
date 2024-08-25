@@ -1,7 +1,11 @@
 .newsCard {
-	width: 340px;
-	height: 340px;
-	text-overflow: clip ellipsis;
-	overflow: hidden;
-	border-radius: 5px;
+  width: 340px;
+  height: 340px;
+  text-overflow: clip ellipsis;
+  overflow: hidden;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: var(--hover-color);
+  }
 }

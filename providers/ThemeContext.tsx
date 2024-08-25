@@ -1,4 +1,5 @@
 // components/context/theme.tsx
+"use client";
 import { setCookie } from "cookies-next";
 import { ThemeProvider, useTheme } from "next-themes";
 import type { ThemeProviderProps } from "next-themes/dist/types";
