@@ -1,0 +1,80 @@
+.TarifCard {
+  background-color: var(--wrapper-color);
+  border-radius: 20px;
+  padding: 24px 32px;
+  height: max-content;
+}
+
+.title {
+  color: var(--light-text-color);
+  font-size: 24px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.desc {
+  color: var(--medium-text-color);
+  font-size: 14px;
+  width: 80%;
+}
+.price_wrapper {
+  margin-top: 10px;
+}
+.price {
+  font-size: 42px;
+  font-weight: 700;
+}
+.intoMonth {
+  color: var(--medium-text-color);
+  font-size: 12px;
+}
+.markerList {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--medium-text-color);
+  font-size: 14px;
+}
+.marker {
+  list-style: none;
+  position: relative;
+  margin-left: 20px;
+}
+.marker::before {
+  content: url("/assets/Success.svg");
+  position: absolute;
+  left: -20px;
+  top: 0px;
+  transform: scale(1.5);
+  width: 14px;
+  height: 14px;
+}
+.btn {
+  margin-top: 30px;
+  color: var(--light-text-color);
+  font-size: 16px;
+  border: 1px solid var(--medium-text-color);
+  border-radius: 10px;
+  padding: 15px 16px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+.btn:hover {
+  border: 1px solid var(--light-text-color);
+}
+.yourSuccess {
+  margin-top: 30px;
+  color: var(--light-text-color);
+  text-align: center;
+  font-size: 12px;
+}
+.href {
+  text-decoration: none;
+  color: var(--medium-text-color);
+}
+
+.border {
+  border: 2px solid var(--current-color);
+}

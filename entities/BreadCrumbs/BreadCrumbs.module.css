@@ -1,0 +1,10 @@
+.breadCrumbs {
+  font-size: 14px;
+  color: var(--medium-text-color);
+}
+.title {
+  color: var(--light-text-color);
+}
+.wrapper {
+  margin-bottom: 30px;
+}
