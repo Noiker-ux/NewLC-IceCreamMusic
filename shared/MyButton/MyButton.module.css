@@ -27,15 +27,15 @@
 
 .secondary {
   display: block;
-  padding: 7px 5px;
-  border-radius: 7px;
-  width: 100%;
-  border: 1px solid #424242;
-  background-color: #373e47;
-  color: var(--text-color);
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-weight: 600;
+  color: var(--light-text-color);
+  padding: 8px 16px;
+  background-color: var(--current-color);
+  border: none;
+  border-radius: 5px;
+  transition: all 0.3s ease;
   &:hover {
-    background-color: #3d444e;
+    background-color: var(--current-hover-color);
   }
 }

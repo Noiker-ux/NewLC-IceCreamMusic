@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import style from "./MyButton.module.css";
 import IMyButtonProps from "./MyButton.props";
 import classNames from "classnames";
-import { oswald, roboto } from "@/fonts";
+import { oswald, open } from "@/fonts";
 
 const MyButton = forwardRef<HTMLButtonElement, IMyButtonProps>(
   function MyButton({ text, view, className, ...props }, ref) {
@@ -11,7 +11,7 @@ const MyButton = forwardRef<HTMLButtonElement, IMyButtonProps>(
       <button
         className={classNames(style.button, className, {
           [`${style.primary} ${oswald.className}`]: view === "primary",
-          [`${style.secondary} ${roboto.className}`]: view === "secondary",
+          [`${style.secondary} ${open.className}`]: view === "secondary",
         })}
         ref={ref}
         {...props}

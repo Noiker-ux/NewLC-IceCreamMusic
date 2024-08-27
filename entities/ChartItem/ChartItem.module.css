@@ -1,0 +1,52 @@
+.link {
+  text-decoration: none;
+}
+.wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 50px;
+  border-radius: 10px;
+  &:hover {
+    background-color: var(--hover-color);
+  }
+}
+
+.albomPreview {
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+.status_block {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 15px;
+}
+
+.position {
+  font-weight: 700;
+  color: var(--light-text-color);
+}
+
+.bluePoint {
+  width: 10px;
+  height: 10px;
+  background-color: rgb(59 130 246);
+  border-radius: 50%;
+}
+
+.songName {
+  font-size: 18px;
+  color: var(--light-text-color);
+}
+.artist {
+  font-size: 14px;
+  color: var(--medium-text-color);
+}
+.info_block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

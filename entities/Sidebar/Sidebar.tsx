@@ -59,7 +59,7 @@ const Sidebar = () => {
             <PromotionIcon className={style.section__icon} />
             Продвижение
           </Link>
-          <Link className={style.section__item} href={"#"}>
+          <Link className={style.section__item} href={"/charts"}>
             <LightningIcon className={style.section__icon} />
             Чарты
           </Link>
@@ -75,11 +75,11 @@ const Sidebar = () => {
             <StarsIcon className={style.section__icon} />
             Генератор
           </Link>
-          <Link className={style.section__item} href={"#"}>
+          <Link className={style.section__item} href={"/licensee"}>
             <SuccessIcon className={style.section__icon} />
             Верификация
           </Link>
-          <Link className={style.section__item} href={"#"}>
+          <Link className={style.section__item} href={"https://t.me/Ckeabrona"}>
             <ChatIcon className={style.section__icon} />
             Поддержка
           </Link>

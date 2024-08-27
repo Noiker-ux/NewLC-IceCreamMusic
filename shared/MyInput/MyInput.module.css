@@ -42,13 +42,28 @@
   border-bottom: 3px solid #424242;
 }
 
-.dls {
-  border: 1px solid var(--text-color);
-  padding: 5px 12px;
-  height: 35px;
-  border-radius: 6px;
-  font-size: 14px;
-  line-height: 20px;
-  background-color: #22272e;
-  color: var(--text-color);
+.inpLk {
+  padding: 10px;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.inpLk:hover,
+.inpLk:focus {
+  background-color: var(--wrapper-color);
+}
+.inpLklabel {
+  color: var(--medium-text-color) !important;
+  top: -35px !important;
+}
+.w30 {
+  width: 30%;
+}
+.inpLk::placeholder {
+  color: var(--medium-text-color);
+  font-size: 12px;
+}
+.inpLk[type="date"] {
+  color: var(--medium-text-color);
+  text-transform: uppercase;
 }
