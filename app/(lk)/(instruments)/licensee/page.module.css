@@ -1,0 +1,12 @@
+.licensee {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.iconL {
+  stroke-width: 0.2px;
+  fill: var(--light-text-color);
+}

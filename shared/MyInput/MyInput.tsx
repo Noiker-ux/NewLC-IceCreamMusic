@@ -6,21 +6,27 @@ import IMyInputProps from "./MyInput.props";
 import classNames from "classnames";
 
 const MyInput = forwardRef<HTMLInputElement, IMyInputProps>(function Input(
-  { label, className, type, view, placeholder, ...props },
+  { label, className, type, inpLk, placeholder, ...props },
   ref
 ) {
   return (
-    <div className={style.fieldHolder}>
+    <div className={classNames(style.fieldHolder, { [style.w30]: inpLk })}>
       <input
         type={type}
         className={classNames(style.input, className, {
-          [style.dls]: view === "dls",
+          [style.inpLk]: inpLk,
         })}
         placeholder={placeholder}
         ref={ref}
         {...props}
       />
-      <label className={style.label}>{label}</label>
+      <label
+        className={classNames(style.label, {
+          [style.inpLklabel]: inpLk,
+        })}
+      >
+        {label}
+      </label>
     </div>
   );
 });

@@ -20,9 +20,10 @@
   /* Фиолетовый */
   --primary-color: rgb(74 222 128);
   --current-color: rgb(84 81 255);
-
+  --current-hover-color: rgba(84, 81, 255, 0.864);
   /* Темная */
   --dark-bg-color: rgb(18 19 22);
+  --dark-wrapper-darkest-color: rgb(24 26 32);
   --dark-wrapper-color: rgb(24 26 32);
   --dark-hover-color: rgb(37 39 50);
   --dark-light-text-color: rgb(209 214 235);
@@ -31,6 +32,7 @@
   --dark-first-impulse: rgb(45 48 61 / 90%);
   --dark-second-impulse: rgb(45 48 61 / 50%);
   --dark-third-impulse: rgb(45 48 61 / 30%);
+  --dark-border-color: rgb(37 39 50);
 
   /* Светлая */
   --light-bg-color: rgb(243 244 246);
@@ -54,9 +56,11 @@
 [data-theme="dark"] {
   --background-primary: var(--dark-bg-color);
   --wrapper-color: var(--dark-wrapper-color);
+  --wrapper-contrast-color: var(--dark-wrapper-darkest-color);
   --light-text-color: var(--dark-light-text-color);
   --medium-text-color: var(--dark-medium-text-color);
   --hover-color: var(--dark-hover-color);
+  --border-color: var(--dark-border-color);
 }
 
 * {
