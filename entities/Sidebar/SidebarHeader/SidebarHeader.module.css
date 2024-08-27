@@ -1,23 +1,16 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  overflow: hidden;
-  position: relative;
 }
-
-.title {
-  font-weight: 700;
+.header__slogan {
+  display: flex;
+  flex-direction: column;
 }
-.description {
-  font-size: 13px;
+.name {
+  color: var(--light-text-color);
 }
-.text {
-  width: 290px;
-  position: absolute;
-  left: 80px;
-}
-
-.small {
-  overflow: hidden;
+.slogan {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--medium-text-color);
 }

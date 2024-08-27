@@ -28,6 +28,10 @@ const nextConfig = {
         resourceRegExp: /^pg-native$|^cloudflare:sockets$/,
       })
     );
+    config.module.rules.push({
+      test: /\.svg$/i,
+      use: ["@svgr/webpack"],
+    });
 
     return config;
   },

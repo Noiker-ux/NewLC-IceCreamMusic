@@ -1,38 +1,102 @@
 "use client";
 
+import Logo from "@/shared/Logo/Logo";
 import style from "./Sidebar.module.css";
+import MyTitle from "@/shared/MyTitle/MyTitle";
+import MyText from "@/shared/MyText/MyText";
 import SidebarHeader from "./SidebarHeader/SidebarHeader";
-import SidebarBody from "./SidebarBody/SidebarBody";
-import { TiChevronRight } from "react-icons/ti";
-import classNames from "classnames";
-import { useSidebarData } from "@/providers/SidebarContext";
-import SidebarFooter from "./SidebarFooter/SidebarFooter";
+import Link from "next/link";
+import ControlPanelIcon from "./SidebarIcons/TheControlPanel.svg";
+import AnalyticIcon from "./SidebarIcons/Analytic.svg";
+import WalletIcon from "./SidebarIcons/Wallet.svg";
+import MasspostingIcon from "./SidebarIcons/Massposting.svg";
+import BitMarketIcon from "./SidebarIcons/BitMarket.svg";
+import PromotionIcon from "./SidebarIcons/Promotion.svg";
+import LightningIcon from "./SidebarIcons/Lightning.svg";
+import LinksIcon from "./SidebarIcons/Links.svg";
+import StarsIcon from "./SidebarIcons/Stars.svg";
+import SuccessIcon from "./SidebarIcons/Success.svg";
+import ChatIcon from "./SidebarIcons/Chat.svg";
+import LikeIcon from "./SidebarIcons/Like.svg";
+import ArrowIcon from "./SidebarIcons/arrow.svg";
 
 const Sidebar = () => {
-  const { size, setSize } = useSidebarData();
-  const handleSize = () => {
-    size === "full" ? setSize("small") : setSize("full");
-  };
-
   return (
-    <aside
-      className={classNames(style.sidebar, {
-        [style.small]: size === "small",
-      })}
-    >
-      <div className={style.main}>
-        <SidebarHeader />
-        <SidebarBody />
-        <div
-          className={classNames(style.swapSize, {
-            [style.active]: size === "small",
-          })}
-          onClick={handleSize}
-        >
-          <TiChevronRight />
+    <aside className={style.sidebar}>
+      <SidebarHeader />
+      <div className={style.menu}>
+        <div className={style.section}>
+          <MyText className={style.section__name}>ОСНОВНОЕ</MyText>
+          <Link className={style.section__item} href={"#"}>
+            <ControlPanelIcon className={style.section__icon} />
+            Панель управления
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <ControlPanelIcon className={style.section__icon} />
+            Мой каталог
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <AnalyticIcon className={style.section__icon} />
+            Аналитика
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <WalletIcon className={style.section__icon} />
+            Кошелек
+          </Link>
+        </div>
+
+        <div className={style.section}>
+          <MyText className={style.section__name}>Маркетинг</MyText>
+          <Link className={style.section__item} href={"#"}>
+            <MasspostingIcon className={style.section__icon} />
+            Масспостинг
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <BitMarketIcon className={style.section__icon} />
+            Маркет битов
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <PromotionIcon className={style.section__icon} />
+            Продвижение
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <LightningIcon className={style.section__icon} />
+            Чарты
+          </Link>
+        </div>
+
+        <div className={style.section}>
+          <MyText className={style.section__name}>Инструменты</MyText>
+          <Link className={style.section__item} href={"#"}>
+            <LinksIcon className={style.section__icon} />
+            Смарт-ссылки
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <StarsIcon className={style.section__icon} />
+            Генератор
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <SuccessIcon className={style.section__icon} />
+            Верификация
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <ChatIcon className={style.section__icon} />
+            Поддержка
+          </Link>
+        </div>
+
+        <div className={style.section}>
+          <MyText className={style.section__name}>Премиум</MyText>
+          <Link className={style.section__item} href={"/tarif"}>
+            <LightningIcon className={style.section__icon} />
+            Тарифы
+          </Link>
+          <Link className={style.section__item} href={"#"}>
+            <LikeIcon className={style.section__icon} />
+            Мои подписки
+          </Link>
         </div>
       </div>
-      <SidebarFooter />
     </aside>
   );
 };
