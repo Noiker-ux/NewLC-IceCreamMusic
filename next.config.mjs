@@ -37,11 +37,11 @@ const nextConfig = {
   },
   redirects() {
     return [
-      {
-        source: "/",
-        destination: "/account",
-        permanent: false,
-      },
+      // {
+      //   source: "/",
+      //   destination: "/account",
+      //   permanent: false,
+      // },
     ];
   },
 };

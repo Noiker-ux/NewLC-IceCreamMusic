@@ -1,16 +1,13 @@
 "use client";
-import { sendSignUpConfirmEmail } from "@/actions/email";
-import { db } from "@/db";
-import { users } from "@/db/schema";
 import LicenseeCard from "@/entities/LicenseeCard/LicenseeCard";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
-import style from "./page.module.css";
-import PassportIcon from "../../../../public/License/Passport.svg";
-import BlockIcon from "../../../../public/License/Block.svg";
-import GDPR from "../../../../public/License/GDPR.svg";
-import DPA from "../../../../public/License/DPA.svg";
-import classNames from "classnames";
 import VerificationForm from "@/widgets/VerificationForm/VerificationForm";
+import classNames from "classnames";
+import BlockIcon from "../../../../public/License/Block.svg";
+import DPA from "../../../../public/License/DPA.svg";
+import GDPR from "../../../../public/License/GDPR.svg";
+import PassportIcon from "../../../../public/License/Passport.svg";
+import style from "./page.module.css";
 
 export default function VerificationPage() {
   return (

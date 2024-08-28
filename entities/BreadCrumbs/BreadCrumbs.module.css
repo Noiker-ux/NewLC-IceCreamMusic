@@ -1,4 +1,4 @@
-.breadCrumbs {
+.breadCrumb {
   font-size: 14px;
   color: var(--medium-text-color);
 }
@@ -7,4 +7,8 @@
 }
 .wrapper {
   margin-bottom: 30px;
+}
+.breadCrumbs {
+  display: flex;
+  gap: 10px;
 }

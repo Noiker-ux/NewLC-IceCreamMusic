@@ -2,7 +2,7 @@ import style from "./TarifTable.module.css";
 import ITarifTable from "./TarifTable.props";
 import SuccessIcon from "../../public/InfoIcon/Success.svg";
 
-const TarifTable = ({ data }: ITarifTable[]) => {
+const TarifTable = ({ data }: { data: ITarifTable[] }) => {
   return (
     <table className={style.table}>
       <tr>

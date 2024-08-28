@@ -27,11 +27,11 @@ const Sidebar = () => {
       <div className={style.menu}>
         <div className={style.section}>
           <MyText className={style.section__name}>ОСНОВНОЕ</MyText>
-          <Link className={style.section__item} href={"#"}>
+          <Link className={style.section__item} href="/dashboard">
             <ControlPanelIcon className={style.section__icon} />
             Панель управления
           </Link>
-          <Link className={style.section__item} href={"#"}>
+          <Link className={style.section__item} href="">
             <ControlPanelIcon className={style.section__icon} />
             Мой каталог
           </Link>
@@ -59,7 +59,7 @@ const Sidebar = () => {
             <PromotionIcon className={style.section__icon} />
             Продвижение
           </Link>
-          <Link className={style.section__item} href={"/charts"}>
+          <Link className={style.section__item} href={"/marketing/charts"}>
             <LightningIcon className={style.section__icon} />
             Чарты
           </Link>
@@ -75,7 +75,7 @@ const Sidebar = () => {
             <StarsIcon className={style.section__icon} />
             Генератор
           </Link>
-          <Link className={style.section__item} href={"/licensee"}>
+          <Link className={style.section__item} href={"/instruments/license"}>
             <SuccessIcon className={style.section__icon} />
             Верификация
           </Link>
@@ -87,11 +87,11 @@ const Sidebar = () => {
 
         <div className={style.section}>
           <MyText className={style.section__name}>Премиум</MyText>
-          <Link className={style.section__item} href={"/tarif"}>
+          <Link className={style.section__item} href={"/premium/plans"}>
             <LightningIcon className={style.section__icon} />
             Тарифы
           </Link>
-          <Link className={style.section__item} href={"#"}>
+          <Link className={style.section__item} href={"/premium/current"}>
             <LikeIcon className={style.section__icon} />
             Мои подписки
           </Link>

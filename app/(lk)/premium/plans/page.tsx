@@ -1,20 +1,17 @@
 "use client";
-import { sendSignUpConfirmEmail } from "@/actions/email";
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
-import MineIcon from "../../../../public/assets/Mine.svg";
-import style from "./page.module.css";
-import classNames from "classnames";
-import MyTitle from "@/shared/MyTitle/MyTitle";
-import MyText from "@/shared/MyText/MyText";
 import MusicServices from "@/entities/MusicServices/MusicServices";
 import TarifCard from "@/entities/TarifCard/TarifCard";
-import StandartIcon from "../../../../entities/TarifCard/TarifsIcons/Standart.svg";
+import TarifTable from "@/entities/TarifTable/TarifTable";
+import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
+import MyText from "@/shared/MyText/MyText";
+import MyTitle from "@/shared/MyTitle/MyTitle";
+import classNames from "classnames";
 import EnterprizeIcon from "../../../../entities/TarifCard/TarifsIcons/Enterprize.svg";
 import PROIcon from "../../../../entities/TarifCard/TarifsIcons/PRO.svg";
-import TarifTable from "@/entities/TarifTable/TarifTable";
+import StandartIcon from "../../../../entities/TarifCard/TarifsIcons/Standart.svg";
 import { ArrayTarifTable } from "../../../../entities/TarifTable/TarifTable.props";
+import style from "./page.module.css";
+import ITarifTable from "../../../../entities/TarifTable/TarifTable.props";
 
 export default function TarifPage() {
   return (
@@ -151,7 +148,7 @@ export default function TarifPage() {
           ]}
         />
       </div>
-      <TarifTable data={ArrayTarifTable} />
+      <TarifTable data={ArrayTarifTable as ITarifTable[]} />
     </PageTransitionProvider>
   );
 }

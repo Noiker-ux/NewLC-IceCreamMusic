@@ -1,6 +1,5 @@
 import { TSelectUserSchema } from "@/schema/user.schema";
 import { SessionOptions } from "iron-session";
-import "server-only";
 
 export const routeTypes = ["guest", "public"] as const;
 
@@ -11,7 +10,7 @@ export const routes: Record<RouteType, string[]> = {
   public: ["/signout"],
 };
 
-export const defaultAuthRedirect = "/account";
+export const defaultAuthRedirect = "/dashboard";
 
 export type TSessionData = {
   user?: TSelectUserSchema;
