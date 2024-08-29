@@ -55,7 +55,7 @@ const Sidebar = () => {
             <BitMarketIcon className={style.section__icon} />
             Маркет битов
           </Link>
-          <Link className={style.section__item} href={"#"}>
+          <Link className={style.section__item} href={"/marketing/promotion"}>
             <PromotionIcon className={style.section__icon} />
             Продвижение
           </Link>

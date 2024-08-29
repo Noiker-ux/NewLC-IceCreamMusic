@@ -75,6 +75,7 @@
 .icon {
   margin-top: 25px;
   margin-bottom: 25px;
+  width: 20px;
   margin-left: 10px;
   transform: scale(3);
   stroke: var(--medium-text-color);

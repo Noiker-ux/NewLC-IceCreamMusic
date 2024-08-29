@@ -16,6 +16,7 @@ const BreadCrumbRoutes = {
   license: "Верификация",
   marketing: "Маркетинг",
   instruments: "Инструменты",
+  promotion: "Продвижение",
 };
 
 export function BreadCrumbs({ separator = "/", home }: TBreadCrumbs) {

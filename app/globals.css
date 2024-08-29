@@ -9,7 +9,10 @@
 :root {
   --gap: 0.5em;
   --index: calc(1vw+1vh);
-
+  --gradient-to-right: linear-gradient(to right, #0680ba, #d34b7b, #dc4454)
+    border-box;
+  --gradient-to-top: linear-gradient(to top, #0680ba, #d34b7b, #dc4454)
+    border-box;
   /* Оранжевый */
   --dark-orange: rgb(234 88 12);
   --light-orange: rgb(251 146 60 / 20%);

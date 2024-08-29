@@ -7,7 +7,7 @@ import Image from "next/image";
 const Header = () => {
   return (
     <header className={style.header}>
-      <div className={style.version}>BETA v1.0.7</div>
+      <div className={style.version}>BETA v1.1.2</div>
       <div className={style.header__info}>
         <button className={style.header__button}>
           <div className={style.header__wrapper__icon}>
