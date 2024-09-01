@@ -12,16 +12,16 @@ const nextConfig = {
   reactStrictMode: true,
   cleanDistDir: true,
   output: "standalone",
-  experimental: {
-    turbo: {
-      rules: {
-        "*.svg": {
-          loaders: ["@svgr/webpack"],
-          as: "*.js",
-        },
-      },
-    },
-  },
+  // experimental: {
+  //   turbo: {
+  //     rules: {
+  //       "*.svg": {
+  //         loaders: ["@svgr/webpack"],
+  //         as: "*.js",
+  //       },
+  //     },
+  //   },
+  // },
   webpack: (config, { webpack }) => {
     config.plugins.push(
       new webpack.IgnorePlugin({
@@ -37,11 +37,11 @@ const nextConfig = {
   },
   redirects() {
     return [
-      // {
-      //   source: "/",
-      //   destination: "/account",
-      //   permanent: false,
-      // },
+      {
+        source: "/",
+        destination: "/dashboard",
+        permanent: false,
+      },
     ];
   },
 };

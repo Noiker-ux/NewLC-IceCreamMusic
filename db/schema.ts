@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { pgSchema, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
@@ -12,6 +13,11 @@ export const users = schema.table("user", {
   verificationToken: text("verificationToken"),
   resetPasswordToken: text("resetPasswordToken"),
 });
+
+export const usersRelations = relations(users, ({ many }) => ({
+  release: many(release),
+  verifications: many(verification),
+}));
 
 export const news = schema.table("news", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -34,7 +40,15 @@ export const release = schema.table("release", {
   date: timestamp("date").notNull(),
   upc: text("upc").notNull(),
   track: text("track").notNull(),
+  authorId: uuid("userId").notNull(),
 });
+
+export const releaseRelations = relations(release, ({ one }) => ({
+  author: one(users, {
+    fields: [release.authorId],
+    references: [users.id],
+  }),
+}));
 
 export const genre = schema.table("genre", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -50,3 +64,29 @@ export const releaseType = schema.table("releaseType", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
 });
+
+export const verification = schema.table("verification", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("userId").notNull(),
+  firstName: text("firstName").notNull(),
+  middleName: text("middleName").notNull(),
+  lastName: text("lastName").notNull(),
+  birthDate: timestamp("birthDate").notNull(),
+  birthPlace: text("birthPlace").notNull(),
+  tel: text("tel").notNull(),
+  passSeries: text("passSeries").notNull(),
+  passNumber: text("passNum").notNull(),
+  getDate: timestamp("getDate").notNull(),
+  givenBy: text("givenBy").notNull(),
+  subunitCode: text("subunitCode").notNull(),
+  registrationAddress: text("registrationAddress").notNull(),
+  accountNumber: text("accountNumber").notNull(),
+  bankName: text("bankName").notNull(),
+});
+
+export const verificationRelations = relations(verification, ({ one }) => ({
+  user: one(users, {
+    fields: [verification.userId],
+    references: [users.id],
+  }),
+}));
