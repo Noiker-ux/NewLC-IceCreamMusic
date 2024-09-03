@@ -1,14 +1,24 @@
 "use client";
-import classNames from "classnames";
-import style from "./VerificationForm.module.css";
-import MyTitle from "@/shared/MyTitle/MyTitle";
-import MyText from "@/shared/MyText/MyText";
-import MyInput from "@/shared/MyInput/MyInput";
+
 import MyButton from "@/shared/MyButton/MyButton";
+import MyInput from "@/shared/MyInput/MyInput";
+import MyText from "@/shared/MyText/MyText";
+import MyTitle from "@/shared/MyTitle/MyTitle";
+import { useForm } from "react-hook-form";
+import style from "./VerificationForm.module.css";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TVerificationSchema, verificationSchema } from "@/schema/verification";
+import { verifyData } from "@/actions/verification";
 
 const VerificationForm = () => {
+  const { handleSubmit, register } = useForm<TVerificationSchema>({
+    resolver: zodResolver(verificationSchema),
+    defaultValues: {},
+    progressive: true,
+  });
+
   return (
-    <form className={style.formWrapper}>
+    <form className={style.formWrapper} onSubmit={handleSubmit(console.log)}>
       <div className={style.section}>
         <MyTitle Tag={"h4"} className={style.section__title}>
           Основная информация
@@ -18,6 +28,7 @@ const VerificationForm = () => {
         </MyText>
         <div className={style.section__inputs}>
           <MyInput
+            {...register("lastName")}
             className={style.inp}
             inpLk={true}
             label={"Фамилия"}
@@ -25,6 +36,7 @@ const VerificationForm = () => {
             placeholder="Иванов"
           />
           <MyInput
+            {...register("firstName")}
             className={style.inp}
             inpLk={true}
             label={"Имя"}
@@ -32,6 +44,7 @@ const VerificationForm = () => {
             placeholder="Иван"
           />
           <MyInput
+            {...register("middleName")}
             className={style.inp}
             inpLk={true}
             label={"Отчество"}
@@ -39,12 +52,14 @@ const VerificationForm = () => {
             placeholder="Иванович"
           />
           <MyInput
+            {...register("birthDate")}
             className={style.inp}
             inpLk={true}
             label={"Дата рождения"}
             type={"date"}
           />
           <MyInput
+            {...register("birthPlace")}
             className={style.inp}
             inpLk={true}
             label={"Место рождения"}
@@ -52,6 +67,7 @@ const VerificationForm = () => {
             placeholder="г.Москва"
           />
           <MyInput
+            {...register("tel")}
             className={style.inp}
             inpLk={true}
             label={"Номер телефона"}
@@ -72,6 +88,7 @@ const VerificationForm = () => {
         </MyText>
         <div className={style.section__inputs}>
           <MyInput
+            {...register("passSeries")}
             className={style.inp}
             inpLk={true}
             label={"Серия паспорта"}
@@ -79,6 +96,7 @@ const VerificationForm = () => {
             placeholder="4 цифры"
           />
           <MyInput
+            {...register("passNumber")}
             className={style.inp}
             inpLk={true}
             label={"Номер паспорта"}
@@ -86,12 +104,14 @@ const VerificationForm = () => {
             placeholder="6 цифр"
           />
           <MyInput
+            {...register("getDate")}
             className={style.inp}
             inpLk={true}
             label={"Дата получения"}
             type={"date"}
           />
           <MyInput
+            {...register("givenBy")}
             className={style.inp}
             inpLk={true}
             label={"Кем выдан"}
@@ -99,6 +119,7 @@ const VerificationForm = () => {
             placeholder="Отделом МВД по Москве МО"
           />
           <MyInput
+            {...register("subunitCode")}
             className={style.inp}
             inpLk={true}
             label={"Код подразделения"}
@@ -106,6 +127,7 @@ const VerificationForm = () => {
             placeholder="XXXXXX"
           />
           <MyInput
+            {...register("registrationAddress")}
             className={style.inp}
             inpLk={true}
             label={"Адрес регистрации"}
@@ -125,6 +147,7 @@ const VerificationForm = () => {
         </MyText>
         <div className={style.section__inputs_small}>
           <MyInput
+            {...register("accountNumber")}
             className={style.inp}
             inpLk={true}
             label={"Номер счета"}
@@ -132,6 +155,7 @@ const VerificationForm = () => {
             placeholder="20 цифр"
           />
           <MyInput
+            {...register("bankName")}
             className={style.inp}
             inpLk={true}
             label={"Наименование банка"}
@@ -140,7 +164,7 @@ const VerificationForm = () => {
           />
         </div>
       </div>
-      <MyButton text={"Подписать договор"} view={"secondary"}></MyButton>
+      <MyButton text={"Подписать договор"} view={"secondary"} type="submit" />
     </form>
   );
 };

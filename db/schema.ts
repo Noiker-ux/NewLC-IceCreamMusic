@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgSchema, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, pgSchema, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
 
@@ -12,11 +12,12 @@ export const users = schema.table("user", {
   avatar: text("avatar"),
   verificationToken: text("verificationToken"),
   resetPasswordToken: text("resetPasswordToken"),
+  isVerifiedAuthor: boolean("isVerifiedAuthor").notNull(),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
-  release: many(release),
-  verifications: many(verification),
+  releases: many(release, { relationName: "releases" }),
+  verifications: many(verification, { relationName: "verifications" }),
 }));
 
 export const news = schema.table("news", {
@@ -35,12 +36,14 @@ export const faq = schema.table("faq", {
 
 export const release = schema.table("release", {
   id: uuid("id").defaultRandom().primaryKey(),
+  authorId: uuid("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   preview: text("preview").notNull(),
   title: text("title").notNull(),
   date: timestamp("date").notNull(),
   upc: text("upc").notNull(),
   track: text("track").notNull(),
-  authorId: uuid("userId").notNull(),
 });
 
 export const releaseRelations = relations(release, ({ one }) => ({
@@ -67,7 +70,9 @@ export const releaseType = schema.table("releaseType", {
 
 export const verification = schema.table("verification", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("userId").notNull(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   firstName: text("firstName").notNull(),
   middleName: text("middleName").notNull(),
   lastName: text("lastName").notNull(),
