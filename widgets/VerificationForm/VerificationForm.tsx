@@ -18,7 +18,17 @@ const VerificationForm = () => {
   });
 
   return (
-    <form className={style.formWrapper} onSubmit={handleSubmit(console.log)}>
+    <form
+      className={style.formWrapper}
+      onSubmit={handleSubmit(
+        (data) => {
+          console.log(data);
+        },
+        (errors) => {
+          console.log(errors);
+        }
+      )}
+    >
       <div className={style.section}>
         <MyTitle Tag={"h4"} className={style.section__title}>
           Основная информация
@@ -52,7 +62,7 @@ const VerificationForm = () => {
             placeholder="Иванович"
           />
           <MyInput
-            {...register("birthDate")}
+            {...register("birthDate", { valueAsDate: true })}
             className={style.inp}
             inpLk={true}
             label={"Дата рождения"}
@@ -104,7 +114,7 @@ const VerificationForm = () => {
             placeholder="6 цифр"
           />
           <MyInput
-            {...register("getDate")}
+            {...register("getDate", { valueAsDate: true })}
             className={style.inp}
             inpLk={true}
             label={"Дата получения"}
