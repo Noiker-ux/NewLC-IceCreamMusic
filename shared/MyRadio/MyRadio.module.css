@@ -1,0 +1,29 @@
+.input[type="radio"] {
+  display: none;
+}
+.custom_checkbox {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+}
+.input:checked + .custom_checkbox {
+  background-color: var(--medium-text-color);
+}
+.label {
+  caret-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.row {
+  display: flex;
+  gap: 5px;
+}
+.iIcon {
+  width: 15px;
+  height: 15px;
+}

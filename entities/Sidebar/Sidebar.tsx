@@ -31,7 +31,7 @@ const Sidebar = () => {
             <ControlPanelIcon className={style.section__icon} />
             Панель управления
           </Link>
-          <Link className={style.section__item} href="">
+          <Link className={style.section__item} href="/dashboard/catalog">
             <ControlPanelIcon className={style.section__icon} />
             Мой каталог
           </Link>

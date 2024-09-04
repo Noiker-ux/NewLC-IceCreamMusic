@@ -15,8 +15,9 @@
 .label {
   position: absolute;
   top: 0;
+
   left: 0;
-  pointer-events: none;
+  cursor: pointer;
   color: var(--white-color);
   display: flex;
   align-items: center;
@@ -66,4 +67,14 @@
 .inpLk[type="date"] {
   color: var(--medium-text-color);
   text-transform: uppercase;
+}
+.iIcon {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }

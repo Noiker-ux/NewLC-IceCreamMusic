@@ -1,6 +1,15 @@
 .header {
   width: 100%;
   padding: 25px 0px;
+
+  background-color: var(--background-primary);
+  z-index: 1000;
+  position: fixed;
+  margin-left: 260px;
+}
+
+.headerWrapper {
+  width: calc(100% - 260px - 160px);
   display: flex;
   align-items: center;
   justify-content: space-between;

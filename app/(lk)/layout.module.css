@@ -1,10 +1,9 @@
 .main {
   padding-left: 80px;
+  background-color: var(--dark-bg-color);
   padding-right: 80px;
 }
-.bg {
-  background-color: var(--background-primary);
-}
+
 .row {
   display: flex;
   width: 100%;
@@ -15,4 +14,8 @@
   padding-left: 50px;
   width: 100%;
   flex-direction: column;
+}
+.content {
+  margin-top: 100px;
+  margin-left: 260px;
 }

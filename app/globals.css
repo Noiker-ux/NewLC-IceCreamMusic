@@ -76,20 +76,6 @@ main {
   display: flex;
   min-height: 100vh;
 }
-
-/* body {
+body {
   background-color: var(--background-primary);
-   background-image: url("/assets/BG.png"); 
-  overflow-x: hidden;
-  -webkit-backdrop-filter: blur(55px);
-  backdrop-filter: blur(55px);
-  object-fit: contain;
-} */
-
-/* .content {
-  display: block;
-  width: 100%;
-  margin-left: auto;
-  padding: 30px 50px;
-  color: white;
-} */
+}

@@ -1,0 +1,37 @@
+.select > * {
+  background-color: var(--wrapper-primary) !important;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid var(--border-color) !important;
+}
+
+.select > * > * > * {
+  color: var(--light-text-color) !important;
+}
+.select > *,
+.select {
+  background-color: transparent !important;
+}
+.select > * > * {
+  padding: 0 !important;
+}
+.select > * > * {
+  cursor: pointer;
+}
+.label {
+  margin-bottom: 3px;
+  font-size: 12px;
+  color: var(--medium-text-color);
+}
+.wrap {
+  margin-bottom: 20px;
+}
+
+.labelWrapper {
+  display: flex;
+  gap: 5px;
+}
+.iIcon {
+  width: 15px;
+  height: 15px;
+}

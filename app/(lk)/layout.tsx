@@ -30,7 +30,7 @@ export default function CabinetLayout({ children }: PropsWithChildren) {
             <Sidebar />
             <div className={style.col}>
               <Header />
-              <div className="content">
+              <div className={style.content}>
                 <BreadCrumbs home="Панель управления" />
                 {children}
               </div>
