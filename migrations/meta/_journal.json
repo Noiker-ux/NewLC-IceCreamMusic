@@ -43,6 +43,13 @@
       "when": 1725125000379,
       "tag": "0005_lying_wither",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1725478539746,
+      "tag": "0006_lumpy_shinobi_shaw",
+      "breakpoints": true
     }
   ]
 }

@@ -1,10 +1,15 @@
 "use server";
 
-import { TVerificationSchema } from "@/schema/verification";
+import {
+  TVerificationFormSchema,
+  verificationInsertSchema,
+} from "@/schema/verification";
 
-export async function verifyData(data: TVerificationSchema) {
+export async function verifyData(data: TVerificationFormSchema) {
+  const res = verificationInsertSchema.safeParse(data);
+
   return {
-    success: Boolean(Math.round(Math.random())),
+    success: res.success,
   };
 }
 

@@ -12,7 +12,7 @@ export const users = schema.table("user", {
   avatar: text("avatar"),
   verificationToken: text("verificationToken"),
   resetPasswordToken: text("resetPasswordToken"),
-  isVerifiedAuthor: boolean("isVerifiedAuthor").notNull(),
+  isVerifiedAuthor: boolean("isVerifiedAuthor").default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

@@ -21,7 +21,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { sendResetPasswordEmail } from "./email";
 import { getPathname } from "./url";
-import { hashPassword } from "./users";
+import { hashPassword } from "@/utils/hashPassword";
 
 export async function credentialsSignIn(credentials: TSignInClientSchema) {
   const validationResult = signInClientSchema.safeParse(credentials);

@@ -1,11 +1,8 @@
 "use client";
-import { sendSignUpConfirmEmail } from "@/actions/email";
-import { db } from "@/db";
-import { users } from "@/db/schema";
+
+import PromotionCard from "@/entities/PromotionCard/PromotionCard";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 import style from "./page.module.css";
-import classNames from "classnames";
-import PromotionCard from "@/entities/PromotionCard/PromotionCard";
 
 export default function PromotionPage() {
   return (

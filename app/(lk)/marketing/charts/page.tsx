@@ -1,11 +1,7 @@
 "use client";
-import { sendSignUpConfirmEmail } from "@/actions/email";
-import { db } from "@/db";
-import { users } from "@/db/schema";
+import ChartItem from "@/entities/ChartItem/ChartItem";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 import style from "./page.module.css";
-import classNames from "classnames";
-import ChartItem from "@/entities/ChartItem/ChartItem";
 
 export default function TarifPage() {
   return (

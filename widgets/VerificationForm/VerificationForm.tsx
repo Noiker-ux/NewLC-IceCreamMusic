@@ -1,5 +1,7 @@
 "use client";
 
+// TODO Добавить пространство для отображения ошибок ввода данных
+
 import MyButton from "@/shared/MyButton/MyButton";
 import MyInput from "@/shared/MyInput/MyInput";
 import MyText from "@/shared/MyText/MyText";
@@ -7,12 +9,15 @@ import MyTitle from "@/shared/MyTitle/MyTitle";
 import { useForm } from "react-hook-form";
 import style from "./VerificationForm.module.css";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TVerificationSchema, verificationSchema } from "@/schema/verification";
+import {
+  TVerificationFormSchema,
+  verificationFormSchema,
+} from "@/schema/verification";
 import { verifyData } from "@/actions/verification";
 
 const VerificationForm = () => {
-  const { handleSubmit, register } = useForm<TVerificationSchema>({
-    resolver: zodResolver(verificationSchema),
+  const { handleSubmit, register } = useForm<TVerificationFormSchema>({
+    resolver: zodResolver(verificationFormSchema),
     defaultValues: {},
     progressive: true,
   });
@@ -62,7 +67,11 @@ const VerificationForm = () => {
             placeholder="Иванович"
           />
           <MyInput
-            {...register("birthDate", { valueAsDate: true })}
+            {...register("birthDate", {
+              setValueAs(value) {
+                return new Date(value);
+              },
+            })}
             className={style.inp}
             inpLk={true}
             label={"Дата рождения"}
@@ -114,7 +123,11 @@ const VerificationForm = () => {
             placeholder="6 цифр"
           />
           <MyInput
-            {...register("getDate", { valueAsDate: true })}
+            {...register("getDate", {
+              setValueAs(value) {
+                return new Date(value);
+              },
+            })}
             className={style.inp}
             inpLk={true}
             label={"Дата получения"}

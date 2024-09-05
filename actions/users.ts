@@ -3,7 +3,7 @@
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { signUpSchema, TSignUpClientSchema } from "@/schema/signup.schema";
-import { genSalt, hash } from "bcrypt-ts";
+import { hashPassword } from "@/utils/hashPassword";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { sendSignUpConfirmEmail } from "./email";
@@ -37,14 +37,6 @@ export async function registerUser(userData: TSignUpClientSchema) {
   await sendSignUpConfirmEmail(email, newUser.id);
 
   return redirect("/signup/complete");
-}
-
-export async function hashPassword(password: string) {
-  const passwordSalt = await genSalt(Number(process.env.SALT_ROUNDS!));
-
-  const hashedPassword = await hash(password, passwordSalt);
-
-  return hashedPassword;
 }
 
 // export async function updateUser(id: string, data: Partial<TSelectUserSchema>) {
