@@ -2,9 +2,8 @@
 
 import MyTitle from "@/shared/MyTitle/MyTitle";
 import { usePathname } from "next/navigation";
+import React from "react";
 import style from "./BreadCrumbs.module.css";
-import Link from "next/link";
-import { defaultAuthRedirect } from "@/config/auth";
 
 export type TBreadCrumbs = {
   separator?: string;
@@ -30,7 +29,7 @@ export function BreadCrumbs({ separator = "/", home }: TBreadCrumbs) {
     <div className={style.wrapper}>
       <div className={style.breadCrumbs}>
         {roots.map((root, index) => (
-          <>
+          <React.Fragment key={root}>
             <span className={style.breadCrumb}>
               {Object.keys(BreadCrumbRoutes).includes(root)
                 ? BreadCrumbRoutes[root as keyof typeof BreadCrumbRoutes]
@@ -39,7 +38,7 @@ export function BreadCrumbs({ separator = "/", home }: TBreadCrumbs) {
             {index !== roots.length - 1 && (
               <span className={style.breadCrumb}>{separator}</span>
             )}
-          </>
+          </React.Fragment>
         ))}
       </div>
       <MyTitle Tag={"h1"} className={style.title}>

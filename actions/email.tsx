@@ -1,4 +1,4 @@
-"use server";
+// "use server";
 
 import { db } from "@/db";
 import { users } from "@/db/schema";
@@ -55,7 +55,7 @@ export async function sendResetPasswordEmail(email: string) {
   if (!user) throw new Error("Нет учетной записи с данным адресом эл. почты.");
 
   const magicLinkToken = await sealData(
-    { id: user.id, token: resetPasswordToken },
+    { token: resetPasswordToken },
     { password: process.env.MAGIC_LINK_SECRET!, ttl: 60 * 10 }
   );
 

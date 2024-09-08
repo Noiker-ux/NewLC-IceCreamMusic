@@ -23,17 +23,7 @@ const VerificationForm = () => {
   });
 
   return (
-    <form
-      className={style.formWrapper}
-      onSubmit={handleSubmit(
-        (data) => {
-          console.log(data);
-        },
-        (errors) => {
-          console.log(errors);
-        }
-      )}
-    >
+    <form className={style.formWrapper} onSubmit={handleSubmit(verifyData)}>
       <div className={style.section}>
         <MyTitle Tag={"h4"} className={style.section__title}>
           Основная информация

@@ -14,6 +14,7 @@ export default async function RootLayout({
   children,
 }: Readonly<PropsWithChildren>) {
   await authRedirect();
+
   const AppThemeProvider = dynamic(() => import("../providers/ThemeContext"), {
     ssr: false,
   });

@@ -115,13 +115,13 @@ export async function recoverPassword(email: string) {
   return redirect("/recover/complete");
 }
 
-export async function resetPassword(newPassword: string, id: string) {
+async function resetPassword(newPassword: string, token: string) {
   const hashedPassword = await hashPassword(newPassword);
 
   await db
     .update(users)
     .set({ password: hashedPassword, resetPasswordToken: null })
-    .where(eq(users.id, id));
+    .where(eq(users.resetPasswordToken, token));
 
   return redirect("/reset/complete");
 }

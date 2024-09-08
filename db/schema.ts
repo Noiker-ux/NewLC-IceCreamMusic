@@ -13,6 +13,8 @@ export const users = schema.table("user", {
   verificationToken: text("verificationToken"),
   resetPasswordToken: text("resetPasswordToken"),
   isVerifiedAuthor: boolean("isVerifiedAuthor").default(false),
+  isAdmin: boolean("isAdmin").default(false),
+  isSuperUser: boolean("isSuperUser").default(false),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -53,11 +55,6 @@ export const releaseRelations = relations(release, ({ one }) => ({
   }),
 }));
 
-export const genre = schema.table("genre", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-});
-
 export const version = schema.table("version", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
@@ -95,3 +92,13 @@ export const verificationRelations = relations(verification, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export const subscribes = schema.table("subscribes", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  subscribtionLevel: text("subscribeLevel").notNull(),
+  createdAt: timestamp("createdAt").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+});

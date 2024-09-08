@@ -11,7 +11,7 @@ export default async function ResetPasswordPage({
 }: {
   params: { token: string };
 }) {
-  const tokenData = await unsealData<Record<"id" | "token", string>>(token, {
+  const tokenData = await unsealData<Record<"token", string>>(token, {
     password: process.env.MAGIC_LINK_SECRET!,
     ttl: 60 * 10,
   }).catch(() => null);
@@ -21,10 +21,14 @@ export default async function ResetPasswordPage({
   }
 
   const user = (
-    await db.select().from(users).where(eq(users.id, tokenData.id)).limit(1)
+    await db
+      .select()
+      .from(users)
+      .where(eq(users.resetPasswordToken, tokenData.token))
+      .limit(1)
   ).pop();
 
-  if (!user || user.resetPasswordToken !== tokenData.token) {
+  if (!user) {
     redirect(wrongUrl);
   }
 
