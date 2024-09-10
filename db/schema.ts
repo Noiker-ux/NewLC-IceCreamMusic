@@ -55,16 +55,6 @@ export const releaseRelations = relations(release, ({ one }) => ({
   }),
 }));
 
-export const version = schema.table("version", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-});
-
-export const releaseType = schema.table("releaseType", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  name: text("name").notNull(),
-});
-
 export const verification = schema.table("verification", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: uuid("userId")
