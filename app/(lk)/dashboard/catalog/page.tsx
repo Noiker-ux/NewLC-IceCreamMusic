@@ -1,11 +1,11 @@
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
-import SendRelize from "@/widgets/SendRelize/SendRelize";
+import SendRelease from "@/widgets/SendRelize/SendRelize";
 
 export default function CatalogPage() {
   return (
     <PageTransitionProvider>
       <div>
-        <SendRelize />
+        <SendRelease />
       </div>
     </PageTransitionProvider>
   );

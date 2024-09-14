@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm";
-import { boolean, pgSchema, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  jsonb,
+  pgSchema,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
 
@@ -42,10 +49,31 @@ export const release = schema.table("release", {
   authorId: uuid("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+
   preview: text("preview").notNull(),
+  language: text("language").notNull(),
   title: text("title").notNull(),
-  date: timestamp("date").notNull(),
-  upc: text("upc").notNull(),
+  subtitle: text("subtitle").notNull(),
+  type: text("type").notNull(),
+
+  performer: text("performer").notNull(),
+  feat: text("feat"),
+  remixer: text("remixer"),
+
+  genre: text("genre").notNull(),
+
+  upc: text("upc"),
+
+  labelName: text("labelName").notNull(),
+
+  releaseDate: timestamp("date").notNull(),
+  startDate: timestamp("startDate").notNull(),
+  preorderDate: timestamp("preorderDate").notNull(),
+
+  platforms: jsonb("platforms"),
+
+  area: jsonb("area"),
+
   track: text("track").notNull(),
 });
 
