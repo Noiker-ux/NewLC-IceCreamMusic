@@ -50,6 +50,13 @@
       "when": 1725478539746,
       "tag": "0006_lumpy_shinobi_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1726172761932,
+      "tag": "0007_majestic_mikhail_rasputin",
+      "breakpoints": true
     }
   ]
 }

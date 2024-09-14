@@ -20,6 +20,7 @@ export const users = schema.table("user", {
 export const usersRelations = relations(users, ({ many }) => ({
   releases: many(release, { relationName: "releases" }),
   verifications: many(verification, { relationName: "verifications" }),
+  subscriptions: many(subscriptions, { relationName: "subscriptions" }),
 }));
 
 export const news = schema.table("news", {
@@ -83,7 +84,7 @@ export const verificationRelations = relations(verification, ({ one }) => ({
   }),
 }));
 
-export const subscribes = schema.table("subscribes", {
+export const subscriptions = schema.table("subscriptions", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: uuid("userId")
     .notNull()
@@ -92,3 +93,10 @@ export const subscribes = schema.table("subscribes", {
   createdAt: timestamp("createdAt").notNull(),
   expiresAt: timestamp("expiresAt").notNull(),
 });
+
+export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+  user: one(users, {
+    fields: [subscriptions.id],
+    references: [users.id],
+  }),
+}));
