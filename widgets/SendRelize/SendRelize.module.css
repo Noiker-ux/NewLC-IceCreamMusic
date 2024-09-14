@@ -1,0 +1,68 @@
+.container {
+  width: 100%;
+  max-width: 1300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.full {
+  width: 100%;
+}
+
+.w30 {
+  width: 50%;
+}
+
+.desc {
+  font-size: 12px;
+  color: var(--medium-text-color);
+}
+
+.inp {
+  width: 100% !important;
+}
+.row {
+  display: flex;
+  gap: 30px;
+}
+.topRelizes {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: var(--wrapper-color);
+  padding: 20px;
+  border-radius: 10px;
+}
+.wrap__title {
+  margin-bottom: 20px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.areaShop {
+  margin-top: -20px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+.areaShopCheckbox {
+  width: 20%;
+}
+.areaLandCheckbox {
+  width: 40%;
+}
+.col {
+  margin-top: -20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

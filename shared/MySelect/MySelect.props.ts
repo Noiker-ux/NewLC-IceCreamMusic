@@ -1,12 +1,12 @@
 import { DetailedHTMLProps, HTMLAttributes } from "react";
 
-export default interface IMyRadioProps
+export default interface IMySelectProps
   extends DetailedHTMLProps<
-    HTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
+    HTMLAttributes<HTMLSelectElement>,
+    HTMLSelectElement
   > {
+  options: { value: string; label: string }[];
   label: string;
-  name: string;
   tooltip?: {
     id: string;
     text: string;

@@ -8,10 +8,10 @@ import classNames from "classnames";
 const MyCheckbox = forwardRef<HTMLInputElement, IMyCheckboxProps>(
   function MyCheckbox({ label, className, ...props }, ref) {
     return (
-      <label className={style.label}>
+      <label className={classNames(style.label, className)}>
         <input
           type="checkbox"
-          className={classNames(style.input, className)}
+          className={classNames(style.input)}
           ref={ref}
           {...props}
         />

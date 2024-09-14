@@ -8,4 +8,8 @@ export default interface IMyInputProps
   label: string;
   inpLk?: boolean;
   type: "text" | "password" | "email" | "date";
+  tooltip?: {
+    id: string;
+    text: string;
+  };
 }
