@@ -1,0 +1,28 @@
+.wrapper {
+  background-color: var(--wrapper-color);
+  padding: 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: var(--hover-color);
+  }
+}
+
+.question {
+  color: var(--light-text-color);
+}
+
+.separator {
+  margin-top: 10px;
+  border: none;
+  color: var(--medium-text-color);
+  background-color: var(--medium-text-color);
+  height: 1px;
+}
+
+.answer {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--medium-text-color);
+}

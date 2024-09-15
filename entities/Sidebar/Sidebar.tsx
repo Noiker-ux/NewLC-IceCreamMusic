@@ -19,6 +19,7 @@ import SuccessIcon from "./SidebarIcons/Success.svg";
 import ChatIcon from "./SidebarIcons/Chat.svg";
 import LikeIcon from "./SidebarIcons/Like.svg";
 import ArrowIcon from "./SidebarIcons/arrow.svg";
+import QueryIcon from "./SidebarIcons/Query.svg";
 
 const Sidebar = () => {
   return (
@@ -46,6 +47,11 @@ const Sidebar = () => {
           <Link className={style.section__item} href={"#"}>
             <WalletIcon className={style.section__icon} />
             Кошелек
+          </Link>
+
+          <Link className={style.section__item} href="/dashboard/faq">
+            <QueryIcon className={style.section__icon} />
+            FAQ
           </Link>
         </div>
 

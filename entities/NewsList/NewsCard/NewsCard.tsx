@@ -3,7 +3,6 @@ import style from "./NewsCard.module.css";
 import classNames from "classnames";
 import MyText from "@/shared/MyText/MyText";
 import dateFormatter from "@/utils/dateFormatter";
-import MyTitle from "@/shared/MyTitle/MyTitle";
 
 const NewsCard = ({
   dateCreate,
