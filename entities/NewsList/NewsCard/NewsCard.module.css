@@ -1,0 +1,28 @@
+.wrapper {
+  background-color: var(--wrapper-color);
+  padding: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  width: calc(50% - 10px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--hover-color);
+  }
+}
+.dateCreate {
+  color: var(--medium-text-color);
+  font-size: 12px;
+}
+.title {
+  margin-top: 5px;
+  color: var(--light-text-color);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.anons {
+  margin-top: 5px;
+  font-size: 14px;
+  color: var(--light-text-color);
+}

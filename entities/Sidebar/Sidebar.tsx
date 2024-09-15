@@ -19,6 +19,7 @@ import SuccessIcon from "./SidebarIcons/Success.svg";
 import ChatIcon from "./SidebarIcons/Chat.svg";
 import LikeIcon from "./SidebarIcons/Like.svg";
 import ArrowIcon from "./SidebarIcons/arrow.svg";
+import QueryIcon from "./SidebarIcons/Query.svg";
 
 const Sidebar = () => {
   return (
@@ -27,13 +28,17 @@ const Sidebar = () => {
       <div className={style.menu}>
         <div className={style.section}>
           <MyText className={style.section__name}>ОСНОВНОЕ</MyText>
+          <Link className={style.section__item} href="/dashboard/news">
+            <ControlPanelIcon className={style.section__icon} />
+            Новости
+          </Link>
           <Link className={style.section__item} href="/dashboard">
             <ControlPanelIcon className={style.section__icon} />
-            Панель управления
+            Мои релизы
           </Link>
           <Link className={style.section__item} href="/dashboard/catalog">
             <ControlPanelIcon className={style.section__icon} />
-            Мой каталог
+            Новый релиз
           </Link>
           <Link className={style.section__item} href={"#"}>
             <AnalyticIcon className={style.section__icon} />
@@ -42,6 +47,11 @@ const Sidebar = () => {
           <Link className={style.section__item} href={"#"}>
             <WalletIcon className={style.section__icon} />
             Кошелек
+          </Link>
+
+          <Link className={style.section__item} href="/dashboard/faq">
+            <QueryIcon className={style.section__icon} />
+            FAQ
           </Link>
         </div>
 
