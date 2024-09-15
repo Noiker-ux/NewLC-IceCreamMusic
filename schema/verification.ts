@@ -5,6 +5,7 @@ import { z } from "zod";
 export const verificationInsertSchema = createInsertSchema(verification).omit({
   id: true,
   userId: true,
+  status: true,
 });
 
 export const verificationFormSchema = verificationInsertSchema.transform(

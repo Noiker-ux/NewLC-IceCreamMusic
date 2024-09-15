@@ -84,6 +84,12 @@ export const releaseRelations = relations(release, ({ one }) => ({
   }),
 }));
 
+export const verificationStatuses = schema.enum("verification_status", [
+  "moderating",
+  "approved",
+  "rejected",
+]);
+
 export const verification = schema.table("verification", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: uuid("userId")
@@ -103,6 +109,7 @@ export const verification = schema.table("verification", {
   registrationAddress: text("registrationAddress").notNull(),
   accountNumber: text("accountNumber").notNull(),
   bankName: text("bankName").notNull(),
+  status: verificationStatuses("status").default("moderating"),
 });
 
 export const verificationRelations = relations(verification, ({ one }) => ({
