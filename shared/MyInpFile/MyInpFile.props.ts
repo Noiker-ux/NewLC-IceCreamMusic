@@ -4,4 +4,6 @@ export default interface IMyInpFile
   extends DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
-  > {}
+  > {
+  onFileChange?: (files: FileList | null) => void;
+}

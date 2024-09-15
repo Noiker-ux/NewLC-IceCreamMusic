@@ -15,7 +15,7 @@ import MyText from "../MyText/MyText";
 import Image from "next/image";
 
 const MyInpFile = forwardRef<HTMLInputElement, IMyInpFile>(function Input(
-  { className, ...props },
+  { className, onFileChange, ...props },
   ref
 ) {
   const [previewFile, setPrviewFile] = useState<string | null>(null);
@@ -23,12 +23,14 @@ const MyInpFile = forwardRef<HTMLInputElement, IMyInpFile>(function Input(
 
   const handleLoadFile = (e: ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
+    onFileChange && onFileChange(e.target.files ? e.target.files : null);
     if (e.target.files && e.target.files[0])
       setPrviewFile(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleLeaveFile = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    onFileChange && onFileChange(null);
     setPrviewFile(null);
   };
 
@@ -66,8 +68,8 @@ const MyInpFile = forwardRef<HTMLInputElement, IMyInpFile>(function Input(
         </div>
         <input
           accept=".jpg, .png"
-          onChange={handleLoadFile}
           {...props}
+          onChange={handleLoadFile}
           ref={ref}
           className={style.input}
           id="preview"

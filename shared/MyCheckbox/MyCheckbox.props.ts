@@ -6,4 +6,5 @@ export default interface IMyCheckboxProps
     HTMLInputElement
   > {
   label: string;
+  checked?: boolean;
 }

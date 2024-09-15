@@ -22,17 +22,27 @@ import { allCountry } from "@/helpers/allCountry";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { releaseFormSchema, TReleaseFormSchema } from "@/schema/release";
+import { uploadRelease } from "@/actions/release";
+
+type Areas = {
+  negate: boolean;
+  data: string[];
+};
 
 const SendRelease = () => {
   const [showAreasShop, setShowAreasShop] = useState<boolean>(false);
   const [showAreasLands, setShowAreasLands] = useState<boolean>(false);
 
-  const { handleSubmit, getValues, setValue, register } =
+  const { handleSubmit, getValues, setValue, register, formState, watch } =
     useForm<TReleaseFormSchema>({
       resolver: zodResolver(releaseFormSchema),
       defaultValues: {},
       progressive: true,
     });
+
+  const areas = watch("area") as Areas;
+
+  const platforms = watch("platforms") as string[];
 
   return (
     <div className={style["container"]}>
@@ -47,7 +57,9 @@ const SendRelease = () => {
         <div className={style.row}>
           <div className={classNames(style.wrap, style.w30)}>
             <MyTitle Tag={"h3"}>Обложка</MyTitle>
-            <MyInpFile />
+            <MyInpFile
+              onFileChange={(files) => setValue("preview", files && files[0])}
+            />
             <MyText className={style.desc}>
               Минимальный размер изображения: 3000x3000px
               <br />
@@ -308,6 +320,7 @@ const SendRelease = () => {
               label={"На всех площадках"}
               onChange={() => {
                 setShowAreasShop(false);
+                setValue("platforms", ["all"]);
               }}
               name={"areaShop"}
             />
@@ -315,6 +328,7 @@ const SendRelease = () => {
               label={"Только на некоторых"}
               onChange={() => {
                 setShowAreasShop(true);
+                setValue("platforms", []);
               }}
               name={"areaShop"}
             />
@@ -338,8 +352,24 @@ const SendRelease = () => {
                   className={style.areaShopCheckbox}
                   key={a.value}
                   label={a.label}
+                  checked={platforms.includes(a.value)}
                   // TODO додумать фрмат выбора площадок
-                  onChange={() => {}}
+                  onChange={(e: any) => {
+                    if (!platforms) {
+                      setValue("platforms", [a.value]);
+                      return;
+                    }
+
+                    const platforms_set = new Set(platforms as string[]);
+
+                    if (e.target.checked) {
+                      platforms_set.add(a.value);
+                    } else {
+                      platforms_set.delete(a.value);
+                    }
+
+                    setValue("platforms", Array.from(platforms_set));
+                  }}
                 />
               ))}
             </div>
@@ -359,12 +389,15 @@ const SendRelease = () => {
               name={"areaLand"}
               onChange={() => {
                 setShowAreasLands(false);
+                setValue("area", { negate: false, data: ["all"] });
               }}
             />
             <MyRadio
               label={"Только в определенных странах"}
               onChange={() => {
                 setShowAreasLands(true);
+                const areas = getValues("area") as Areas;
+                setValue("area", { negate: false, data: areas.data ?? [] });
               }}
               name={"areaLand"}
             />
@@ -372,6 +405,8 @@ const SendRelease = () => {
               label={"Во всех кроме"}
               onChange={() => {
                 setShowAreasLands(true);
+                const areas = getValues("area") as Areas;
+                setValue("area", { negate: true, data: areas.data ?? [] });
               }}
               name={"areaLand"}
             />
@@ -380,6 +415,7 @@ const SendRelease = () => {
               name={"areaLand"}
               onChange={() => {
                 setShowAreasLands(false);
+                setValue("area", { negate: false, data: ["sng"] });
               }}
             />
           </div>
@@ -403,17 +439,53 @@ const SendRelease = () => {
                   key={a.value}
                   label={a.label}
                   // TODO додумать формат выбора стран
-                  onChange={() => {}}
+                  checked={areas.data && areas.data.includes(a.value)}
+                  onChange={(e: any) => {
+                    if (!areas.data) {
+                      setValue("area", {
+                        data: [a.value],
+                        negate: areas.negate,
+                      });
+                      return;
+                    }
+
+                    const areas_set = new Set(areas.data);
+
+                    if (e.target.checked) {
+                      areas_set.add(a.value);
+                    } else {
+                      areas_set.delete(a.value);
+                    }
+
+                    setValue("area", {
+                      negate: areas.negate,
+                      data: Array.from(areas_set),
+                    });
+                  }}
                 />
               ))}
             </div>
           </div>
         )}
         <div className={style.wrap}>
+          <input
+            type="file"
+            onChange={(e) => {
+              setValue("track", e.target.files && e.target.files[0]);
+            }}
+          />
+        </div>
+        <div className={style.wrap}>
           <MyButton text="Отправить релиз" view="secondary" type="submit" />
         </div>
       </form>
-
+      <button
+        onClick={() => {
+          console.log(getValues());
+        }}
+      >
+        get values
+      </button>
       {/* end */}
     </div>
   );
