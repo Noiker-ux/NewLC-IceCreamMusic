@@ -1,0 +1,50 @@
+.statistic {
+  width: 25%;
+  border-radius: 10px;
+  background-color: var(--wrapper-color);
+  padding: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 150px;
+}
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.meaning {
+  font-size: 40px;
+  color: var(--light-text-color);
+}
+
+.difference {
+  font-size: 16px;
+}
+.red {
+  color: #ff0059;
+}
+.green {
+  color: #00d03e;
+}
+.desc {
+  color: var(--medium-text-color);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.icon {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 3px;
+  border-radius: 3px;
+}
+.green_icon {
+  background-color: #abdbb9;
+}
+.red_icon {
+  background-color: #f08686;
+}
