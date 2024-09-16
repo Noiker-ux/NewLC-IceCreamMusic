@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."release" ADD COLUMN "type" "icecream"."release_type" NOT NULL;

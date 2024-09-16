@@ -11,7 +11,10 @@ import { Tooltip } from "react-tooltip";
 import IIcon from "../../public/InfoIcon/i.svg";
 
 const MySelect = forwardRef<HTMLSelectElement, IMySelectProps>(
-  function MySelect({ options, label, className, tooltip, ...props }, ref) {
+  function MySelect(
+    { options, label, className, tooltip, value, onValueChange, ...props },
+    ref
+  ) {
     return (
       <div className={style.wrap}>
         <div className={style.labelWrapper}>
@@ -66,6 +69,8 @@ const MySelect = forwardRef<HTMLSelectElement, IMySelectProps>(
           }}
           options={options}
           placeholder="Favourite artists"
+          onChange={onValueChange as any}
+          value={value}
         />
       </div>
     );

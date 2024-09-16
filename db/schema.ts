@@ -44,6 +44,12 @@ export const faq = schema.table("faq", {
   answer: text("answer").notNull(),
 });
 
+export const releaseTypes = schema.enum("release_type", [
+  "single",
+  "album",
+  "ep",
+]);
+
 export const release = schema.table("release", {
   id: uuid("id").defaultRandom().primaryKey(),
   authorId: uuid("userId")
@@ -54,7 +60,7 @@ export const release = schema.table("release", {
   language: text("language").notNull(),
   title: text("title").notNull(),
   subtitle: text("subtitle").notNull(),
-  type: text("type").notNull(),
+  type: releaseTypes("type").notNull(),
 
   performer: text("performer").notNull(),
   feat: text("feat"),

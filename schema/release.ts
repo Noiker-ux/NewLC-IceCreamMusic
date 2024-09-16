@@ -9,29 +9,36 @@ export const releaseInsertSchema = createInsertSchema(release).omit({
 
 export type TReleaseInsert = z.infer<typeof releaseInsertSchema>;
 
-export const releaseFormSchema = releaseInsertSchema
-  .extend({
-    preview: z.any().refine((file: File) => {
-      return file.size < 30000000;
-    }),
-    track: z.any(),
-  })
-  .transform(({ startDate, releaseDate, preorderDate, ...data }) => ({
+export const releaseFormSchema = releaseInsertSchema.extend({
+  preview: z.any().refine((file: File) => {
+    return file instanceof File && file.size < 30000000;
+  }),
+  track: z.any().refine((file: File) => {
+    return file instanceof File && file.type;
+  }),
+  area: z.object({
+    negate: z.boolean(),
+    data: z.string().array(),
+  }),
+  platforms: z.string().array(),
+});
+
+export type TReleaseFormSchema = z.infer<typeof releaseFormSchema>;
+
+export const releaseClientSchema = releaseFormSchema.transform(
+  ({ startDate, releaseDate, preorderDate, ...data }) => ({
     startDate: startDate.toISOString(),
     releaseDate: releaseDate.toISOString(),
     preorderDate: preorderDate.toISOString(),
     ...data,
-  }));
+  })
+);
 
-export type TReleaseFormSchema = z.infer<typeof releaseFormSchema>;
-
-export const releaseServerSchema = releaseInsertSchema
+export const releaseServerSchema = releaseFormSchema
   .extend({
     startDate: z.string(),
     releaseDate: z.string(),
     preorderDate: z.string(),
-    track: z.any(),
-    preview: z.any(),
   })
   .transform(({ startDate, releaseDate, preorderDate, ...data }) => ({
     startDate: new Date(startDate),

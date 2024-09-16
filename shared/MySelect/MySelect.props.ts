@@ -11,4 +11,6 @@ export default interface IMySelectProps
     id: string;
     text: string;
   };
+  value?: IMySelectProps["options"][number];
+  onValueChange?: (value: IMySelectProps["options"][number]) => void;
 }

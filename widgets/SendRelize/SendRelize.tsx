@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { releaseFormSchema, TReleaseFormSchema } from "@/schema/release";
 import { uploadRelease } from "@/actions/release";
+import IMySelectProps from "../../shared/MySelect/MySelect.props";
 
 type Areas = {
   negate: boolean;
@@ -32,6 +33,8 @@ type Areas = {
 const SendRelease = () => {
   const [showAreasShop, setShowAreasShop] = useState<boolean>(false);
   const [showAreasLands, setShowAreasLands] = useState<boolean>(false);
+  const [languageValue, setLanguageValue] = useState<IMySelectProps["value"]>();
+  const [genreValue, setGenreValue] = useState<IMySelectProps["value"]>();
 
   const { handleSubmit, getValues, setValue, register, formState, watch } =
     useForm<TReleaseFormSchema>({
@@ -48,9 +51,19 @@ const SendRelease = () => {
     <div className={style["container"]}>
       <form
         onSubmit={handleSubmit(
-          (_, e) => console.log(JSON.stringify(new FormData(e?.target))),
+          (data: any) => {
+            const sendingData = new FormData();
+
+            const dataKeys = Object.keys(data);
+
+            for (let key of dataKeys) {
+              sendingData.append(key, data[key]);
+            }
+
+            uploadRelease(sendingData).then(console.log);
+          },
           (error) => {
-            console.log(error);
+            console.log("error", error);
           }
         )}
       >
@@ -81,6 +94,11 @@ const SendRelease = () => {
               tooltip={{
                 id: "languageMetadata",
                 text: "Язык, на котором представленна основаная информация о релиизе",
+              }}
+              value={languageValue}
+              onValueChange={(data) => {
+                setValue("language", data.value);
+                setLanguageValue(data);
               }}
             />
             <div className={style.row}>
@@ -113,30 +131,33 @@ const SendRelease = () => {
             <div className={style.topRelizes}>
               <MyRadio
                 id="type1"
-                name="d"
                 label={"Singl"}
                 tooltip={{
                   id: "Singl",
                   text: "Содержит от 1 до 3 треков, каждый продолжительностью менее 10 минут",
                 }}
+                value="single"
+                {...register("type")}
               />
               <MyRadio
                 id="type2"
-                name="d"
                 label={"EP"}
                 tooltip={{
                   id: "EP",
                   text: "Содержит от 1 до 3 треков, каждый продолжительностью менее 10 минут. Общая продолжительность должна быть не более 30 минут. Также релиз может содержать от 4 до 6 треков общей продолжительностью не более 30 минут",
                 }}
+                value="ep"
+                {...register("type")}
               />
               <MyRadio
                 id="type3"
-                name="d"
                 label={"Album"}
                 tooltip={{
                   id: "Album",
                   text: "Содержит 7 треков и/или более, общей продолжительностью более 30 минут",
                 }}
+                value="album"
+                {...register("type")}
               />
             </div>
           </div>
@@ -200,6 +221,11 @@ const SendRelease = () => {
             tooltip={{
               id: "GenreData",
               text: "Основной жанр вашего релиза",
+            }}
+            value={genreValue}
+            onValueChange={(data) => {
+              setValue("genre", data.value);
+              setGenreValue(data);
             }}
           />
         </div>
@@ -396,7 +422,6 @@ const SendRelease = () => {
               label={"Только в определенных странах"}
               onChange={() => {
                 setShowAreasLands(true);
-                const areas = getValues("area") as Areas;
                 setValue("area", { negate: false, data: areas.data ?? [] });
               }}
               name={"areaLand"}
@@ -405,7 +430,6 @@ const SendRelease = () => {
               label={"Во всех кроме"}
               onChange={() => {
                 setShowAreasLands(true);
-                const areas = getValues("area") as Areas;
                 setValue("area", { negate: true, data: areas.data ?? [] });
               }}
               name={"areaLand"}
@@ -439,7 +463,7 @@ const SendRelease = () => {
                   key={a.value}
                   label={a.label}
                   // TODO додумать формат выбора стран
-                  checked={areas.data && areas.data.includes(a.value)}
+                  checked={areas && areas.data && areas.data.includes(a.value)}
                   onChange={(e: any) => {
                     if (!areas.data) {
                       setValue("area", {

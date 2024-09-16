@@ -6,9 +6,10 @@ export default interface IMyRadioProps
     HTMLInputElement
   > {
   label: string;
-  name: string;
+  name?: string;
   tooltip?: {
     id: string;
     text: string;
   };
+  value?: string;
 }
