@@ -24,6 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { releaseFormSchema, TReleaseFormSchema } from "@/schema/release";
 import { uploadRelease } from "@/actions/release";
 import IMySelectProps from "../../shared/MySelect/MySelect.props";
+import { makePayment } from "@/actions/payments";
 
 type Areas = {
   negate: boolean;
@@ -505,7 +506,7 @@ const SendRelease = () => {
       </form>
       <button
         onClick={() => {
-          console.log(getValues());
+          makePayment();
         }}
       >
         get values
