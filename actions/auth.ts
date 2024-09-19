@@ -4,7 +4,6 @@ import {
   createSessionOptions,
   defaultAuthRedirect,
   defaultSessionOptions,
-  routes,
   TSessionData,
 } from "@/config/auth";
 import { db } from "@/db";
@@ -14,6 +13,7 @@ import {
   TSignInClientSchema,
 } from "@/schema/signin.schema";
 import { selectUserSchema } from "@/schema/user.schema";
+import { hashPassword } from "@/utils/hashPassword";
 import { compare } from "bcrypt-ts";
 import { eq } from "drizzle-orm";
 import { getIronSession, SessionOptions } from "iron-session";
@@ -21,7 +21,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { sendResetPasswordEmail } from "./email";
 import { getPathname } from "./url";
-import { hashPassword } from "@/utils/hashPassword";
 
 export async function credentialsSignIn(credentials: TSignInClientSchema) {
   const validationResult = signInClientSchema.safeParse(credentials);
@@ -87,26 +86,6 @@ export async function getAuthSession(options?: SessionOptions) {
   );
 
   return session;
-}
-
-export async function authRedirect() {
-  const session = await getAuthSession();
-
-  const isAuthenticated = !!session.user;
-
-  const pathname = await getPathname();
-
-  const isGuestRoute = routes.guest.some((r) => pathname.includes(r));
-
-  const isPublicRoute = routes.public.some((r) => pathname.includes(r));
-
-  if (isAuthenticated && isGuestRoute) {
-    return redirect(defaultAuthRedirect);
-  }
-
-  if (!isGuestRoute && !isPublicRoute && !isAuthenticated) {
-    return redirect("/signin");
-  }
 }
 
 export async function recoverPassword(email: string) {

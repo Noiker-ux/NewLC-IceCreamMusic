@@ -28,6 +28,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   releases: many(release, { relationName: "releases" }),
   verifications: many(verification, { relationName: "verifications" }),
   subscriptions: many(subscriptions, { relationName: "subscriptions" }),
+  payment_methods: many(payment_method, { relationName: "payment_methods" }),
 }));
 
 export const news = schema.table("news", {
@@ -138,6 +139,22 @@ export const subscriptions = schema.table("subscriptions", {
 export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   user: one(users, {
     fields: [subscriptions.id],
+    references: [users.id],
+  }),
+}));
+
+export const payment_method = schema.table("payment_methods", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  payment_method_id: text("payment_method_id").notNull(),
+  payment_method_name: text("payment_method_name").notNull(),
+});
+
+export const payment_methodRelations = relations(payment_method, ({ one }) => ({
+  user: one(users, {
+    fields: [payment_method.userId],
     references: [users.id],
   }),
 }));
