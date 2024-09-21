@@ -23,7 +23,7 @@ export const defaultSessionOptions: SessionOptions = {
   cookieName: "icecream-auth",
   cookieOptions: {
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "lax",
   },
 };
 

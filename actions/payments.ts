@@ -10,7 +10,11 @@ const checkout = new YooCheckout({
   secretKey: process.env.YOOKASSA_SECRET_KEY as string,
 });
 
-export async function makePayment() {
+export async function makePayment(
+  forWhat?:
+    | { type: "subscription"; level: "qwe" | "123" }
+    | { type: "release"; releaseId: string }
+) {
   const session = await getAuthSession();
 
   if (!session || !session.user) {
@@ -31,7 +35,7 @@ export async function makePayment() {
         },
         confirmation: {
           type: "redirect",
-          return_url: "http://localhost:3000/dashboard/catalog",
+          return_url: "http://localhost:3000/api/purchase/complete",
         },
         description: "payment test 1",
         receipt: {
@@ -55,7 +59,7 @@ export async function makePayment() {
       idempotenceKey
     )
     .catch((e) => {
-      console.log(e.data);
+      console.log(e);
       return null;
     });
 
