@@ -1,0 +1,23 @@
+.imageCard {
+  object-fit: contain;
+  width: 200px;
+  height: revert-layer;
+}
+.wrapCard {
+  padding: 20px;
+  border: 5px solid transparent;
+  display: inline-block;
+  border-radius: 10px;
+  background-color: var(--light-text-color);
+  cursor: pointer;
+}
+.CardList {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.selectCard {
+  border: 5px solid var(--current-color);
+}
