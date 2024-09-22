@@ -1,9 +1,12 @@
 "use server";
 
-import { YooCheckout } from "@a2seven/yoo-checkout";
+import { Payment, YooCheckout } from "@a2seven/yoo-checkout";
 import { randomUUID } from "crypto";
 import { getAuthSession } from "./auth";
 import { redirect } from "next/navigation";
+import { getFullUrl } from "./url";
+import { db } from "@/db";
+import { release } from "@/db/schema";
 
 const checkout = new YooCheckout({
   shopId: process.env.YOOKASSA_SHOP_ID as string,
@@ -11,14 +14,28 @@ const checkout = new YooCheckout({
 });
 
 export async function makePayment(
-  forWhat?:
-    | { type: "subscription"; level: "qwe" | "123" }
-    | { type: "release"; releaseId: string }
+  forWhat: { type: "subscription" } | { type: "release"; releaseId: string },
+  by: Payment["payment_method_data"]["type"]
 ) {
   const session = await getAuthSession();
 
   if (!session || !session.user) {
     return { success: false, message: "You need to log in first." };
+  }
+
+  const fullUrl = await getFullUrl();
+
+  const urlOrigin = new URL(fullUrl).origin;
+
+  let returnPath: string = "";
+
+  if (forWhat.type === "release") {
+    returnPath = "/dashboard";
+    const userRelease = await db.query.release.findFirst({});
+  }
+
+  if (forWhat.type === "subscription") {
+    returnPath = "/news";
   }
 
   const idempotenceKey = randomUUID();
@@ -31,11 +48,11 @@ export async function makePayment(
           currency: "RUB",
         },
         payment_method_data: {
-          type: "bank_card",
+          type: by,
         },
         confirmation: {
           type: "redirect",
-          return_url: "http://localhost:3000/api/purchase/complete",
+          return_url: `${origin}${returnPath}`,
         },
         description: "payment test 1",
         receipt: {
@@ -52,7 +69,6 @@ export async function makePayment(
               payment_subject: "service",
             },
           ],
-          customer: { email: "qwe@qwe.qwe" },
           tax_system_code: 1,
         },
       },
