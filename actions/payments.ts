@@ -1,20 +1,21 @@
 "use server";
 
-import { Payment, YooCheckout } from "@a2seven/yoo-checkout";
-import { randomUUID } from "crypto";
-import { getAuthSession } from "./auth";
-import { redirect } from "next/navigation";
-import { getFullUrl } from "./url";
+import { checkout } from "@/config/aquiring";
 import { db } from "@/db";
-import { release } from "@/db/schema";
-
-const checkout = new YooCheckout({
-  shopId: process.env.YOOKASSA_SHOP_ID as string,
-  secretKey: process.env.YOOKASSA_SECRET_KEY as string,
-});
+import { Payment } from "@a2seven/yoo-checkout";
+import { redirect } from "next/navigation";
+import { getAuthSession } from "./auth";
+import { getFullUrl } from "./url";
+import { orders } from "@/db/schema";
+import { premiumPlans } from "@/helpers/premiumPlans";
 
 export async function makePayment(
-  forWhat: { type: "subscription" } | { type: "release"; releaseId: string },
+  forWhat:
+    | {
+        type: "subscription";
+        subscriptionLevel: (typeof premiumPlans)[number]["system_name"];
+      }
+    | { type: "release"; releaseId: string },
   by: Payment["payment_method_data"]["type"]
 ) {
   const session = await getAuthSession();
@@ -29,51 +30,53 @@ export async function makePayment(
 
   let returnPath: string = "";
 
+  let orderMetadata: Omit<typeof forWhat, "type"> = {};
+
   if (forWhat.type === "release") {
     returnPath = "/dashboard";
-    const userRelease = await db.query.release.findFirst({});
+    orderMetadata = { releaseId: forWhat.releaseId };
+    // const userRelease = await db.query.release.findFirst({});
   }
 
   if (forWhat.type === "subscription") {
-    returnPath = "/news";
+    returnPath = "/dashboard/news";
+    orderMetadata = { level: forWhat.subscriptionLevel };
   }
 
-  const idempotenceKey = randomUUID();
-
   const payment = await checkout
-    .createPayment(
-      {
-        amount: {
-          value: "1000.00",
-          currency: "RUB",
-        },
-        payment_method_data: {
-          type: by,
-        },
-        confirmation: {
-          type: "redirect",
-          return_url: `${origin}${returnPath}`,
-        },
-        description: "payment test 1",
-        receipt: {
-          items: [
-            {
-              description: "test 1",
-              quantity: "1.00",
-              amount: {
-                value: "1000.00",
-                currency: "RUB",
-              },
-              vat_code: 1,
-              payment_mode: "full_payment",
-              payment_subject: "service",
+    .createPayment({
+      amount: {
+        value: "1000.00",
+        currency: "RUB",
+      },
+      payment_method_data: {
+        type: by,
+      },
+      confirmation: {
+        type: "redirect",
+        return_url: `${urlOrigin}${returnPath}`,
+      },
+      description: "payment test 1",
+      receipt: {
+        items: [
+          {
+            description: "test 1",
+            quantity: "1.00",
+            amount: {
+              value: "1000.00",
+              currency: "RUB",
             },
-          ],
-          tax_system_code: 1,
+            vat_code: 1,
+            payment_mode: "full_payment",
+            payment_subject: "service",
+          },
+        ],
+        tax_system_code: 1,
+        customer: {
+          email: session.user.email,
         },
       },
-      idempotenceKey
-    )
+    })
     .catch((e) => {
       console.log(e);
       return null;
@@ -82,6 +85,13 @@ export async function makePayment(
   if (!payment || !payment.confirmation.confirmation_url) {
     return { success: false, message: "Smth went wrong" };
   }
+
+  const order = await db.insert(orders).values({
+    id: payment.id,
+    type: forWhat.type,
+    userId: session.user.id,
+    metadata: orderMetadata,
+  });
 
   redirect(payment.confirmation.confirmation_url);
 }

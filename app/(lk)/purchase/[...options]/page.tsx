@@ -9,11 +9,16 @@ import MyText from "@/shared/MyText/MyText";
 import { CardList } from "../../../../helpers/CardList";
 import { useState } from "react";
 import classNames from "classnames";
+import { premiumPlans } from "@/helpers/premiumPlans";
 export default function PurchasePage({
   params,
 }: {
   params: { options: string[] };
 }) {
+  if (params.options.length !== 2) {
+    return <Error statusCode={404} />;
+  }
+
   const [type, level_or_id] = params.options;
   const [selectCard, setSelectCard] = useState("");
 
@@ -43,7 +48,7 @@ export default function PurchasePage({
             className={classNames(style.wrapCard, {
               [style.selectCard]: card.alt === selectCard,
             })}
-            onClick={() => setSelectCard(card.alt)}
+            onClick={() => setSelectCard(card.name)}
           >
             <Image
               className={style.imageCard}
@@ -55,6 +60,16 @@ export default function PurchasePage({
           </div>
         ))}
       </div>
+      <button
+        onClick={() =>
+          makePayment(
+            { type: "subscription", subscriptionLevel: "standard" },
+            "bank_card"
+          )
+        }
+      >
+        qwe
+      </button>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { relations } from "drizzle-orm";
+
 import {
   boolean,
   jsonb,
@@ -30,6 +31,7 @@ export const users = schema.table("user", {
   isSuperUser: boolean("isSuperUser").default(false),
   isSubscribed: boolean("isSubscribed").default(false),
   subscriptionLevel: subscriptionLevels("subscribeLevel"),
+  expiresAt: timestamp("expiresAt"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
