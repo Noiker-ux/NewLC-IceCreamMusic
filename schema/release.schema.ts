@@ -1,6 +1,6 @@
 import { release } from "@/db/schema";
 import { z } from "zod";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const releaseInsertSchema = createInsertSchema(release).omit({
   id: true,
@@ -48,3 +48,7 @@ export const releaseServerSchema = releaseFormSchema
   }));
 
 export type TReleaseServerSchema = z.infer<typeof releaseServerSchema>;
+
+export const selectReleaseSchema = createSelectSchema(release);
+
+export type TReleaseSelect = z.infer<typeof selectReleaseSchema>;

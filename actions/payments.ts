@@ -35,12 +35,11 @@ export async function makePayment(
   if (forWhat.type === "release") {
     returnPath = "/dashboard";
     orderMetadata = { releaseId: forWhat.releaseId };
-    // const userRelease = await db.query.release.findFirst({});
   }
 
   if (forWhat.type === "subscription") {
     returnPath = "/dashboard/news";
-    orderMetadata = { level: forWhat.subscriptionLevel };
+    orderMetadata = { subscriptionLevel: forWhat.subscriptionLevel };
   }
 
   const payment = await checkout

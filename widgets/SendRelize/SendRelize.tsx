@@ -20,7 +20,7 @@ import MyCheckbox from "@/shared/MyCheckbox/MyCheckbox";
 import { allCountry } from "@/helpers/allCountry";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { releaseFormSchema, TReleaseFormSchema } from "@/schema/release";
+import { releaseFormSchema, TReleaseFormSchema } from "@/schema/release.schema";
 import { uploadRelease } from "@/actions/release";
 import IMySelectProps from "../../shared/MySelect/MySelect.props";
 import { makePayment } from "@/actions/payments";

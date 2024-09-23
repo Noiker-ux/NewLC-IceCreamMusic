@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."payment_methods" ADD COLUMN "confirmed" boolean DEFAULT false;

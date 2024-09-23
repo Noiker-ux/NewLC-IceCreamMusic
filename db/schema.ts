@@ -31,7 +31,7 @@ export const users = schema.table("user", {
   isSuperUser: boolean("isSuperUser").default(false),
   isSubscribed: boolean("isSubscribed").default(false),
   subscriptionLevel: subscriptionLevels("subscribeLevel"),
-  expiresAt: timestamp("expiresAt"),
+  subscriptionExpires: timestamp("expiresAt"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -92,6 +92,8 @@ export const release = schema.table("release", {
   area: jsonb("area"),
 
   track: text("track").notNull(),
+
+  confirmed: boolean("confirmed").default(false),
 });
 
 export const releaseRelations = relations(release, ({ one }) => ({
@@ -149,11 +151,12 @@ export const orders = schema.table("orders", {
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   type: orderTypes("type").notNull(),
   metadata: jsonb("metadata").notNull(),
+  confirmed: boolean("confirmed").default(false),
 });
 
 export const ordersRelations = relations(orders, ({ one }) => ({
   user: one(users, {
-    fields: [orders.id],
+    fields: [orders.userId],
     references: [users.id],
   }),
 }));
@@ -170,5 +173,6 @@ export const payment_methodRelations = relations(payment_method, ({ one }) => ({
   user: one(users, {
     fields: [payment_method.userId],
     references: [users.id],
+    relationName: "user",
   }),
 }));

@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."release" ADD COLUMN "confirmed" boolean DEFAULT false;

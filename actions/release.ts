@@ -1,7 +1,7 @@
 "use server";
 
 import { minioS3 } from "@/config/s3";
-import { releaseServerSchema } from "@/schema/release";
+import { releaseServerSchema } from "@/schema/release.schema";
 
 export async function uploadRelease(data: FormData) {
   const objectFromData: unknown = Object.fromEntries(data?.entries());

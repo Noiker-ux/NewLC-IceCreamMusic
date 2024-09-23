@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   TVerificationFormSchema,
   verificationFormSchema,
-} from "@/schema/verification";
+} from "@/schema/verification.schema";
 import { verifyData } from "@/actions/verification";
 
 const VerificationForm = () => {

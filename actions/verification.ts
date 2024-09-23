@@ -5,7 +5,7 @@ import { verification } from "@/db/schema";
 import {
   TVerificationFormSchema,
   serverVerificationSchema,
-} from "@/schema/verification";
+} from "@/schema/verification.schema";
 import { getAuthSession } from "./auth";
 
 export async function verifyData(data: TVerificationFormSchema) {
