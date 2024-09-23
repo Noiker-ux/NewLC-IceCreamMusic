@@ -1,4 +1,5 @@
 import { relations } from "drizzle-orm";
+
 import {
   boolean,
   jsonb,
@@ -9,6 +10,12 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
+
+export const subscriptionLevels = schema.enum("subscribe_level", [
+  "standard",
+  "professional",
+  "premium",
+]);
 
 export const users = schema.table("user", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -22,12 +29,15 @@ export const users = schema.table("user", {
   isVerifiedAuthor: boolean("isVerifiedAuthor").default(false),
   isAdmin: boolean("isAdmin").default(false),
   isSuperUser: boolean("isSuperUser").default(false),
+  isSubscribed: boolean("isSubscribed").default(false),
+  subscriptionLevel: subscriptionLevels("subscribeLevel"),
+  expiresAt: timestamp("expiresAt"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
   releases: many(release, { relationName: "releases" }),
   verifications: many(verification, { relationName: "verifications" }),
-  subscriptions: many(subscriptions, { relationName: "subscriptions" }),
+  orders: many(orders, { relationName: "orders" }),
   payment_methods: many(payment_method, { relationName: "payment_methods" }),
 }));
 
@@ -126,19 +136,24 @@ export const verificationRelations = relations(verification, ({ one }) => ({
   }),
 }));
 
-export const subscriptions = schema.table("subscriptions", {
+export const orderTypes = schema.enum("order_type", [
+  "subscription",
+  "release",
+]);
+
+export const orders = schema.table("orders", {
   id: uuid("id").defaultRandom().primaryKey(),
+  createdAt: timestamp("createdAt").defaultNow(),
   userId: uuid("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  subscribtionLevel: text("subscribeLevel").notNull(),
-  createdAt: timestamp("createdAt").notNull(),
-  expiresAt: timestamp("expiresAt").notNull(),
+  type: orderTypes("type").notNull(),
+  metadata: jsonb("metadata").notNull(),
 });
 
-export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+export const ordersRelations = relations(orders, ({ one }) => ({
   user: one(users, {
-    fields: [subscriptions.id],
+    fields: [orders.id],
     references: [users.id],
   }),
 }));
@@ -148,8 +163,7 @@ export const payment_method = schema.table("payment_methods", {
   userId: uuid("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  payment_method_id: text("payment_method_id").notNull(),
-  payment_method_name: text("payment_method_name").notNull(),
+  metadata: jsonb("metadata").notNull(),
 });
 
 export const payment_methodRelations = relations(payment_method, ({ one }) => ({

@@ -13,6 +13,7 @@ export const middleware = async function (request: NextRequest) {
   const { nextUrl } = request;
 
   request.headers.set("x-url", nextUrl.href);
+  request.headers.set("x-ip", request.ip!);
 
   const cookiesStore = cookies();
 
