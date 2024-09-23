@@ -7,4 +7,8 @@ export default interface IMyCheckboxProps
   > {
   label: string;
   checked?: boolean;
+  tooltip?: {
+    id: string;
+    text: string;
+  };
 }

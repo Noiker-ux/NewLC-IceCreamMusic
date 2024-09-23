@@ -6,9 +6,12 @@
   padding: 10px;
   border: 1px solid var(--border-color);
   resize: vertical;
+  border-radius: 10px;
+  outline: none;
 }
 .label {
   color: var(--medium-text-color);
   font-size: 12px;
   margin-bottom: 3px;
+  caret-color: transparent;
 }

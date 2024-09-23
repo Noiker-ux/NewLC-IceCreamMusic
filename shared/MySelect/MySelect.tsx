@@ -16,7 +16,7 @@ const MySelect = forwardRef<HTMLSelectElement, IMySelectProps>(
     ref
   ) {
     return (
-      <div className={style.wrap}>
+      <div className={classNames(style.wrap, className)}>
         <div className={style.labelWrapper}>
           <MyText className={style.label}>{label}</MyText>
           {tooltip && (
@@ -49,7 +49,8 @@ const MySelect = forwardRef<HTMLSelectElement, IMySelectProps>(
               background: "var(--wrapper-color)",
               border: state.isFocused ? "1px solid var(--border-color)" : 0,
               boxShadow: "none",
-              padding: "10px",
+              padding: "3px 10px",
+              borderRadius: "7px",
             }),
             option: (provided, state) => ({
               ...provided,
@@ -68,7 +69,6 @@ const MySelect = forwardRef<HTMLSelectElement, IMySelectProps>(
             }),
           }}
           options={options}
-          placeholder="Favourite artists"
           onChange={onValueChange as any}
           value={value}
         />

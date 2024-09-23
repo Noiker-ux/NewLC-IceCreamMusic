@@ -14,7 +14,6 @@ import { tabsList } from "./tabsList";
 import MySelect from "@/shared/MySelect/MySelect";
 import { allLanguages } from "@/helpers/allLanguages";
 import MyRadio from "@/shared/MyRadio/MyRadio";
-import MyFile from "@/shared/MyFile/MyFile";
 import { allGenres } from "@/helpers/allGenres";
 import { allAreasMusic } from "@/helpers/allAreasMusic";
 import MyCheckbox from "@/shared/MyCheckbox/MyCheckbox";
@@ -25,6 +24,7 @@ import { releaseFormSchema, TReleaseFormSchema } from "@/schema/release";
 import { uploadRelease } from "@/actions/release";
 import IMySelectProps from "../../shared/MySelect/MySelect.props";
 import { makePayment } from "@/actions/payments";
+import { TrackItem } from "./TrackItem/TrackItem";
 
 type Areas = {
   negate: boolean;
@@ -36,6 +36,7 @@ const SendRelease = () => {
   const [showAreasLands, setShowAreasLands] = useState<boolean>(false);
   const [languageValue, setLanguageValue] = useState<IMySelectProps["value"]>();
   const [genreValue, setGenreValue] = useState<IMySelectProps["value"]>();
+  const [tracks, setTracks] = useState<FileList | null>(null);
 
   const { handleSubmit, getValues, setValue, register, formState, watch } =
     useForm<TReleaseFormSchema>({
@@ -51,6 +52,7 @@ const SendRelease = () => {
   return (
     <div className={style["container"]}>
       <form
+        className={style.form}
         onSubmit={handleSubmit(
           (data: any) => {
             const sendingData = new FormData();
@@ -495,11 +497,26 @@ const SendRelease = () => {
         <div className={style.wrap}>
           <input
             type="file"
+            name="filefield"
+            multiple={true}
+            onChange={(e) => {
+              setTracks(e.currentTarget.files);
+            }}
+          />
+
+          {/* <input
+            type="file"
             onChange={(e) => {
               setValue("track", e.target.files && e.target.files[0]);
             }}
-          />
+          /> */}
         </div>
+
+        {tracks !== null &&
+          Array.from(tracks).map((e) => (
+            <TrackItem fileName={e.name} key={e.name} />
+          ))}
+
         <div className={style.wrap}>
           <MyButton text="Отправить релиз" view="secondary" type="submit" />
         </div>

@@ -1,5 +1,46 @@
 .label {
-	display: flex;
-	gap: 10px;
-	cursor: pointer;
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+  position: relative;
+  padding-left: 10px;
+  width: max-content;
+  margin-left: 20px;
+}
+.label::after {
+  position: absolute;
+  content: "";
+  border-radius: 4px;
+  left: -20px;
+  width: 15px;
+  height: 15px;
+  top: 4px;
+  border: 1px solid var(--light-text-color);
+}
+
+.input:checked + .label::before {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  left: -18px;
+  content: "";
+  border-radius: 4px;
+  top: 6px;
+  background-color: var(--light-text-color);
+}
+
+.input {
+  display: none;
+}
+.iIcon {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+.row {
+  display: flex;
+  align-items: center;
+  width: 30%;
+  gap: 5px;
+  margin-bottom: 10px;
 }
