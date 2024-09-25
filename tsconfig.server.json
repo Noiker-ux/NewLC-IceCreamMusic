@@ -2,9 +2,10 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "Node",
     "outDir": "dist",
     "noEmit": false,
     "jsx": "react"
   },
-  "include": ["server.ts", "payload.config.ts"]
+  "include": ["server.ts"]
 }

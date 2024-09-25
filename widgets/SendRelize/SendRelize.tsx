@@ -521,13 +521,13 @@ const SendRelease = () => {
           <MyButton text="Отправить релиз" view="secondary" type="submit" />
         </div>
       </form>
-      <button
+      {/* <button
         onClick={() => {
           makePayment();
         }}
       >
         get values
-      </button>
+      </button> */}
       {/* end */}
     </div>
   );

@@ -4,7 +4,6 @@
 const nextConfig = {
   reactStrictMode: true,
   cleanDistDir: true,
-  output: "standalone",
   webpack: (config, { webpack }) => {
     config.plugins.push(
       new webpack.IgnorePlugin({

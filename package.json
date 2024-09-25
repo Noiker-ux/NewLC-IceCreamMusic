@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "nodemon",
-    "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "build": "tsc --project tsconfig.server.json && next build",
+    "start": "cross-env NODE_ENV=production node dist/server.js",
     "lint": "next lint",
-    "dev:email": "email dev"
+    "email": "email dev"
   },
   "dependencies": {
     "@a2seven/yoo-checkout": "^1.1.4",
@@ -22,6 +22,7 @@
     "bcrypt-ts": "^5.0.2",
     "classnames": "^2.5.1",
     "cookies-next": "^4.2.1",
+    "cron": "^3.1.7",
     "drizzle-orm": "^0.32.0",
     "drizzle-zod": "^0.5.1",
     "framer-motion": "^11.3.8",
@@ -58,6 +59,7 @@
     "@types/nodemailer": "^6.4.15",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "drizzle-kit": "^0.23.0",
     "eslint": "^8",

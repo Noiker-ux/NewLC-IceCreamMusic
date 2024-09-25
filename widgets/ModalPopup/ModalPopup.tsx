@@ -3,8 +3,25 @@ import classNames from "classnames";
 import style from "./ModalPopup.module.css";
 import MyTitle from "@/shared/MyTitle/MyTitle";
 import CloseIcon from "../../public/InfoIcon/close.svg";
+import { ReactNode } from "react";
 
-const ModalPopup = ({ active, setActive, title, children, width, height }) => {
+export type TModalPopup = {
+  active: boolean;
+  setActive: (status: boolean) => void;
+  title: ReactNode;
+  children: ReactNode;
+  width: number;
+  height: number;
+};
+
+const ModalPopup = ({
+  active,
+  setActive,
+  title,
+  children,
+  width,
+  height,
+}: TModalPopup) => {
   return (
     <div
       className={classNames(style.modal, { [style.active]: active })}

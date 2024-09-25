@@ -15,12 +15,13 @@ export default function PurchasePage({
 }: {
   params: { options: string[] };
 }) {
+  const [selectCard, setSelectCard] = useState("");
+
   if (params.options.length !== 2) {
     return <Error statusCode={404} />;
   }
 
   const [type, level_or_id] = params.options;
-  const [selectCard, setSelectCard] = useState("");
 
   if (type !== "subscription" && type !== "release") {
     return <Error statusCode={404} />;

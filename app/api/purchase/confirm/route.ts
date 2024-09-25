@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-// import { revalidateCurrentPath } from "../../../../actions/revalidate";
 import { checkout } from "@/config/aquiring";
 import { db } from "@/db";
 import { orders, release, users } from "@/db/schema";
@@ -13,7 +12,7 @@ import { eq } from "drizzle-orm";
 export async function POST(req: Request) {
   const goodResponse = NextResponse.json(
     {
-      message: `hello notification service`,
+      message: "Success",
     },
     { status: 200 }
   );
@@ -75,6 +74,7 @@ export async function POST(req: Request) {
     if (!res.success) {
       return internalResponse;
     }
+
     const newRelease = await db
       .update(release)
       .set({
