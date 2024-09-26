@@ -23,6 +23,7 @@ export default function TarifPage() {
         <div className={style.relative}>
           {pulseIconClasses.map((cn) => (
             <TopMine
+              key={cn}
               className={classNames(
                 style.mineIcon,
                 style.absolute,

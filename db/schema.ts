@@ -26,10 +26,10 @@ export const users = schema.table("user", {
   avatar: text("avatar"),
   verificationToken: text("verificationToken"),
   resetPasswordToken: text("resetPasswordToken"),
-  isVerifiedAuthor: boolean("isVerifiedAuthor").default(false),
-  isAdmin: boolean("isAdmin").default(false),
-  isSuperUser: boolean("isSuperUser").default(false),
-  isSubscribed: boolean("isSubscribed").default(false),
+  isVerifiedAuthor: boolean("isVerifiedAuthor").notNull().default(false),
+  isAdmin: boolean("isAdmin").notNull().default(false),
+  isSuperUser: boolean("isSuperUser").notNull().default(false),
+  isSubscribed: boolean("isSubscribed").notNull().default(false),
   subscriptionLevel: subscriptionLevels("subscribeLevel"),
   subscriptionExpires: timestamp("expiresAt"),
 });
@@ -93,7 +93,7 @@ export const release = schema.table("release", {
 
   track: text("track").notNull(),
 
-  confirmed: boolean("confirmed").default(false),
+  confirmed: boolean("confirmed").notNull().default(false),
 });
 
 export const releaseRelations = relations(release, ({ one }) => ({
@@ -128,7 +128,7 @@ export const verification = schema.table("verification", {
   registrationAddress: text("registrationAddress").notNull(),
   accountNumber: text("accountNumber").notNull(),
   bankName: text("bankName").notNull(),
-  status: verificationStatuses("status").default("moderating"),
+  status: verificationStatuses("status").notNull().default("moderating"),
 });
 
 export const verificationRelations = relations(verification, ({ one }) => ({
@@ -144,14 +144,14 @@ export const orderTypes = schema.enum("order_type", [
 ]);
 
 export const orders = schema.table("orders", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: uuid("id").primaryKey(),
   createdAt: timestamp("createdAt").defaultNow(),
   userId: uuid("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   type: orderTypes("type").notNull(),
   metadata: jsonb("metadata").notNull(),
-  confirmed: boolean("confirmed").default(false),
+  confirmed: boolean("confirmed").notNull().default(false),
 });
 
 export const ordersRelations = relations(orders, ({ one }) => ({
@@ -162,11 +162,12 @@ export const ordersRelations = relations(orders, ({ one }) => ({
 }));
 
 export const payment_method = schema.table("payment_methods", {
-  id: uuid("id").defaultRandom().primaryKey(),
+  id: uuid("id").primaryKey(),
   userId: uuid("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   metadata: jsonb("metadata").notNull(),
+  isDefault: boolean("isDefault").notNull().default(false),
 });
 
 export const payment_methodRelations = relations(payment_method, ({ one }) => ({
