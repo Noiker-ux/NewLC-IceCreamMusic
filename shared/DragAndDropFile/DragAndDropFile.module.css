@@ -1,0 +1,30 @@
+.dropArea {
+  width: 100%;
+  height: 250px;
+  border: 3px dashed var(--border-color);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    border: 3px dashed var(--current-color);
+  }
+}
+.sub {
+  font-size: 12px;
+  color: var(--medium-text-color);
+}
+.active {
+  border: 3px dashed var(--current-color);
+}
+.none {
+  display: none;
+}
+.error {
+  color: rgb(241, 80, 80);
+  margin-top: 10px;
+  font-size: 12px;
+}

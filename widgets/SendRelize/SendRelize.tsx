@@ -6,7 +6,7 @@ import MyText from "@/shared/MyText/MyText";
 import MyInpFile from "@/shared/MyInpFile/MyInpFile";
 import MyInput from "@/shared/MyInput/MyInput";
 import Popup from "reactjs-popup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalPopup from "../ModalPopup/ModalPopup";
 import MyTextArea from "@/shared/MyTextArea/MyTextArea";
 import MyButton from "@/shared/MyButton/MyButton";
@@ -25,6 +25,8 @@ import { uploadRelease } from "@/actions/release";
 import IMySelectProps from "../../shared/MySelect/MySelect.props";
 import { makePayment } from "@/actions/payments";
 import { TrackItem } from "./TrackItem/TrackItem";
+import DragAndDropFile from "@/shared/DragAndDropFile/DragAndDropFile";
+import CloseIcon from "@/public/InfoIcon/close.svg";
 
 type Areas = {
   negate: boolean;
@@ -44,6 +46,12 @@ const SendRelease = () => {
       defaultValues: {},
       progressive: true,
     });
+
+  const handleDeleteTrack = (name) => {
+    console.log(name);
+    let newTracks = Array.from(tracks).filter((e) => e.name != name);
+    setTracks(newTracks);
+  };
 
   const areas = watch("area") as Areas;
 
@@ -134,9 +142,9 @@ const SendRelease = () => {
             <div className={style.topRelizes}>
               <MyRadio
                 id="type1"
-                label={"Singl"}
+                label={"Single"}
                 tooltip={{
-                  id: "Singl",
+                  id: "Single",
                   text: "Содержит от 1 до 3 треков, каждый продолжительностью менее 10 минут",
                 }}
                 value="single"
@@ -495,14 +503,16 @@ const SendRelease = () => {
           </div>
         )}
         <div className={style.wrap}>
-          <input
+          <DragAndDropFile setTracks={setTracks} tracks={tracks} />
+
+          {/* <input
             type="file"
             name="filefield"
             multiple={true}
             onChange={(e) => {
               setTracks(e.currentTarget.files);
             }}
-          />
+          /> */}
 
           {/* <input
             type="file"
@@ -514,7 +524,15 @@ const SendRelease = () => {
 
         {tracks !== null &&
           Array.from(tracks).map((e) => (
-            <TrackItem fileName={e.name} key={e.name} />
+            <div className={style.wrap_track} key={e.name}>
+              <TrackItem fileName={e.name} />
+              <div
+                className={style.close}
+                onClick={() => handleDeleteTrack(e.name)}
+              >
+                <CloseIcon className={style.deleteTrack} />
+              </div>
+            </div>
           ))}
 
         <div className={style.wrap}>

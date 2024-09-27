@@ -71,3 +71,18 @@
   flex-direction: column;
   gap: 30px;
 }
+.wrap_track {
+  position: relative;
+}
+.close {
+  position: absolute;
+  content: "";
+  right: 20px;
+  top: 20px;
+}
+.deleteTrack {
+  cursor: pointer;
+}
+.deleteTrack:hover > * {
+  fill: var(--light-text-color);
+}
