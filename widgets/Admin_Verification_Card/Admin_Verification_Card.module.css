@@ -1,0 +1,72 @@
+.rowStatistic {
+  display: flex;
+  gap: 20px;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+.status {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.wrap {
+  background-color: var(--wrapper-color);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.title {
+  font-size: 12px;
+  color: var(--medium-text-color);
+}
+.value {
+  font-size: 14px;
+  color: var(--light-text-color);
+  font-weight: 500;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+.row:last-child {
+  gap: 10px;
+}
+
+.separator {
+  width: 100%;
+  background-color: var(--border-color);
+  height: 1px;
+}
+
+.success {
+  background-color: var(--current-color);
+  padding: 8px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+  min-width: 100px;
+  &:hover {
+    background-color: var(--current-hover-color);
+  }
+}
+.badSuccess {
+  background-color: #e83a43;
+  padding: 8px 10px;
+  border: none;
+  cursor: pointer;
+  min-width: 100px;
+  border-radius: 3px;
+  &:hover {
+    background-color: #da2c2c;
+  }
+}

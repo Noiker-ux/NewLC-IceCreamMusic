@@ -20,7 +20,7 @@ export const ArrayTarifTable: ITarifTable[] = [
   },
   {
     aspect: "Доход от прослушиваний",
-    standart: "70%",
+    standart: "80%",
     enterprize: "100%",
     pro: "85%",
   },
@@ -38,9 +38,9 @@ export const ArrayTarifTable: ITarifTable[] = [
   },
   {
     aspect: "Среднее время отгрузки",
-    standart: "12 часов",
+    standart: "24 часов",
     enterprize: "5 часов",
-    pro: "6 часов",
+    pro: "10 часов",
   },
   {
     aspect: "Количество релизов в месяц",
@@ -49,13 +49,7 @@ export const ArrayTarifTable: ITarifTable[] = [
     pro: "6",
   },
   {
-    aspect: "Ежедневные отчеты",
-    standart: true,
-    enterprize: true,
-    pro: true,
-  },
-  {
-    aspect: "Ежедневные отчеты в Telegram",
+    aspect: "Еженедельные отчеты",
     standart: true,
     enterprize: true,
     pro: true,
