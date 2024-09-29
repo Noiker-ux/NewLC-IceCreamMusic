@@ -8,17 +8,18 @@ import { Tooltip } from "react-tooltip";
 import IIcon from "../../public/InfoIcon/i.svg";
 
 const MyCheckbox = forwardRef<HTMLInputElement, IMyCheckboxProps>(
-  function MyCheckbox({ label, className, tooltip, ...props }, ref) {
+  function MyCheckbox({ label, className, tooltip, name, ...props }, ref) {
     return (
       <div className={style.row}>
         <input
-          id={label}
+          id={name}
+          name={name}
           type="checkbox"
           className={classNames(style.input)}
           ref={ref}
           {...props}
         />
-        <label htmlFor={label} className={classNames(style.label, className)}>
+        <label htmlFor={name} className={classNames(style.label, className)}>
           {label}
         </label>
         {tooltip && (

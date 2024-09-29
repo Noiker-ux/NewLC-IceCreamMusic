@@ -6,6 +6,7 @@ export default interface IMyCheckboxProps
     HTMLInputElement
   > {
   label: string;
+  name?: string;
   checked?: boolean;
   tooltip?: {
     id: string;
