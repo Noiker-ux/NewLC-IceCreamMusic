@@ -203,6 +203,7 @@ export function TrackItem({ fileName }: ITrackItem) {
           />
           <MyCheckbox
             className={style.check}
+            name={`InstantGratification-${fileName}`}
             label={"Instant Gratification"}
             tooltip={{
               id: "InstantGratification",
@@ -221,6 +222,7 @@ export function TrackItem({ fileName }: ITrackItem) {
             />
           )}
           <MyCheckbox
+            name={`Focus-track-${fileName}`}
             label={"Focus track"}
             tooltip={{
               id: "Focus track",
@@ -242,6 +244,7 @@ export function TrackItem({ fileName }: ITrackItem) {
           </div>
           <MyCheckbox
             label={"Explicit Content"}
+            name={`Explicit-Content-${fileName}`}
             tooltip={{
               id: "Explicit Content",
               text: "Версия трека, содержащая ненормативную и потенциально оскорбительную лексику",
@@ -249,6 +252,7 @@ export function TrackItem({ fileName }: ITrackItem) {
           />
           <MyCheckbox
             label={"Live"}
+            name={`Live-${fileName}`}
             tooltip={{
               id: "Live",
               text: "Запись живого выступления, если в названии трека вы уже указали Live, можете не выбирать этот параметр",
@@ -256,6 +260,7 @@ export function TrackItem({ fileName }: ITrackItem) {
           />
           <MyCheckbox
             label={"Cover"}
+            name={`Cover-${fileName}`}
             tooltip={{
               id: "Cover",
               text: "Версия трека, исполненная другим артистом",
@@ -263,6 +268,7 @@ export function TrackItem({ fileName }: ITrackItem) {
           />
           <MyCheckbox
             label={"Remix"}
+            name={`Remix-${fileName}`}
             tooltip={{
               id: "Remix",
               text: "Альтернативная версия выпущенного ранее трека",
@@ -270,6 +276,7 @@ export function TrackItem({ fileName }: ITrackItem) {
           />
           <MyCheckbox
             label={"Instrumental"}
+            name={`Instrumental-${fileName}`}
             tooltip={{
               id: "Instrumental",
               text: "Версия трека без вокальной партии",
