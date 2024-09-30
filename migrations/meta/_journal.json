@@ -113,6 +113,34 @@
       "when": 1727377607544,
       "tag": "0015_elite_thunderbird",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1727697813225,
+      "tag": "0016_fresh_night_thrasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1727699059422,
+      "tag": "0017_medical_lady_bullseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1727706029917,
+      "tag": "0018_smart_hardball",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1727710549313,
+      "tag": "0019_supreme_jane_foster",
+      "breakpoints": true
     }
   ]
 }

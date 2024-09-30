@@ -7,15 +7,13 @@ import classNames from "classnames";
 import MyText from "../MyText/MyText";
 
 const MyTextArea = forwardRef<HTMLInputElement, IMyTextArea>(
-  function MyTextArea({ className, label, ...props }, ref) {
+  function MyTextArea({ className, label, value, ...props }, ref) {
     return (
       <label className={className} htmlFor="textarea">
         <MyText className={style.label}>{label}</MyText>
-        <textarea
-          id="textarea"
-          className={style.textarea}
-          {...props}
-        ></textarea>
+        <textarea id="textarea" className={style.textarea} {...props}>
+          {value}
+        </textarea>
       </label>
     );
   }

@@ -12,6 +12,13 @@ RUN npm run build
 
 FROM base as main
 
-COPY --from=build /app /
+WORKDIR /app
 
-EXPOSE 
+COPY --from=build /app/.next ./.next
+
+COPY --from=build /app/dist ./dist
+
+COPY --from=build /app/package.json ./
+
+RUN npm ci
+

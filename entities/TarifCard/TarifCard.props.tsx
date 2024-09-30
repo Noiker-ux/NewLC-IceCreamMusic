@@ -11,4 +11,5 @@ export default interface ITarifCard
   desc: string;
   price: number;
   markers: string[];
+  purchaseUrl: string;
 }

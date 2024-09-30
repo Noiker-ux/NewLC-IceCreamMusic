@@ -5,7 +5,7 @@ import TarifTable from "@/entities/TarifTable/TarifTable";
 import ITarifTable, {
   ArrayTarifTable,
 } from "@/entities/TarifTable/TarifTable.props";
-import { premiumPlans } from "@/helpers/premiumPlans";
+import { premiumPlansArray } from "@/helpers/premiumPlans";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 import TopMine from "@/public/assets/TopMine.svg";
 import { DynamicSvg } from "@/shared/DynamicSvg/DynamicSvg";
@@ -45,8 +45,8 @@ export default function TarifPage() {
       <MusicServices />
       <hr className={style.sepparator} />
       <div className={style.tarifs}>
-        {premiumPlans.map((plan) => {
-          const { src, border, desc, markers, name, price } = plan;
+        {premiumPlansArray.map((plan) => {
+          const { src, border, desc, markers, name, price, system_name } = plan;
           return (
             <TarifCard
               icon={<DynamicSvg name={src} className={style.icon} />}
@@ -56,6 +56,7 @@ export default function TarifPage() {
               name={name}
               price={price}
               key={src}
+              purchaseUrl={`/purchase/subscription/${system_name}`}
             />
           );
         })}

@@ -1,4 +1,4 @@
-export const premiumPlans = [
+export const premiumPlansArray = [
   {
     src: "arrowsUp1",
     name: "Стандарт",
@@ -42,3 +42,10 @@ export const premiumPlans = [
     system_name: "professional",
   },
 ] as const;
+
+export const premiumPlans: Record<
+  (typeof premiumPlansArray)[number]["system_name"],
+  (typeof premiumPlansArray)[number]
+> = premiumPlansArray.reduce((result, p) => {
+  return { ...result, [p.system_name]: p };
+}, {} as any);

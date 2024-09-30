@@ -1,30 +1,71 @@
 "use client";
-import { useState } from "react";
-import ITrackItem from "./TrackItem.props";
-import style from "./TrackItem.module.css";
-import ArrowIcon from "../../../public/InfoIcon/arrow.svg";
-import classNames from "classnames";
-import MyInput from "@/shared/MyInput/MyInput";
-import MyTitle from "@/shared/MyTitle/MyTitle";
-import MyText from "@/shared/MyText/MyText";
-import MySelect from "@/shared/MySelect/MySelect";
-import { allRoles } from "@/helpers/allRoles";
-import MyCheckbox from "@/shared/MyCheckbox/MyCheckbox";
-import { allLanguages } from "@/helpers/allLanguages";
-import MyTextArea from "@/shared/MyTextArea/MyTextArea";
-import MyInpFile from "@/shared/MyInpFile/MyInpFile";
-import MyFile from "@/shared/MyFile/MyFile";
 
-export function TrackItem({ fileName }: ITrackItem) {
+// TODO ОГРОМНЫЙ ТЕХ. ДОЛГ НЕОБХОДИЫМЫ ПРАВКИ КАК МОЖНО СКОРЕЕ
+
+import { allLanguages } from "@/helpers/allLanguages";
+import { allRoles } from "@/helpers/allRoles";
+import { TReleaseForm } from "@/schema/release.schema";
+import MyCheckbox from "@/shared/MyCheckbox/MyCheckbox";
+import MyFile from "@/shared/MyFile/MyFile";
+import MyInput from "@/shared/MyInput/MyInput";
+import MySelect from "@/shared/MySelect/MySelect";
+import IMySelectProps from "@/shared/MySelect/MySelect.props";
+import MyText from "@/shared/MyText/MyText";
+import MyTextArea from "@/shared/MyTextArea/MyTextArea";
+import MyTitle from "@/shared/MyTitle/MyTitle";
+import classNames from "classnames";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
+import style from "./TrackItem.module.css";
+import ITrackItem from "./TrackItem.props";
+
+export function TrackItem({ fileName, trackIndex }: ITrackItem) {
   const [detail, setDetail] = useState<boolean>(false);
   const [persons, setPersons] = useState([{ id: 1, person: "", role: "" }]);
+  const [language, setLanguage] = useState<IMySelectProps["value"]>();
+
   const [showInstantGratification, setShowInstantGratification] =
     useState<boolean>(false);
 
+  const { getValues, setValue, watch } = useFormContext<TReleaseForm>();
+
   const handleDeleteRole = (idx: number) => {
-    setPersons(() => {
-      return persons.filter((e) => e.id != idx);
+    setPersons([...persons.slice(0, idx), ...persons.slice(idx + 1)]);
+  };
+
+  const track = watch("tracks")[trackIndex];
+
+  const handleChangeRole = (
+    idx: number,
+    newValue: Partial<{ person: string; role: string }>
+  ) => {
+    handleTrackChange({
+      roles: [
+        ...track.roles.slice(0, idx),
+        {
+          ...(track.roles.at(idx) as { person: string; role: string }),
+          ...newValue,
+        },
+        ...track.roles.slice(idx + 1),
+      ],
     });
+  };
+
+  const handleTrackChange = (
+    partialTrack: Partial<TReleaseForm["tracks"][number]>
+  ) => {
+    const oldTracks = Array.from(getValues("tracks"));
+
+    const newTrack: TReleaseForm["tracks"][number] = {
+      ...track,
+      ...partialTrack,
+    };
+
+    setValue("tracks", [
+      ...oldTracks.slice(0, trackIndex),
+      newTrack,
+      ...oldTracks.slice(trackIndex + 1),
+    ]);
   };
 
   return (
@@ -33,7 +74,7 @@ export function TrackItem({ fileName }: ITrackItem) {
         <div
           className={classNames(style.arrow, { [style.arrow_open]: detail })}
         ></div>
-        {fileName}
+        {track.track.name}
       </div>
 
       <div className={classNames(style.detail, { [style.open]: detail })}>
@@ -50,6 +91,8 @@ export function TrackItem({ fileName }: ITrackItem) {
               label={"Название трека"}
               inpLk
               placeholder="Введите название трека"
+              value={track.title}
+              onChange={(e) => handleTrackChange({ title: e.target.value })}
               tooltip={{
                 id: `trackName-${fileName}`,
                 text: "Наименование на языках, использующих кириллицу, не должны быть представлены на транслите, если вы планируете отгрузку в Apple Music",
@@ -59,6 +102,8 @@ export function TrackItem({ fileName }: ITrackItem) {
             <MyInput
               label={"Подзаголовок"}
               inpLk
+              value={track.subtitle}
+              onChange={(e) => handleTrackChange({ subtitle: e.target.value })}
               tooltip={{
                 id: `trackSubName-${fileName}`,
                 text: "Дополнительное название, например: Deluxe Edition, Remix, Acoustic Version. Если дополнительного названия нет, оставьте поле пустым",
@@ -81,6 +126,8 @@ export function TrackItem({ fileName }: ITrackItem) {
             <MyInput
               label={"ISRC"}
               inpLk
+              value={String(track.isrc ?? "")}
+              onChange={(e) => handleTrackChange({ isrc: e.target.value })}
               placeholder="Введите ISRC"
               tooltip={{
                 id: `trackName-${fileName}`,
@@ -91,6 +138,10 @@ export function TrackItem({ fileName }: ITrackItem) {
             <MyInput
               label={"Код партнера"}
               inpLk
+              value={track.partner_code}
+              onChange={(e) =>
+                handleTrackChange({ partner_code: e.target.value })
+              }
               tooltip={{
                 id: `trackSubName-${fileName}`,
                 text: "Ваш собственный код релиза. Укажите его для получения в финансовых отчетах",
@@ -114,19 +165,26 @@ export function TrackItem({ fileName }: ITrackItem) {
             </MyText>
           </div>
           {persons &&
-            persons.map((p) => (
+            persons.map((p, i) => (
               <div key={p.id} className={style.row}>
                 <MyInput
                   label={"Имя персоны"}
                   placeholder="Введите имя персоны"
                   inpLk
                   type={"text"}
+                  value={Array.from(track.roles).at(i)?.person}
+                  onChange={(e) =>
+                    handleChangeRole(i, { person: e.target.value })
+                  }
                 />
                 <div className={style.w30}>
                   <MySelect
                     className={style.select}
                     label={"Выберите роль"}
                     options={allRoles}
+                    onValueChange={({ value }) => {
+                      handleChangeRole(i, { role: value });
+                    }}
                   />
                 </div>
                 <div
@@ -170,6 +228,10 @@ export function TrackItem({ fileName }: ITrackItem) {
                 text: "Укажите долю. Если авторов несколько укажите сумму долей",
               }}
               type={"text"}
+              value={track.author_rights}
+              onChange={(e) =>
+                handleTrackChange({ author_rights: e.target.value })
+              }
             />
             <MyInput
               label={"Смежные права"}
@@ -200,6 +262,10 @@ export function TrackItem({ fileName }: ITrackItem) {
             }}
             placeholder="20:00"
             type={"text"}
+            value={track.preview_start}
+            onChange={(e) =>
+              handleTrackChange({ preview_start: e.target.value })
+            }
           />
           <MyCheckbox
             className={style.check}
@@ -209,9 +275,13 @@ export function TrackItem({ fileName }: ITrackItem) {
               id: "InstantGratification",
               text: "Дата, когда открывается возможность прослушать часть треков с альбома (до 50%). Указанная дата должна быть позже даты предзаказа, но не ранее даты старта на площадках. Поддерживают площадки: iTunes, Apple Music, Яндекс Музыка и YouTube Music",
             }}
-            onChange={() =>
-              setShowInstantGratification(!showInstantGratification)
-            }
+            checked={showInstantGratification}
+            onChange={(e) => {
+              if (showInstantGratification) {
+                handleTrackChange({ instant_gratification: undefined });
+              }
+              setShowInstantGratification(!showInstantGratification);
+            }}
           />
           {showInstantGratification && (
             <MyInput
@@ -219,11 +289,19 @@ export function TrackItem({ fileName }: ITrackItem) {
               label={"Выберите дату"}
               inpLk
               type={"date"}
+              value={track.instant_gratification}
+              onChange={(e) =>
+                handleTrackChange({ instant_gratification: e.target.value })
+              }
             />
           )}
           <MyCheckbox
             name={`Focus-track-${fileName}`}
             label={"Focus track"}
+            checked={!!track.focus}
+            onChange={() => {
+              handleTrackChange({ focus: !!!track.focus });
+            }}
             tooltip={{
               id: "Focus track",
               text: "Простой способ выделить лучшее из лучшего. Отметьте трек, к которому хотите привлечь внимание слушателя. Поддерживает только VK Музыка",
@@ -245,6 +323,8 @@ export function TrackItem({ fileName }: ITrackItem) {
           <MyCheckbox
             label={"Explicit Content"}
             name={`Explicit-Content-${fileName}`}
+            checked={!!track.explicit}
+            onChange={() => handleTrackChange({ explicit: !!!track.explicit })}
             tooltip={{
               id: "Explicit Content",
               text: "Версия трека, содержащая ненормативную и потенциально оскорбительную лексику",
@@ -253,6 +333,8 @@ export function TrackItem({ fileName }: ITrackItem) {
           <MyCheckbox
             label={"Live"}
             name={`Live-${fileName}`}
+            checked={!!track.live}
+            onChange={() => handleTrackChange({ live: !!!track.live })}
             tooltip={{
               id: "Live",
               text: "Запись живого выступления, если в названии трека вы уже указали Live, можете не выбирать этот параметр",
@@ -261,6 +343,8 @@ export function TrackItem({ fileName }: ITrackItem) {
           <MyCheckbox
             label={"Cover"}
             name={`Cover-${fileName}`}
+            checked={!!track.cover}
+            onChange={() => handleTrackChange({ cover: !!!track.cover })}
             tooltip={{
               id: "Cover",
               text: "Версия трека, исполненная другим артистом",
@@ -269,6 +353,8 @@ export function TrackItem({ fileName }: ITrackItem) {
           <MyCheckbox
             label={"Remix"}
             name={`Remix-${fileName}`}
+            checked={!!track.remix}
+            onChange={() => handleTrackChange({ remix: !!!track.remix })}
             tooltip={{
               id: "Remix",
               text: "Альтернативная версия выпущенного ранее трека",
@@ -277,6 +363,10 @@ export function TrackItem({ fileName }: ITrackItem) {
           <MyCheckbox
             label={"Instrumental"}
             name={`Instrumental-${fileName}`}
+            checked={!!track.instrumental}
+            onChange={() =>
+              handleTrackChange({ instrumental: !!!track.instrumental })
+            }
             tooltip={{
               id: "Instrumental",
               text: "Версия трека без вокальной партии",
@@ -298,6 +388,11 @@ export function TrackItem({ fileName }: ITrackItem) {
             </MyText>
             <MySelect
               label={"Язык трека"}
+              value={language}
+              onValueChange={(newLang) => {
+                handleTrackChange({ language: newLang.value });
+                setLanguage(newLang);
+              }}
               options={[
                 { value: "Без слов", label: "Без слов" },
                 ...allLanguages,
@@ -310,7 +405,11 @@ export function TrackItem({ fileName }: ITrackItem) {
               Ознакомьтесь с рекомендациями по подготовке и загрузке этого типа
               контента.
             </MyText>
-            <MyTextArea label={"Введите текст трека"} />
+            <MyTextArea
+              label={"Введите текст трека"}
+              value={String(track.text ?? "")}
+              onChange={(e) => handleTrackChange({ text: e.target.value })}
+            />
             <MyTitle className={style.mt10} Tag={"h4"}>
               Синхронизированный текст трека
             </MyTitle>
@@ -318,7 +417,13 @@ export function TrackItem({ fileName }: ITrackItem) {
               Получите дополнительный доход и ещё больше внимания на площадках.
               Формат: .ttml
             </MyText>
-            <MyFile />
+            <MyFile
+              onChange={(e) =>
+                handleTrackChange({
+                  text_sync: Array.from(e.target.files ?? []).at(0),
+                })
+              }
+            />
             <MyTitle className={style.mt10} Tag={"h4"}>
               Добавление рингтона
             </MyTitle>
@@ -326,7 +431,13 @@ export function TrackItem({ fileName }: ITrackItem) {
               Формат: .wav, .flac. <br />
               Длина: от 5 до 29.99 сек.
             </MyText>
-            <MyFile />
+            <MyFile
+              onChange={(e) =>
+                handleTrackChange({
+                  ringtone: Array.from(e.target.files ?? []).at(0),
+                })
+              }
+            />
             <MyTitle className={style.mt10} Tag={"h4"}>
               Загрузка видео
             </MyTitle>
@@ -335,7 +446,13 @@ export function TrackItem({ fileName }: ITrackItem) {
               <br />
               Максимальный размер: не более 6 ГБ
             </MyText>
-            <MyFile />
+            <MyFile
+              onChange={(e) =>
+                handleTrackChange({
+                  video: Array.from(e.target.files ?? []).at(0),
+                })
+              }
+            />
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ const TarifCard = ({
   price,
   icon,
   border,
+  purchaseUrl,
 }: ITarifCard) => {
   return (
     <div className={classNames(style.TarifCard, { [style.border]: border })}>
@@ -33,7 +34,9 @@ const TarifCard = ({
           </li>
         ))}
       </ul>
-      <button className={style.btn}>Оформить за {price} ₽</button>
+      <Link href={purchaseUrl}>
+        <button className={style.btn}>Оформить за {price} ₽</button>
+      </Link>
       <MyText className={style.yourSuccess}>
         Совершая покупку вы ознакомились и принимаете условия{" "}
         <Link href={"#"} className={style.href}>

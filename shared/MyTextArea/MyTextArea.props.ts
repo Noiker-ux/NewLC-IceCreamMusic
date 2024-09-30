@@ -1,8 +1,8 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { DetailedHTMLProps, TextareaHTMLAttributes } from "react";
 
 export default interface IMyTextArea
   extends DetailedHTMLProps<
-    HTMLAttributes<HTMLTextAreaElement>,
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
     HTMLTextAreaElement
   > {
   label: string;

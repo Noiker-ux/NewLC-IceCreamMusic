@@ -14,7 +14,7 @@ export const schema = pgSchema("icecream");
 export const subscriptionLevels = schema.enum("subscribe_level", [
   "standard",
   "professional",
-  "premium",
+  "enterprise",
 ]);
 
 export const users = schema.table("user", {
@@ -35,10 +35,10 @@ export const users = schema.table("user", {
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
-  releases: many(release, { relationName: "releases" }),
-  verifications: many(verification, { relationName: "verifications" }),
-  orders: many(orders, { relationName: "orders" }),
-  payment_methods: many(payment_method, { relationName: "payment_methods" }),
+  releases: many(release),
+  verifications: many(verification),
+  orders: many(orders),
+  payment_methods: many(payment_method),
 }));
 
 export const news = schema.table("news", {
@@ -54,6 +54,47 @@ export const faq = schema.table("faq", {
   question: text("question").notNull(),
   answer: text("answer").notNull(),
 });
+
+export const verificationStatuses = schema.enum("verification_status", [
+  "moderating",
+  "approved",
+  "rejected",
+]);
+
+export const verification = schema.table("verification", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  firstName: text("firstName").notNull(),
+  middleName: text("middleName").notNull(),
+  lastName: text("lastName").notNull(),
+
+  birthDate: timestamp("birthDate").notNull(),
+  birthPlace: text("birthPlace").notNull(),
+
+  tel: text("tel").notNull(),
+
+  passSeries: text("passSeries").notNull(),
+  passNumber: text("passNum").notNull(),
+  getDate: timestamp("getDate").notNull(),
+  givenBy: text("givenBy").notNull(),
+  subunitCode: text("subunitCode").notNull(),
+  registrationAddress: text("registrationAddress").notNull(),
+
+  accountNumber: text("accountNumber").notNull(),
+  bankName: text("bankName").notNull(),
+
+  status: verificationStatuses("status").notNull().default("moderating"),
+  rejectReason: text("rejectReason"),
+});
+
+export const verificationRelations = relations(verification, ({ one }) => ({
+  user: one(users, {
+    fields: [verification.userId],
+    references: [users.id],
+  }),
+}));
 
 export const releaseTypes = schema.enum("release_type", [
   "single",
@@ -91,9 +132,11 @@ export const release = schema.table("release", {
 
   area: jsonb("area"),
 
-  track: text("track").notNull(),
-
   confirmed: boolean("confirmed").notNull().default(false),
+
+  status: verificationStatuses("status").notNull().default("moderating"),
+
+  rejectReason: text("rejectReason").notNull(),
 });
 
 export const releaseRelations = relations(release, ({ one }) => ({
@@ -103,40 +146,55 @@ export const releaseRelations = relations(release, ({ one }) => ({
   }),
 }));
 
-export const verificationStatuses = schema.enum("verification_status", [
-  "moderating",
-  "approved",
-  "rejected",
-]);
-
-export const verification = schema.table("verification", {
+export const track = schema.table("track", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  firstName: text("firstName").notNull(),
-  middleName: text("middleName").notNull(),
-  lastName: text("lastName").notNull(),
-  birthDate: timestamp("birthDate").notNull(),
-  birthPlace: text("birthPlace").notNull(),
-  tel: text("tel").notNull(),
-  passSeries: text("passSeries").notNull(),
-  passNumber: text("passNum").notNull(),
-  getDate: timestamp("getDate").notNull(),
-  givenBy: text("givenBy").notNull(),
-  subunitCode: text("subunitCode").notNull(),
-  registrationAddress: text("registrationAddress").notNull(),
-  accountNumber: text("accountNumber").notNull(),
-  bankName: text("bankName").notNull(),
-  status: verificationStatuses("status").notNull().default("moderating"),
-});
 
-export const verificationRelations = relations(verification, ({ one }) => ({
-  user: one(users, {
-    fields: [verification.userId],
-    references: [users.id],
-  }),
-}));
+  releaseId: uuid("releaseId")
+    .notNull()
+    .references(() => release.id, { onDelete: "cascade", onUpdate: "cascade" }),
+
+  fileType: text("fileType").notNull(),
+
+  title: text("title").notNull(),
+
+  subtitle: text("subtitle").notNull(),
+
+  isrc: text("isrc"),
+
+  author_rights: text("author_rights").notNull(),
+
+  partner_code: text("partner_code").notNull(),
+
+  roles: jsonb("roles"),
+
+  preview_start: text("preview_start").notNull(),
+
+  instant_gratification: timestamp("date"),
+
+  focus: boolean("focus").notNull().default(false),
+
+  explicit: boolean("explicit").notNull().default(false),
+
+  live: boolean("live").notNull().default(false),
+
+  cover: boolean("cover").notNull().default(false),
+
+  remix: boolean("remix").notNull().default(false),
+
+  instrumental: boolean("instrumental").notNull().default(false),
+
+  language: text("language").notNull(),
+
+  text: text("text"),
+
+  track: jsonb("track_version"),
+
+  text_sync: text("text_sync"),
+
+  ringtone: text("ringtone"),
+
+  video: text("video"),
+});
 
 export const orderTypes = schema.enum("order_type", [
   "subscription",
@@ -174,6 +232,5 @@ export const payment_methodRelations = relations(payment_method, ({ one }) => ({
   user: one(users, {
     fields: [payment_method.userId],
     references: [users.id],
-    relationName: "user",
   }),
 }));

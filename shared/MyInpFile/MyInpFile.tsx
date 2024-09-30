@@ -1,37 +1,42 @@
 "use client";
 
-import {
-  ChangeEvent,
-  forwardRef,
-  MouseEvent,
-  MouseEventHandler,
-  useState,
-} from "react";
-import style from "./MyInpFile.module.css";
 import classNames from "classnames";
-import IMyInpFile from "./MyInpFile.props";
-import MyTitle from "../MyTitle/MyTitle";
-import MyText from "../MyText/MyText";
 import Image from "next/image";
+import { ChangeEvent, forwardRef, MouseEvent, useRef, useState } from "react";
+import { mergeRefs } from "react-merge-refs";
+import MyText from "../MyText/MyText";
+import MyTitle from "../MyTitle/MyTitle";
+import style from "./MyInpFile.module.css";
+import IMyInpFile from "./MyInpFile.props";
 
 const MyInpFile = forwardRef<HTMLInputElement, IMyInpFile>(function Input(
   { className, onFileChange, ...props },
   ref
 ) {
-  const [previewFile, setPrviewFile] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showClose, setShowClose] = useState<boolean>(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleLoadFile = (e: ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
-    onFileChange && onFileChange(e.target.files ? e.target.files : null);
+    onFileChange && onFileChange(e.target.files);
     if (e.target.files && e.target.files[0])
-      setPrviewFile(URL.createObjectURL(e.target.files[0]));
+      setPreviewUrl(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleLeaveFile = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+
+    const dataTransfer = new DataTransfer();
+
+    if (inputRef.current) {
+      inputRef.current.files = dataTransfer.files;
+    }
+
     onFileChange && onFileChange(null);
-    setPrviewFile(null);
+
+    setPreviewUrl(null);
   };
 
   return (
@@ -39,10 +44,10 @@ const MyInpFile = forwardRef<HTMLInputElement, IMyInpFile>(function Input(
       <label htmlFor="preview">
         <div
           className={classNames(style.previewWrapper, {
-            [style.noBorder]: previewFile,
+            [style.noBorder]: previewUrl,
           })}
         >
-          {!previewFile && (
+          {!previewUrl && (
             <>
               <MyTitle className={style.title} Tag="h4">
                 Выберите обложку
@@ -51,14 +56,14 @@ const MyInpFile = forwardRef<HTMLInputElement, IMyInpFile>(function Input(
             </>
           )}
 
-          {previewFile && (
+          {previewUrl && (
             <div
               onMouseEnter={() => setShowClose(true)}
               onMouseLeave={() => setShowClose(false)}
             >
               <Image
                 className={style.previewImage}
-                src={previewFile}
+                src={previewUrl}
                 alt="Превью"
                 width={225}
                 height={225}
@@ -70,14 +75,14 @@ const MyInpFile = forwardRef<HTMLInputElement, IMyInpFile>(function Input(
           accept=".jpg, .png"
           {...props}
           onChange={handleLoadFile}
-          ref={ref}
+          ref={mergeRefs([ref, inputRef])}
           className={style.input}
           id="preview"
           type="file"
         />
       </label>
 
-      {previewFile && (
+      {previewUrl && (
         <div
           className={classNames(style.lines, { [style.show]: showClose })}
           onClick={handleLeaveFile}
