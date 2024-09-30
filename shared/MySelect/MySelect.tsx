@@ -1,14 +1,13 @@
 "use client";
 
-import { forwardRef } from "react";
-import style from "./MySelect.module.css";
-import IMySelectProps from "./MySelect.props";
 import classNames from "classnames";
+import { forwardRef } from "react";
 import Select from "react-select";
-import { stat } from "fs";
-import MyText from "../MyText/MyText";
 import { Tooltip } from "react-tooltip";
 import IIcon from "../../public/InfoIcon/i.svg";
+import MyText from "../MyText/MyText";
+import style from "./MySelect.module.css";
+import IMySelectProps from "./MySelect.props";
 
 const MySelect = forwardRef<HTMLSelectElement, IMySelectProps>(
   function MySelect(

@@ -7,6 +7,7 @@ import { hashPassword } from "@/utils/hashPassword";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { sendSignUpConfirmEmail } from "./email";
+import { getAuthSession } from "./auth";
 
 export async function registerUser(userData: TSignUpClientSchema) {
   const { email, name, password } = signUpSchema.parse(userData);
@@ -39,11 +40,36 @@ export async function registerUser(userData: TSignUpClientSchema) {
   return redirect("/signup/complete");
 }
 
-// export async function updateUser(id: string, data: Partial<TSelectUserSchema>) {
-//   await db
-//     .update(users)
-//     .set(data)
-//     .where(eq(users.id, id))
-//     .returning({ id: users.id });
-//   return "user updated";
-// }
+export async function isAdminUser() {
+  const session = await getAuthSession();
+
+  if (!session.user) {
+    return false;
+  }
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+  });
+
+  if (!user) return false;
+
+  return user.isAdmin;
+}
+
+export async function getUserSubscriptionLevel() {
+  const session = await getAuthSession();
+
+  if (!session.user) {
+    return false;
+  }
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, session.user.id),
+  });
+
+  if (!user) return false;
+
+  if (user.isSubscribed) return user.subscriptionLevel ?? false;
+
+  return false;
+}

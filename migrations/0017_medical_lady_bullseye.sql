@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."track" RENAME COLUMN "sibtitle" TO "subtitle";

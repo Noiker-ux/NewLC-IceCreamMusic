@@ -1,15 +1,19 @@
-//@ts-nocheck
+// @ts-nocheck
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 import style from "./DragAndDropFile.module.css";
 import classNames from "classnames";
-import MyText from "../MyText/MyText";
+import MyText from "../../../shared/MyText/MyText";
+import { useFormContext } from "react-hook-form";
+import { TReleaseForm, TTrackForm } from "@/schema/release.schema";
 
 const DragAndDropFile = ({ setTracks, tracks }) => {
   const [drag, setDrag] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+
+  const { setValue, getValues } = useFormContext<TReleaseForm>();
 
   const dragStartHandler = (e: DragEvent) => {
     e.preventDefault();
@@ -21,32 +25,68 @@ const DragAndDropFile = ({ setTracks, tracks }) => {
     setDrag(false);
   };
 
-  const handleLoadFile = (e: ChangeEventHandler<HTMLInputElement>) => {
+  const handleLoadFile = (e: ChangeEvent<HTMLInputElement>) => {
     setDrag(false);
-    let newFiles = [...e.target.files];
-    if (tracks) {
-      newFiles = [...tracks, ...newFiles];
-    }
-    setTracks([...newFiles]);
+
+    let newFiles = Array.from(e.target.files ?? []);
+
+    const tracks = getValues("tracks");
+
+    let newTracks = [
+      ...Array.from(tracks ?? []),
+      ...newFiles.map(
+        (f) =>
+          ({
+            language: "",
+            partner_code: "",
+            preview_start: new Date().toISOString(),
+            roles: [],
+            sibtitle: "",
+            title: "",
+            track: f,
+          } as TTrackForm)
+      ),
+    ];
+
+    setValue("tracks", newTracks);
   };
 
   const onDropHandler = (e: DragEvent) => {
     e.preventDefault();
+
     let withoutErrors = false;
+
     setError(false);
+
     setDrag(false);
 
-    withoutErrors = [...e.dataTransfer?.files].every((track) => {
+    const newFiles = Array.from(e.dataTransfer?.files ?? []);
+
+    withoutErrors = newFiles.every((track) => {
       const typeTrack = track.type.split("/")[1];
       return typeTrack == "wav" || typeTrack == "flac";
     });
 
     if (withoutErrors) {
-      let newFiles = [...e.dataTransfer?.files];
-      if (tracks) {
-        newFiles = [...tracks, ...newFiles];
-      }
-      setTracks([...newFiles]);
+      const tracks = getValues("tracks");
+
+      const newTracks = [
+        ...Array.from(tracks ?? []),
+        ...newFiles.map(
+          (f) =>
+            ({
+              language: "",
+              partner_code: "",
+              preview_start: new Date().toISOString(),
+              roles: [],
+              sibtitle: "",
+              title: "",
+              track: f,
+            } as TTrackForm)
+        ),
+      ];
+
+      setValue("tracks", newTracks);
     } else {
       setError(true);
     }

@@ -8,12 +8,17 @@ import { getAuthSession } from "./auth";
 import { getFullUrl } from "./url";
 import { orders } from "@/db/schema";
 import { premiumPlans } from "@/helpers/premiumPlans";
+import {
+  currency,
+  calculateSubscriptionEstimate,
+  calculateReleaseEstimate,
+} from "@/utils/calculateServices";
 
 export async function makePayment(
   forWhat:
     | {
         type: "subscription";
-        subscriptionLevel: (typeof premiumPlans)[number]["system_name"];
+        subscriptionLevel: keyof typeof premiumPlans;
       }
     | { type: "release"; releaseId: string },
   by: Payment["payment_method_data"]["type"]
@@ -32,21 +37,47 @@ export async function makePayment(
 
   let orderMetadata: Omit<typeof forWhat, "type"> = {};
 
+  let receiptItems: Payment["receipt"]["items"] = [];
+
+  let paymentDescription = "";
+
   if (forWhat.type === "release") {
+    paymentDescription = "Оплата дистрибуции релиза";
+
     returnPath = "/dashboard";
+
     orderMetadata = { releaseId: forWhat.releaseId };
+
+    receiptItems = await calculateReleaseEstimate(forWhat.releaseId);
   }
 
   if (forWhat.type === "subscription") {
+    paymentDescription = `Оплата подписки уровня "${
+      premiumPlans[forWhat.subscriptionLevel]
+    }"`;
+
     returnPath = "/dashboard/news";
+
     orderMetadata = { subscriptionLevel: forWhat.subscriptionLevel };
+
+    receiptItems = await calculateSubscriptionEstimate(
+      forWhat.subscriptionLevel
+    );
+  }
+
+  const receiptSumma = receiptItems.reduce((res, item) => {
+    return res + Number(item.amount.value);
+  }, 0);
+
+  if (receiptSumma < 1) {
+    return { success: false, message: "Smth went wrong" };
   }
 
   const payment = await checkout
     .createPayment({
       amount: {
-        value: "1000.00",
-        currency: "RUB",
+        value: receiptSumma.toFixed(2),
+        currency,
       },
       payment_method_data: {
         type: by,
@@ -55,21 +86,9 @@ export async function makePayment(
         type: "redirect",
         return_url: `${urlOrigin}${returnPath}`,
       },
-      description: "payment test 1",
+      description: paymentDescription,
       receipt: {
-        items: [
-          {
-            description: "test 1",
-            quantity: "1.00",
-            amount: {
-              value: "1000.00",
-              currency: "RUB",
-            },
-            vat_code: 1,
-            payment_mode: "full_payment",
-            payment_subject: "service",
-          },
-        ],
+        items: receiptItems,
         tax_system_code: 1,
         customer: {
           email: session.user.email,

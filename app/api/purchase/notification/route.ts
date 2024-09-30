@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
 import { checkout } from "@/config/aquiring";
 import { db } from "@/db";
-import { orders, release, users } from "@/db/schema";
+import { orders, payment_method, release, users } from "@/db/schema";
 import {
   releaseMetadataSchema,
   subscriptionMetadataSchema,
 } from "@/schema/order.schema";
 import { WebHookEvents } from "@a2seven/yoo-checkout";
 import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const goodResponse = NextResponse.json(
@@ -47,13 +47,27 @@ export async function POST(req: Request) {
 
   const order = await db.query.orders.findFirst({
     where: (ord, { eq }) => eq(ord.id, data.object.id),
-    with: {
-      user: true,
-    },
   });
 
   if (!order) {
     return badResponse;
+  }
+
+  if (payment.payment_method.saved) {
+    await db
+      .update(payment_method)
+      .set({ isDefault: false })
+      .where(eq(payment_method.userId, order.userId));
+
+    await db
+      .insert(payment_method)
+      .values({
+        userId: order.userId,
+        id: payment.payment_method.id,
+        metadata: payment.payment_method.card,
+        isDefault: true,
+      })
+      .onConflictDoNothing({ target: payment_method.id });
   }
 
   if (order.confirmed) {

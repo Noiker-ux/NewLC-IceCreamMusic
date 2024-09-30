@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."track" ADD COLUMN "author_rights" text NOT NULL;
