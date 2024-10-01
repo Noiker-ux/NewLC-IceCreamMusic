@@ -11,9 +11,11 @@ const MyTextArea = forwardRef<HTMLInputElement, IMyTextArea>(
     return (
       <label className={className} htmlFor="textarea">
         <MyText className={style.label}>{label}</MyText>
-        <textarea id="textarea" className={style.textarea} {...props}>
-          {value}
-        </textarea>
+        <textarea
+          id="textarea"
+          className={style.textarea}
+          {...props}
+        ></textarea>
       </label>
     );
   }

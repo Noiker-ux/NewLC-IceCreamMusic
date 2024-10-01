@@ -24,6 +24,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import IMySelectProps from "../../shared/MySelect/MySelect.props";
 import style from "./SendRelease.module.css";
 import { TrackItem } from "./TrackItem/TrackItem";
+import FormDataUtils from "formdata-object-utils";
+import { uploadRelease } from "@/actions/release";
 
 const SendRelease = () => {
   const [showPlatforms, setShowPlatforms] = useState<boolean>(false);
@@ -64,16 +66,11 @@ const SendRelease = () => {
           className={style.form}
           onSubmit={handleSubmit(
             (data) => {
-              console.log(data);
-              // const sendingData = new FormData();
+              const { tracks, ...release } = data;
+              // release.area = JSON.stringify('area')
 
-              // const dataKeys = Object.keys(data);
-
-              // for (let key of dataKeys) {
-              //   sendingData.append(key, data[key]);
-              // }
-
-              // uploadRelease(sendingData).then(console.log);
+              // const releaseData = FormDataUtils.fromObj();
+              // const tracksData = tracks.map((t) => FormDataUtils.fromObj(t));
             },
             (e) => console.log(e)
           )}

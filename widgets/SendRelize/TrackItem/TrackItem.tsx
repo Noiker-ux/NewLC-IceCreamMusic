@@ -276,7 +276,7 @@ export function TrackItem({ fileName, trackIndex }: ITrackItem) {
               text: "Дата, когда открывается возможность прослушать часть треков с альбома (до 50%). Указанная дата должна быть позже даты предзаказа, но не ранее даты старта на площадках. Поддерживают площадки: iTunes, Apple Music, Яндекс Музыка и YouTube Music",
             }}
             checked={showInstantGratification}
-            onChange={(e) => {
+            onChange={() => {
               if (showInstantGratification) {
                 handleTrackChange({ instant_gratification: undefined });
               }

@@ -2,9 +2,12 @@
 
 import { minioS3 } from "@/config/s3";
 // import { releaseServerSchema } from "@/schema/release.schema";
+import FormDataUtils from "formdata-object-utils";
 
 export async function uploadRelease(data: FormData) {
-  const objectFromData: unknown = Object.fromEntries(data?.entries());
+  const objectFromData: unknown = FormDataUtils.toObj(data);
+
+  console.log(objectFromData);
 
   // const success = releaseServerSchema.safeParse(objectFromData);
 
