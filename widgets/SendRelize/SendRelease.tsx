@@ -7,7 +7,11 @@ import { allCountry } from "@/helpers/allCountry";
 import { allGenres } from "@/helpers/allGenres";
 import { allLanguages } from "@/helpers/allLanguages";
 import CloseIcon from "@/public/InfoIcon/close.svg";
-import { releaseFormSchema, TReleaseForm } from "@/schema/release.schema";
+import {
+  releaseFormSchema,
+  TReleaseForm,
+  TTrackForm,
+} from "@/schema/release.schema";
 import MyButton from "@/shared/MyButton/MyButton";
 import MyCheckbox from "@/shared/MyCheckbox/MyCheckbox";
 import MyInpFile from "@/shared/MyInpFile/MyInpFile";
@@ -24,6 +28,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import IMySelectProps from "../../shared/MySelect/MySelect.props";
 import style from "./SendRelease.module.css";
 import { TrackItem } from "./TrackItem/TrackItem";
+import FormDataUtils from "formdata-object-utils";
+import { uploadRelease } from "@/actions/release";
+import { objectToFormData } from "@/utils/formDataTobject";
 
 const SendRelease = () => {
   const [showPlatforms, setShowPlatforms] = useState<boolean>(false);
@@ -64,16 +71,28 @@ const SendRelease = () => {
           className={style.form}
           onSubmit={handleSubmit(
             (data) => {
-              console.log(data);
-              // const sendingData = new FormData();
+              const { tracks, ...release } = data;
 
-              // const dataKeys = Object.keys(data);
+              const releaseData = {
+                ...release,
+                area: JSON.stringify(release.area),
+                platforms: JSON.stringify(release.platforms),
+              };
 
-              // for (let key of dataKeys) {
-              //   sendingData.append(key, data[key]);
-              // }
+              const releaseFormData = objectToFormData(releaseData);
 
-              // uploadRelease(sendingData).then(console.log);
+              const tracksFormData = tracks.map((t: TTrackForm) => {
+                const trackData: Omit<typeof t, "roles"> & { roles: string } = {
+                  ...t,
+                  roles: JSON.stringify(t.roles),
+                };
+
+                return objectToFormData(trackData);
+              });
+
+              uploadRelease(releaseFormData, ...tracksFormData).then(
+                console.log
+              );
             },
             (e) => console.log(e)
           )}

@@ -42,13 +42,20 @@ export async function makePayment(
   let paymentDescription = "";
 
   if (forWhat.type === "release") {
+    const user = await db.query.users.findFirst({
+      where: (user, { eq }) => eq(user.id, session.user!.id!),
+    });
+
     paymentDescription = "Оплата дистрибуции релиза";
 
     returnPath = "/dashboard";
 
     orderMetadata = { releaseId: forWhat.releaseId };
 
-    receiptItems = await calculateReleaseEstimate(forWhat.releaseId);
+    receiptItems = await calculateReleaseEstimate(
+      forWhat.releaseId,
+      user?.subscriptionLevel ?? "none"
+    );
   }
 
   if (forWhat.type === "subscription") {

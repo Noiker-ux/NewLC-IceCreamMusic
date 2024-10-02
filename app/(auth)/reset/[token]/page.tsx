@@ -3,6 +3,7 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { unsealData } from "iron-session";
 import { redirect } from "next/navigation";
+// import { resetPassword } from "@/actions/auth";
 
 const wrongUrl = "/reset/wrong";
 
@@ -31,6 +32,8 @@ export default async function ResetPasswordPage({
   if (!user) {
     redirect(wrongUrl);
   }
+
+  // resetPassword();
 
   return <div>Reset Password</div>;
 }

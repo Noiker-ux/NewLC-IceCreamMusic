@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."release" ADD COLUMN "status" "icecream"."release_status" DEFAULT 'not_paid' NOT NULL;

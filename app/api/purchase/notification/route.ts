@@ -1,6 +1,7 @@
 import { checkout } from "@/config/aquiring";
 import { db } from "@/db";
 import { orders, payment_method, release, users } from "@/db/schema";
+import { premiumPlans } from "@/helpers/premiumPlans";
 import {
   releaseMetadataSchema,
   subscriptionMetadataSchema,
@@ -46,6 +47,9 @@ export async function POST(req: Request) {
   }
 
   const order = await db.query.orders.findFirst({
+    with: {
+      user: true,
+    },
     where: (ord, { eq }) => eq(ord.id, data.object.id),
   });
 
@@ -89,12 +93,18 @@ export async function POST(req: Request) {
       return internalResponse;
     }
 
-    const newRelease = await db
-      .update(release)
-      .set({
-        confirmed: true,
-      })
-      .where(eq(release.id, res.data.releaseId));
+    await db.transaction(async () => {
+      await db
+        .update(release)
+        .set({
+          confirmed: true,
+        })
+        .where(eq(release.id, res.data.releaseId));
+      await db
+        .update(orders)
+        .set({ confirmed: true })
+        .where(eq(orders.id, order.id));
+    });
   }
 
   if (order.type === "subscription") {
@@ -110,17 +120,19 @@ export async function POST(req: Request) {
       currentDate.setMonth(currentDate.getMonth() + 1)
     );
 
-    const newUser = await db.update(users).set({
-      isSubscribed: true,
-      subscriptionLevel: res.data.subscriptionLevel,
-      subscriptionExpires: expireDate,
+    await db.transaction(async () => {
+      await db.update(users).set({
+        isSubscribed: true,
+        subscriptionLevel: res.data.subscriptionLevel,
+        subscriptionExpires: expireDate,
+        freeReleases: premiumPlans[res.data.subscriptionLevel!].freeReleases,
+      });
+      await db
+        .update(orders)
+        .set({ confirmed: true })
+        .where(eq(orders.id, order.id));
     });
   }
-
-  const newOrder = await db
-    .update(orders)
-    .set({ confirmed: true })
-    .where(eq(orders.id, order.id));
 
   return goodResponse;
 }

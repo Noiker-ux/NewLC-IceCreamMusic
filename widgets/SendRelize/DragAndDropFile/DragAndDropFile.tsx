@@ -39,7 +39,7 @@ const DragAndDropFile = ({ setTracks, tracks }) => {
           ({
             language: "",
             partner_code: "",
-            preview_start: new Date().toISOString(),
+            preview_start: "",
             roles: [],
             sibtitle: "",
             title: "",

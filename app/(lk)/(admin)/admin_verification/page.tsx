@@ -1,9 +1,7 @@
-import StatisticBlock from "@/entities/AdminEntities/StatisticBlock/StatisticBlock";
-import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
-import style from "./page.module.css";
-import MultiTable from "@/widgets/MultiTable/MultiTable";
 import { db } from "@/db";
 import { verification } from "@/db/schema";
+import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
+import MultiTable from "@/widgets/MultiTable/MultiTable";
 import { eq } from "drizzle-orm";
 import MyText from "@/shared/MyText/MyText";
 import MyTitle from "@/shared/MyTitle/MyTitle";

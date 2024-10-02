@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."release" ADD COLUMN "status" "icecream"."verification_status" DEFAULT 'moderating' NOT NULL;
