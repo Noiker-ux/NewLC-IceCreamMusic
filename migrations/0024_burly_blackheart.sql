@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."release" DROP COLUMN IF EXISTS "status";

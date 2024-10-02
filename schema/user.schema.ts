@@ -4,8 +4,11 @@ import { z } from "zod";
 
 export const insertUserSchema = createInsertSchema(users);
 
-export const selectUserSchema = createSelectSchema(users).omit({
-  password: true,
+export const selectUserSchema = createSelectSchema(users).pick({
+  id: true,
+  email: true,
+  avatar: true,
+  name: true,
 });
 
 export type TInsertUserSchema = z.infer<typeof insertUserSchema>;

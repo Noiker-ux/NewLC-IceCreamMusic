@@ -11,6 +11,7 @@ export const premiumPlansArray = [
     ],
     border: false,
     system_name: "standard",
+    freeReleases: 1,
   },
   {
     src: "arrowsUp3",
@@ -27,6 +28,7 @@ export const premiumPlansArray = [
     ],
     border: true,
     system_name: "enterprise",
+    freeReleases: 6,
   },
   {
     src: "arrowsUp2",
@@ -40,6 +42,7 @@ export const premiumPlansArray = [
     ],
     border: false,
     system_name: "professional",
+    freeReleases: Infinity,
   },
 ] as const;
 

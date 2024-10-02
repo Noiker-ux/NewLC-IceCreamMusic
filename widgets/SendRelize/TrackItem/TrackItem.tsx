@@ -138,7 +138,7 @@ export function TrackItem({ fileName, trackIndex }: ITrackItem) {
             <MyInput
               label={"Код партнера"}
               inpLk
-              value={track.partner_code}
+              value={String(track.partner_code ?? "")}
               onChange={(e) =>
                 handleTrackChange({ partner_code: e.target.value })
               }

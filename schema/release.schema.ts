@@ -1,11 +1,10 @@
 import { release, track } from "@/db/schema";
 import { z } from "zod";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-zod";
 
 export const trackInsertSchema = createInsertSchema(track).omit({
   id: true,
   releaseId: true,
-  fileType: true,
 });
 
 export type TTrackInsert = z.infer<typeof trackInsertSchema>;
@@ -41,6 +40,12 @@ export const trackFormSchema = trackInsertSchema.extend({
       return file instanceof File;
     })
     .optional(),
+  video_shot: z
+    .any()
+    .refine((file: File) => {
+      return file instanceof File;
+    })
+    .optional(),
   instant_gratification: stringAsDateSchema.optional(),
   roles: z
     .object({
@@ -52,35 +57,38 @@ export const trackFormSchema = trackInsertSchema.extend({
 
 export type TTrackForm = z.infer<typeof trackFormSchema>;
 
-export const releaseInsertSchema = createInsertSchema(release).omit({
-  id: true,
-  authorId: true,
-  status: true,
-  rejectReason: true,
-});
+export const releaseInsertSchema = createInsertSchema(release);
 
 export type TReleaseInsert = z.infer<typeof releaseInsertSchema>;
 
-export const releaseFormSchema = releaseInsertSchema.extend({
-  preview: z.any().refine((file: File) => {
-    return file instanceof File && file.size < 30000000;
-  }),
+export const releaseFormSchema = releaseInsertSchema
+  .omit({
+    id: true,
+    authorId: true,
+    status: true,
+    rejectReason: true,
+    confirmed: true,
+  })
+  .extend({
+    preview: z.any().refine((file: File) => {
+      return file instanceof File && file.size < 30000000;
+    }),
 
-  area: z.object({
-    negate: z.boolean(),
-    data: z.string().array(),
-  }),
+    area: z.object({
+      negate: z.boolean(),
+      data: z.string().array(),
+    }),
 
-  platforms: z.string().array(),
+    platforms: z.string().array(),
 
-  tracks: trackFormSchema.array(),
+    tracks: trackFormSchema.array().min(1),
 
-  releaseDate: stringAsDateSchema,
+    releaseDate: stringAsDateSchema,
 
-  startDate: stringAsDateSchema,
+    startDate: stringAsDateSchema,
 
-  preorderDate: stringAsDateSchema,
-});
+    preorderDate: stringAsDateSchema,
+  });
 
 export type TReleaseForm = z.infer<typeof releaseFormSchema>;
 

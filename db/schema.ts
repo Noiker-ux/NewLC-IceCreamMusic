@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 
 import {
   boolean,
+  doublePrecision,
   jsonb,
   pgSchema,
   text,
@@ -32,6 +33,7 @@ export const users = schema.table("user", {
   isSubscribed: boolean("isSubscribed").notNull().default(false),
   subscriptionLevel: subscriptionLevels("subscribeLevel"),
   subscriptionExpires: timestamp("expiresAt"),
+  freeReleases: doublePrecision("freeReleases").notNull().default(0),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -114,7 +116,7 @@ export const release = schema.table("release", {
   subtitle: text("subtitle").notNull(),
   type: releaseTypes("type").notNull(),
 
-  performer: text("performer").notNull(),
+  performer: text("performer"),
   feat: text("feat"),
   remixer: text("remixer"),
 
@@ -122,7 +124,7 @@ export const release = schema.table("release", {
 
   upc: text("upc"),
 
-  labelName: text("labelName").notNull(),
+  labelName: text("labelName"),
 
   releaseDate: timestamp("date").notNull(),
   startDate: timestamp("startDate").notNull(),
@@ -136,14 +138,15 @@ export const release = schema.table("release", {
 
   status: verificationStatuses("status").notNull().default("moderating"),
 
-  rejectReason: text("rejectReason").notNull(),
+  rejectReason: text("rejectReason"),
 });
 
-export const releaseRelations = relations(release, ({ one }) => ({
+export const releaseRelations = relations(release, ({ one, many }) => ({
   author: one(users, {
     fields: [release.authorId],
     references: [users.id],
   }),
+  tracks: many(track),
 }));
 
 export const track = schema.table("track", {
@@ -153,8 +156,6 @@ export const track = schema.table("track", {
     .notNull()
     .references(() => release.id, { onDelete: "cascade", onUpdate: "cascade" }),
 
-  fileType: text("fileType").notNull(),
-
   title: text("title").notNull(),
 
   subtitle: text("subtitle").notNull(),
@@ -163,7 +164,7 @@ export const track = schema.table("track", {
 
   author_rights: text("author_rights").notNull(),
 
-  partner_code: text("partner_code").notNull(),
+  partner_code: text("partner_code"),
 
   roles: jsonb("roles"),
 
@@ -183,18 +184,27 @@ export const track = schema.table("track", {
 
   instrumental: boolean("instrumental").notNull().default(false),
 
-  language: text("language").notNull(),
+  language: text("language"),
 
   text: text("text"),
 
-  track: jsonb("track_version"),
+  track: jsonb("track").notNull(),
 
   text_sync: text("text_sync"),
 
   ringtone: text("ringtone"),
 
   video: text("video"),
+
+  video_shot: text("video_shot"),
 });
+
+export const trackRelations = relations(track, ({ one }) => ({
+  release: one(release, {
+    fields: [track.releaseId],
+    references: [release.id],
+  }),
+}));
 
 export const orderTypes = schema.enum("order_type", [
   "subscription",

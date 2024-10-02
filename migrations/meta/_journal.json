@@ -141,6 +141,48 @@
       "when": 1727710549313,
       "tag": "0019_supreme_jane_foster",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1727812034277,
+      "tag": "0020_parched_typhoid_mary",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1727870565300,
+      "tag": "0021_orange_chat",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1727870581005,
+      "tag": "0022_charming_speedball",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1727872129353,
+      "tag": "0023_glamorous_ultragirl",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1727880898714,
+      "tag": "0024_burly_blackheart",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1727880911053,
+      "tag": "0025_wise_unus",
+      "breakpoints": true
     }
   ]
 }

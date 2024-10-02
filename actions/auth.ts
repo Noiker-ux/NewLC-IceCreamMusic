@@ -21,6 +21,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { sendResetPasswordEmail } from "./email";
 import { getPathname } from "./url";
+import { tree } from "next/dist/build/templates/app-page";
 
 export async function credentialsSignIn(credentials: TSignInClientSchema) {
   const validationResult = signInClientSchema.safeParse(credentials);
@@ -42,9 +43,9 @@ export async function credentialsSignIn(credentials: TSignInClientSchema) {
     },
   });
 
-  const user = (
-    await db.select().from(users).where(eq(users.email, email)).limit(1)
-  ).pop();
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.email, email),
+  });
 
   if (!user || !!!user.emailVerified) {
     throw new Error("Неверные данные для входа");

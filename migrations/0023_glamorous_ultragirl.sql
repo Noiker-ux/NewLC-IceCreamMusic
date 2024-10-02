@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."user" ALTER COLUMN "freeReleases" SET DATA TYPE double precision;
