@@ -12,13 +12,11 @@ import { getAuthSession } from "./auth";
 export async function registerUser(userData: TSignUpClientSchema) {
   const { email, name, password } = signUpSchema.parse(userData);
 
-  const matchedUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
+  const matchedUser = await db.query.users.findFirst({
+    where: (us, { eq }) => eq(us.email, email),
+  });
 
-  if (matchedUser.length) {
+  if (!matchedUser) {
     throw new Error(
       "Учетная запись с данным адресом эл. почты уже существует."
     );

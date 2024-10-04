@@ -38,10 +38,11 @@ const SendRelease = () => {
   const [languageValue, setLanguageValue] = useState<IMySelectProps["value"]>();
   const [genreValue, setGenreValue] = useState<IMySelectProps["value"]>();
   const [tracks, setTracks] = useState<FileList | null>(null);
+  const [changeLabel, setChangeLabel] = useState(false);
 
   const formMethods = useForm<TReleaseForm>({
     resolver: zodResolver(releaseFormSchema),
-    defaultValues: {},
+    defaultValues: { labelName: "icecreammusic" },
     progressive: true,
   });
 
@@ -291,6 +292,14 @@ const SendRelease = () => {
                 Укажите наименование лейбла, данная информация будет отображена
                 на площадках
               </MyText>
+              <MyCheckbox
+                label={"изменить лейбл"}
+                onChange={() => {
+                  if (changeLabel) setValue("labelName", "icecreammusic");
+                  setChangeLabel(!changeLabel);
+                }}
+                checked={changeLabel}
+              />
             </div>
 
             <MyInput
@@ -299,6 +308,7 @@ const SendRelease = () => {
               type={"text"}
               placeholder="Введите название лейбла"
               inpLk
+              disabled={!changeLabel}
               {...register("labelName")}
             />
           </div>

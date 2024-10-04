@@ -4,6 +4,10 @@ import MyTitle from "@/shared/MyTitle/MyTitle";
 import dateFormatter from "@/utils/dateFormatter";
 import IAdmin_Verification_Card from "./Admin_Verification_Card.props";
 import MyButton from "@/shared/MyButton/MyButton";
+import {
+  approveVerification,
+  rejectVerification,
+} from "@/actions/verification";
 
 const Admin_Verification_Card = ({ data }: IAdmin_Verification_Card) => {
   const {
@@ -114,8 +118,18 @@ const Admin_Verification_Card = ({ data }: IAdmin_Verification_Card) => {
       <div className={style.separator}></div>
 
       <div className={style.row}>
-        <button className={style.success}>Подтвердить</button>
-        <button className={style.badSuccess}>Отказать</button>
+        <button
+          className={style.success}
+          onClick={() => approveVerification(id)}
+        >
+          Подтвердить
+        </button>
+        <button
+          className={style.badSuccess}
+          onClick={() => rejectVerification(id)}
+        >
+          Отказать
+        </button>
       </div>
     </div>
   );

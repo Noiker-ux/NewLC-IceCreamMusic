@@ -20,9 +20,13 @@ import style from "./TrackItem.module.css";
 import ITrackItem from "./TrackItem.props";
 
 export function TrackItem({ fileName, trackIndex }: ITrackItem) {
-  const [detail, setDetail] = useState<boolean>(false);
+  const [detail, setDetail] = useState(false);
   const [persons, setPersons] = useState([{ id: 1, person: "", role: "" }]);
   const [language, setLanguage] = useState<IMySelectProps["value"]>();
+  const [addVideo, setAddVideo] = useState(false);
+  const [addVideoShot, setAddVideoShot] = useState(false);
+  const [addTextSync, setAddTextSync] = useState(false);
+  const [addText, setAddText] = useState(false);
 
   const [showInstantGratification, setShowInstantGratification] =
     useState<boolean>(false);
@@ -398,32 +402,62 @@ export function TrackItem({ fileName, trackIndex }: ITrackItem) {
                 ...allLanguages,
               ]}
             />
-            <MyTitle className={style.mt10} Tag={"h4"}>
-              Текст трека
-            </MyTitle>
-            <MyText className={classNames(style.subText, style.mb10)}>
-              Ознакомьтесь с рекомендациями по подготовке и загрузке этого типа
-              контента.
-            </MyText>
-            <MyTextArea
-              label={"Введите текст трека"}
-              value={String(track.text ?? "")}
-              onChange={(e) => handleTrackChange({ text: e.target.value })}
+            <MyCheckbox
+              label="Добавить текст трека"
+              checked={addText}
+              onChange={() => {
+                if (addText) {
+                  handleTrackChange({ text: null });
+                }
+                setAddText(!addText);
+              }}
+              name="addText"
             />
-            <MyTitle className={style.mt10} Tag={"h4"}>
-              Синхронизированный текст трека
-            </MyTitle>
-            <MyText className={classNames(style.subText, style.mb10)}>
-              Получите дополнительный доход и ещё больше внимания на площадках.
-              Формат: .ttml
-            </MyText>
-            <MyFile
-              onChange={(e) =>
-                handleTrackChange({
-                  text_sync: Array.from(e.target.files ?? []).at(0),
-                })
-              }
+            {addText && (
+              <>
+                <MyTitle className={style.mt10} Tag={"h4"}>
+                  Текст трека
+                </MyTitle>
+                <MyText className={classNames(style.subText, style.mb10)}>
+                  Ознакомьтесь с рекомендациями по подготовке и загрузке этого
+                  типа контента.
+                </MyText>
+                <MyTextArea
+                  label={"Введите текст трека"}
+                  value={String(track.text ?? "")}
+                  onChange={(e) => handleTrackChange({ text: e.target.value })}
+                />
+              </>
+            )}
+            <MyCheckbox
+              label="Добавить текст трека"
+              checked={addTextSync}
+              onChange={() => {
+                if (addTextSync) {
+                  handleTrackChange({ text_sync: null });
+                }
+                setAddTextSync(!addTextSync);
+              }}
+              name="addTextSync"
             />
+            {addTextSync && (
+              <>
+                <MyTitle className={style.mt10} Tag={"h4"}>
+                  Синхронизированный текст трека
+                </MyTitle>
+                <MyText className={classNames(style.subText, style.mb10)}>
+                  Получите дополнительный доход и ещё больше внимания на
+                  площадках. Формат: .ttml
+                </MyText>
+                <MyFile
+                  onChange={(e) =>
+                    handleTrackChange({
+                      text_sync: Array.from(e.target.files ?? []).at(0),
+                    })
+                  }
+                />
+              </>
+            )}
             <MyTitle className={style.mt10} Tag={"h4"}>
               Добавление рингтона
             </MyTitle>
@@ -438,21 +472,67 @@ export function TrackItem({ fileName, trackIndex }: ITrackItem) {
                 })
               }
             />
-            <MyTitle className={style.mt10} Tag={"h4"}>
-              Загрузка видео
-            </MyTitle>
-            <MyText className={classNames(style.subText, style.mb10)}>
-              Формат: .mov, .mp4, .avi
-              <br />
-              Максимальный размер: не более 6 ГБ
-            </MyText>
-            <MyFile
-              onChange={(e) =>
-                handleTrackChange({
-                  video: Array.from(e.target.files ?? []).at(0),
-                })
-              }
+            <MyCheckbox
+              label="Добавить текст трека"
+              checked={addVideo}
+              onChange={() => {
+                if (addVideo) {
+                  handleTrackChange({ video: null });
+                }
+                setAddVideo(!addVideo);
+              }}
+              name="addVideo"
             />
+            {addVideo && (
+              <>
+                <MyTitle className={style.mt10} Tag={"h4"}>
+                  Загрузка видео
+                </MyTitle>
+                <MyText className={classNames(style.subText, style.mb10)}>
+                  Формат: .mov, .mp4, .avi
+                  <br />
+                  Максимальный размер: не более 6 ГБ
+                </MyText>
+                <MyFile
+                  onChange={(e) =>
+                    handleTrackChange({
+                      video: Array.from(e.target.files ?? []).at(0),
+                    })
+                  }
+                />
+              </>
+            )}
+            <MyCheckbox
+              label="Добавить текст трека"
+              checked={addVideoShot}
+              onChange={() => {
+                console.log("qweqweqwe");
+                if (addVideoShot) {
+                  handleTrackChange({ video_shot: null });
+                }
+                setAddVideoShot(!addVideoShot);
+              }}
+              name="addVideoShot"
+            />
+            {addVideoShot && (
+              <>
+                <MyTitle className={style.mt10} Tag={"h4"}>
+                  Загрузка видео-шота
+                </MyTitle>
+                <MyText className={classNames(style.subText, style.mb10)}>
+                  Формат: .mov, .mp4, .avi
+                  <br />
+                  Максимальный размер: не более 6 ГБ
+                </MyText>
+                <MyFile
+                  onChange={(e) =>
+                    handleTrackChange({
+                      video_shot: Array.from(e.target.files ?? []).at(0),
+                    })
+                  }
+                />
+              </>
+            )}
           </div>
         </div>
       </div>

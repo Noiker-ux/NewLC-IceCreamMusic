@@ -60,7 +60,7 @@ async function checkUsers() {
         console.log(e);
         return null;
       });
-
+    user.subscriptionLevel;
     if (payment) {
       await db.insert(orders).values({
         id: payment.id,

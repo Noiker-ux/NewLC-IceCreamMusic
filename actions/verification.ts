@@ -7,6 +7,9 @@ import {
   serverVerificationSchema,
 } from "@/schema/verification.schema";
 import { getAuthSession } from "./auth";
+import { isAdminUser } from "./users";
+import { eq } from "drizzle-orm";
+import { revalidateCurrentPath } from "./revalidate";
 
 export async function verifyData(data: TVerificationFormSchema) {
   const session = await getAuthSession();
@@ -14,6 +17,7 @@ export async function verifyData(data: TVerificationFormSchema) {
   if (!session.user) {
     return {
       success: false,
+      message: "Unauthorized",
     };
   }
 
@@ -34,14 +38,36 @@ export async function verifyData(data: TVerificationFormSchema) {
   };
 }
 
-export async function confirmVerification() {
-  return {
-    data: true,
-  };
+export async function approveVerification(id: string) {
+  const isAdmin = await isAdminUser();
+
+  if (!isAdmin) {
+    return { success: false, message: "Unauthorized" };
+  }
+
+  await db
+    .update(verification)
+    .set({ status: "approved" })
+    .where(eq(verification.id, id));
+
+  await revalidateCurrentPath();
+
+  return { success: true };
 }
 
-export async function rejectVerification() {
-  return {
-    data: false,
-  };
+export async function rejectVerification(id: string) {
+  const isAdmin = await isAdminUser();
+
+  if (!isAdmin) {
+    return { success: false, message: "Unauthorized" };
+  }
+
+  await db
+    .update(verification)
+    .set({ status: "rejected" })
+    .where(eq(verification.id, id));
+
+  await revalidateCurrentPath();
+
+  return { success: true };
 }

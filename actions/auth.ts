@@ -12,7 +12,7 @@ import {
   signInClientSchema,
   TSignInClientSchema,
 } from "@/schema/signin.schema";
-import { selectUserSchema } from "@/schema/user.schema";
+import { authUserSchema } from "@/schema/user.schema";
 import { hashPassword } from "@/utils/hashPassword";
 import { compare } from "bcrypt-ts";
 import { eq } from "drizzle-orm";
@@ -61,7 +61,7 @@ export async function credentialsSignIn(credentials: TSignInClientSchema) {
 
   session.updateConfig(sessionOptions);
 
-  session.user = selectUserSchema.parse(user);
+  session.user = authUserSchema.parse(user);
 
   await session.save();
 
