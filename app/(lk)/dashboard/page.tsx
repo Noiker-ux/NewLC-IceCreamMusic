@@ -20,6 +20,7 @@ export default async function MainPage() {
       {releasesData.map((release) => {
         return (
           <RelizeItem
+            key={release.id}
             srcPreview="/assets/avatar.jpg"
             relizeName={"moves"}
             upc={12453633244}

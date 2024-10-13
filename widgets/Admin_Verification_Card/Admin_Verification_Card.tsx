@@ -1,3 +1,5 @@
+"use client";
+
 import MyText from "@/shared/MyText/MyText";
 import style from "./Admin_Verification_Card.module.css";
 import MyTitle from "@/shared/MyTitle/MyTitle";

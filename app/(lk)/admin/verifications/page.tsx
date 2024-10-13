@@ -1,18 +1,14 @@
 import { db } from "@/db";
-import { verification } from "@/db/schema";
 import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
-import MultiTable from "@/widgets/MultiTable/MultiTable";
-import { eq } from "drizzle-orm";
-import MyText from "@/shared/MyText/MyText";
-import MyTitle from "@/shared/MyTitle/MyTitle";
-import dateFormatter from "@/utils/dateFormatter";
 import Admin_Verification_Card from "@/widgets/Admin_Verification_Card/Admin_Verification_Card";
+import MultiTable from "@/widgets/MultiTable/MultiTable";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminVerificationPage() {
-  const data = await db
-    .select()
-    .from(verification)
-    .where(eq(verification.status, "moderating"));
+  const data = await db.query.verification.findMany({
+    where: (ver, { eq }) => eq(ver.status, "moderating"),
+  });
 
   return (
     <PageTransitionProvider>

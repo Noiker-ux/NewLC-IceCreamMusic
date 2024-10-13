@@ -5,6 +5,15 @@ const nextConfig = {
   reactStrictMode: true,
   cleanDistDir: true,
   // output: "standalone",
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        "https://06julvh5he00.share.zrok.io",
+        "http://localhost:3000",
+        "https://icecreammusic.qwe/",
+      ],
+    },
+  },
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>

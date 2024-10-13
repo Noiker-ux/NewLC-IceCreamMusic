@@ -16,7 +16,7 @@ export async function registerUser(userData: TSignUpClientSchema) {
     where: (us, { eq }) => eq(us.email, email),
   });
 
-  if (!matchedUser) {
+  if (matchedUser) {
     throw new Error(
       "Учетная запись с данным адресом эл. почты уже существует."
     );

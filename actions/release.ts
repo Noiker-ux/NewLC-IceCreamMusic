@@ -206,7 +206,7 @@ export async function uploadRelease(
 
         const videoShotUploaded = await minioS3
           .putObject(
-            "videos",
+            "videoshots",
             `${t.id}.${videoShotType}`,
             Buffer.from(videoShotBytes)
           )

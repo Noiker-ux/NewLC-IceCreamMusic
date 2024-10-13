@@ -9,8 +9,8 @@ import MyText from "@/shared/MyText/MyText";
 import { CardList } from "../../../../helpers/CardList";
 import { useState } from "react";
 import classNames from "classnames";
-import { premiumPlansArray } from "@/helpers/premiumPlans";
-import { getTrack } from "@/actions/release";
+// import { premiumPlansArray } from "@/helpers/premiumPlans";
+// import { getTrack } from "@/actions/release";
 export default function PurchasePage({
   params,
 }: {
@@ -72,7 +72,7 @@ export default function PurchasePage({
       >
         qwe
       </button>
-      <button onClick={() => getTrack()}>eqw</button>
+      {/* <button onClick={() => getTrack()}>eqw</button> */}
     </div>
   );
 }
