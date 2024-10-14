@@ -21,6 +21,19 @@ export async function verifyData(data: TVerificationFormSchema) {
     };
   }
 
+  const user = await db.query.users.findFirst({
+    where: (us, { eq }) => eq(us.id, session.user!.id),
+    with: {
+      verifications: {
+        where: (ver, { eq }) => eq(ver.status, "approved"),
+      },
+    },
+  });
+
+  if (user) {
+    return { success: true };
+  }
+
   const res = serverVerificationSchema.safeParse(data);
 
   if (res.success) {

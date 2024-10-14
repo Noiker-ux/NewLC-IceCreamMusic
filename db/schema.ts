@@ -158,7 +158,7 @@ export const track = schema.table("track", {
 
   title: text("title").notNull(),
 
-  subtitle: text("subtitle").notNull(),
+  subtitle: text("subtitle"),
 
   isrc: text("isrc"),
 
@@ -170,7 +170,7 @@ export const track = schema.table("track", {
 
   preview_start: text("preview_start").notNull(),
 
-  instant_gratification: timestamp("date"),
+  instant_gratification: timestamp("instant_gratification_date"),
 
   focus: boolean("focus").notNull().default(false),
 
@@ -188,7 +188,7 @@ export const track = schema.table("track", {
 
   text: text("text"),
 
-  track: jsonb("track").notNull(),
+  track: text("track").notNull(),
 
   text_sync: text("text_sync"),
 

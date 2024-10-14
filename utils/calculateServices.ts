@@ -4,6 +4,7 @@ import { premiumPlans } from "../helpers/premiumPlans";
 import {
   labelCost,
   paidReleaseCost,
+  standardLabelName,
   textSyncCost,
   trackTextCost,
   trackVideoCost,
@@ -66,14 +67,14 @@ export async function calculateReleaseEstimate(
     },
   ];
 
-  if (release.labelName) {
+  if (release.labelName !== standardLabelName) {
     result.push({
       ...receiptItemBase,
       amount: {
         currency,
         value: labelCost[level].toFixed(2),
       },
-      description: `Печать этикетки ${release.labelName}`,
+      description: `Изменение лейбла ${release.labelName}`,
       quantity: (1).toFixed(2),
     });
   }

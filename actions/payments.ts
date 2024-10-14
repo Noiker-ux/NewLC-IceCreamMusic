@@ -14,6 +14,16 @@ import {
   calculateReleaseEstimate,
 } from "@/utils/calculateServices";
 
+const unauthorizedResult = {
+  success: false,
+  message: "You need to log in first.",
+};
+
+const notYourRelease = {
+  success: false,
+  message: "This release is not your",
+};
+
 export async function makePayment(
   forWhat:
     | {
@@ -26,7 +36,7 @@ export async function makePayment(
   const session = await getAuthSession();
 
   if (!session || !session.user) {
-    return { success: false, message: "You need to log in first." };
+    return unauthorizedResult;
   }
 
   const fullUrl = await getFullUrl();
@@ -44,7 +54,14 @@ export async function makePayment(
   if (forWhat.type === "release") {
     const user = await db.query.users.findFirst({
       where: (user, { eq }) => eq(user.id, session.user!.id!),
+      with: {
+        releases: { where: (rel, { eq }) => eq(rel.id, forWhat.releaseId) },
+      },
     });
+
+    if (!user) {
+      return notYourRelease;
+    }
 
     paymentDescription = "Оплата дистрибуции релиза";
 
@@ -54,13 +71,15 @@ export async function makePayment(
 
     receiptItems = await calculateReleaseEstimate(
       forWhat.releaseId,
-      user?.subscriptionLevel ?? "none"
+      user.isSubscribed && !!user.subscriptionLevel
+        ? user.subscriptionLevel
+        : "none"
     );
   }
 
   if (forWhat.type === "subscription") {
     paymentDescription = `Оплата подписки уровня "${
-      premiumPlans[forWhat.subscriptionLevel]
+      premiumPlans[forWhat.subscriptionLevel].name
     }"`;
 
     returnPath = "/dashboard/news";

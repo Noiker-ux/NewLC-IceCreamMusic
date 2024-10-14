@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."track" RENAME COLUMN "date" TO "instant_gratification_date";

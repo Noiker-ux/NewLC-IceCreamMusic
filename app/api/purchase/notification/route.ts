@@ -78,14 +78,6 @@ export async function POST(req: Request) {
     return goodResponse;
   }
 
-  if (
-    !order.metadata ||
-    typeof order.metadata !== "object" ||
-    Array.isArray(order.metadata)
-  ) {
-    return internalResponse;
-  }
-
   if (order.type === "release") {
     const res = releaseMetadataSchema.safeParse(order.metadata);
 
@@ -116,17 +108,24 @@ export async function POST(req: Request) {
 
     const currentDate = new Date();
 
-    const expireDate = new Date(
-      currentDate.setMonth(currentDate.getMonth() + 1)
-    );
+    const expireDate = new Date(currentDate);
+
+    expireDate.setMonth(currentDate.getMonth() + 1);
+    expireDate.setHours(0);
+    expireDate.setMinutes(0);
+    expireDate.setSeconds(0);
+    expireDate.setMilliseconds(0);
 
     await db.transaction(async () => {
-      await db.update(users).set({
-        isSubscribed: true,
-        subscriptionLevel: res.data.subscriptionLevel,
-        subscriptionExpires: expireDate,
-        freeReleases: premiumPlans[res.data.subscriptionLevel!].freeReleases,
-      });
+      await db
+        .update(users)
+        .set({
+          isSubscribed: true,
+          subscriptionLevel: res.data.subscriptionLevel,
+          subscriptionExpires: expireDate,
+          freeReleases: premiumPlans[res.data.subscriptionLevel!].freeReleases,
+        })
+        .where(eq(users.id, order.user.id));
       await db
         .update(orders)
         .set({ confirmed: true })

@@ -106,7 +106,7 @@ export function TrackItem({ fileName, trackIndex }: ITrackItem) {
             <MyInput
               label={"Подзаголовок"}
               inpLk
-              value={track.subtitle}
+              value={track.subtitle ?? ""}
               onChange={(e) => handleTrackChange({ subtitle: e.target.value })}
               tooltip={{
                 id: `trackSubName-${fileName}`,
@@ -430,7 +430,7 @@ export function TrackItem({ fileName, trackIndex }: ITrackItem) {
               </>
             )}
             <MyCheckbox
-              label="Добавить текст трека"
+              label="Добавить синхронизацию теста"
               checked={addTextSync}
               onChange={() => {
                 if (addTextSync) {
@@ -473,7 +473,7 @@ export function TrackItem({ fileName, trackIndex }: ITrackItem) {
               }
             />
             <MyCheckbox
-              label="Добавить текст трека"
+              label="Добавить видео к треку"
               checked={addVideo}
               onChange={() => {
                 if (addVideo) {
@@ -503,7 +503,7 @@ export function TrackItem({ fileName, trackIndex }: ITrackItem) {
               </>
             )}
             <MyCheckbox
-              label="Добавить текст трека"
+              label="Добавить видео-шот"
               checked={addVideoShot}
               onChange={() => {
                 console.log("qweqweqwe");

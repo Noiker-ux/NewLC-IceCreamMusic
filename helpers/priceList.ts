@@ -2,6 +2,8 @@ import { premiumPlans } from "./premiumPlans";
 
 export type PriceList = Record<keyof typeof premiumPlans | "none", number>;
 
+export const standardLabelName = "ICECREAMMUSIC";
+
 export const paidReleaseCost: PriceList = {
   none: 250,
   standard: 190,

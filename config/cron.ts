@@ -1,4 +1,4 @@
-import { inArray, lt } from "drizzle-orm";
+import { inArray, lte } from "drizzle-orm";
 import schedule from "node-schedule";
 import { db } from "../db";
 import { orders, users } from "../db/schema";
@@ -16,7 +16,7 @@ async function checkUsers() {
     with: {
       payment_methods: true,
     },
-    where: lt(users.subscriptionExpires, currentMoment),
+    where: lte(users.subscriptionExpires, currentMoment),
   });
 
   if (usersWithSubscriptionExpired.length === 0) {
@@ -75,7 +75,7 @@ async function checkUsers() {
 
   const updatedSubscriptions = await db
     .update(users)
-    .set({ isSubscribed: false })
+    .set({ isSubscribed: false, freeReleases: 0 })
     .where(inArray(users.id, expiredUsers))
     .returning({ id: users.id });
 

@@ -183,6 +183,27 @@
       "when": 1727880911053,
       "tag": "0025_wise_unus",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1728847083627,
+      "tag": "0026_fresh_forge",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1728924830744,
+      "tag": "0027_lucky_bruce_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1728925324391,
+      "tag": "0028_nostalgic_stepford_cuckoos",
+      "breakpoints": true
     }
   ]
 }

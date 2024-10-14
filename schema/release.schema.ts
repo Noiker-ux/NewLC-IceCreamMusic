@@ -19,6 +19,7 @@ const stringAsDateSchema = z.string().refine((value) => {
 });
 
 export const trackFormSchema = trackInsertSchema.extend({
+  title: z.string().min(1),
   track: z.any().refine((file: File) => {
     return file instanceof File;
   }),
@@ -70,6 +71,7 @@ export const releaseFormSchema = releaseInsertSchema
     confirmed: true,
   })
   .extend({
+    title: z.string().min(1),
     preview: z.any().refine((file: File) => {
       return file instanceof File && file.size < 30000000;
     }),

@@ -2,10 +2,12 @@
 
 // TODO огромный тех. долг необходимо поправить как можно скорее
 
+import { uploadRelease } from "@/actions/release";
 import { allAreasMusic } from "@/helpers/allAreasMusic";
 import { allCountry } from "@/helpers/allCountry";
 import { allGenres } from "@/helpers/allGenres";
 import { allLanguages } from "@/helpers/allLanguages";
+import { standardLabelName } from "@/helpers/priceList";
 import CloseIcon from "@/public/InfoIcon/close.svg";
 import {
   releaseFormSchema,
@@ -20,6 +22,7 @@ import MyRadio from "@/shared/MyRadio/MyRadio";
 import MySelect from "@/shared/MySelect/MySelect";
 import MyText from "@/shared/MyText/MyText";
 import MyTitle from "@/shared/MyTitle/MyTitle";
+import { objectToFormData } from "@/utils/formDataTobject";
 import DragAndDropFile from "@/widgets/SendRelize/DragAndDropFile/DragAndDropFile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
@@ -28,9 +31,6 @@ import { FormProvider, useForm } from "react-hook-form";
 import IMySelectProps from "../../shared/MySelect/MySelect.props";
 import style from "./SendRelease.module.css";
 import { TrackItem } from "./TrackItem/TrackItem";
-import FormDataUtils from "formdata-object-utils";
-import { uploadRelease } from "@/actions/release";
-import { objectToFormData } from "@/utils/formDataTobject";
 
 const SendRelease = () => {
   const [showPlatforms, setShowPlatforms] = useState<boolean>(false);
@@ -42,7 +42,7 @@ const SendRelease = () => {
 
   const formMethods = useForm<TReleaseForm>({
     resolver: zodResolver(releaseFormSchema),
-    defaultValues: { labelName: "icecreammusic" },
+    defaultValues: { labelName: standardLabelName },
     progressive: true,
   });
 
@@ -293,9 +293,10 @@ const SendRelease = () => {
                 на площадках
               </MyText>
               <MyCheckbox
-                label={"изменить лейбл"}
+                label={"Изменить лейбл"}
+                name="label_change"
                 onChange={() => {
-                  if (changeLabel) setValue("labelName", "icecreammusic");
+                  if (changeLabel) setValue("labelName", standardLabelName);
                   setChangeLabel(!changeLabel);
                 }}
                 checked={changeLabel}

@@ -2,7 +2,7 @@
 
 import { minioS3 } from "@/config/s3";
 import { db } from "@/db";
-import { release, track } from "@/db/schema";
+import { release, track, users } from "@/db/schema";
 import {
   releaseFormSchema,
   trackFormSchema,
@@ -14,6 +14,7 @@ import { ZodError } from "zod";
 import { getAuthSession } from "./auth";
 import { redirect } from "next/navigation";
 import { revalidatePathAction } from "./revalidate";
+import { eq } from "drizzle-orm";
 
 export async function uploadRelease(
   releaseData: FormData,
@@ -30,6 +31,9 @@ export async function uploadRelease(
 
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, session.user!.id),
+    with: {
+      verifications: true,
+    },
   });
 
   if (!user) {
@@ -236,18 +240,28 @@ export async function uploadRelease(
     releaseDate: new Date(releaseResult.data.releaseDate),
     startDate: new Date(releaseResult.data.startDate),
     preorderDate: new Date(releaseResult.data.preorderDate),
-    confirmed: user.freeReleases > 0,
   };
 
-  // TODO добавить изменение количества оставшихся релизов
-
-  const succeded = await db
+  const succeeded = await db
     .transaction(async () => {
-      await db.insert(release).values(newRelease);
+      let confirmed = false;
+      if (
+        user.isSubscribed &&
+        (user.subscriptionLevel === "enterprise" || user.freeReleases > 0)
+      ) {
+        await db
+          .update(users)
+          .set({
+            freeReleases: user.freeReleases - 1,
+          })
+          .where(eq(users.id, user.id));
+        confirmed = true;
+      }
+      await db.insert(release).values({ ...newRelease, confirmed });
       await db.insert(track).values([
         ...tracksUploaded.map((t) => ({
           ...t,
-          track: t.track!,
+          track: t.track,
           instant_gratification: t.instant_gratification
             ? new Date(t.instant_gratification)
             : null,
@@ -257,7 +271,7 @@ export async function uploadRelease(
     .then(() => true)
     .catch(() => false);
 
-  if (!succeded) {
+  if (!succeeded) {
     return { success: false, message: "Something went wrong" };
   }
 
