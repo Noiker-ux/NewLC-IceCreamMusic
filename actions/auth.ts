@@ -89,6 +89,14 @@ export async function getAuthSession(options?: SessionOptions) {
 }
 
 export async function recoverPassword(email: string) {
+  const matchedUser = await db.query.users.findFirst({
+    where: (us, { eq }) => eq(us.email, email),
+  });
+
+  if (!matchedUser) {
+    return { success: false, message: "No user with this email" };
+  }
+
   sendResetPasswordEmail(email);
 
   return redirect("/recover/complete");

@@ -52,3 +52,9 @@ export const premiumPlans: Record<
 > = premiumPlansArray.reduce((result, p) => {
   return { ...result, [p.system_name]: p };
 }, {} as any);
+
+export enum planLevel {
+  standard = 1,
+  professional = 2,
+  enterprise = 3,
+}

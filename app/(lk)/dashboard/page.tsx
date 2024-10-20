@@ -22,17 +22,17 @@ export default async function MainPage() {
           <RelizeItem
             key={release.id}
             srcPreview="/assets/avatar.jpg"
-            relizeName={"moves"}
-            upc={12453633244}
-            labelName="ICECREAMMUSIC"
-            genre="Rap/Hip-Hop"
-            artistsName={"Bless Panther"}
-            typeRelize="Singl"
-            status="В обработке"
-            moderatorComment="Данный релиз содержит ненормативную лексику"
-            dateCreate={new Date()}
-            dateRelize={new Date()}
-            dateStart={new Date()}
+            relizeName={release.title}
+            upc={release.upc}
+            labelName={release.labelName}
+            genre={release.genre}
+            artistsName={release.performer}
+            typeRelize={release.type}
+            status={release.status}
+            moderatorComment={release.rejectReason}
+            dateCreate={release.preorderDate}
+            dateRelize={release.releaseDate}
+            dateStart={release.startDate}
           />
         );
       })}

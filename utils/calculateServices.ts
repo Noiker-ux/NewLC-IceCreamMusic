@@ -32,7 +32,7 @@ export async function calculateSubscriptionEstimate(
         currency,
         value: premiumPlans[level].price.toFixed(2),
       },
-      description: `Подписка уровня ${premiumPlans[level]}`,
+      description: `Подписка уровня ${premiumPlans[level].name}`,
       quantity: (1).toFixed(2),
     },
   ];

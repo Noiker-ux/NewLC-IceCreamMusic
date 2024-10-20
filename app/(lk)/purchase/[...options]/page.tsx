@@ -1,20 +1,29 @@
-"use client";
-import { makePayment } from "@/actions/payments";
+// "use client";
+import { getAuthSession } from "@/actions/auth";
+import { db } from "@/db";
 import { Error } from "@/entities/Error";
-import style from "./page.module.css";
-import Image from "next/image";
-import MyTitle from "@/shared/MyTitle/MyTitle";
 import MyText from "@/shared/MyText/MyText";
-import { CardList } from "../../../../helpers/CardList";
-import { useState } from "react";
-import classNames from "classnames";
+import MyTitle from "@/shared/MyTitle/MyTitle";
+import {
+  calculateReleaseEstimate,
+  calculateSubscriptionEstimate,
+} from "@/utils/calculateServices";
+import { PurchaseConfirm } from "@/widgets/PurchaseConfirm/PurchaseConfirm";
+import { Payment } from "@a2seven/yoo-checkout";
+import React from "react";
 
-export default function PurchasePage({
+export default async function PurchasePage({
   params,
 }: {
   params: { options: string[] };
 }) {
-  const [selectCard, setSelectCard] = useState("");
+  // const [selectCard, setSelectCard] = useState("");
+
+  const session = await getAuthSession();
+
+  if (!session || !session.user || !session.user.id) {
+    return <Error statusCode={404} />;
+  }
 
   if (params.options.length !== 2) {
     return <Error statusCode={404} />;
@@ -26,14 +35,66 @@ export default function PurchasePage({
     return <Error statusCode={404} />;
   }
 
+  let receiptItems: Payment["receipt"]["items"] = [];
+
+  if (type === "subscription") {
+    if (
+      level_or_id !== "standard" &&
+      level_or_id !== "professional" &&
+      level_or_id !== "enterprise"
+    ) {
+      return <Error statusCode={404} />;
+    }
+
+    receiptItems = await calculateSubscriptionEstimate(level_or_id);
+  }
+
+  if (type === "release") {
+    const release = await db.query.release.findFirst({
+      where: (rel, { eq, and }) =>
+        and(eq(rel.id, level_or_id), eq(rel.authorId, session.user!.id)),
+      with: {
+        author: true,
+      },
+    });
+
+    if (!release) {
+      return <Error statusCode={404} />;
+    }
+
+    receiptItems = await calculateReleaseEstimate(
+      release.id,
+      release.author.subscriptionLevel ?? "none"
+    );
+  }
+
   return (
     <div>
-      <MyTitle Tag={"h2"}>Выберите способ оплаты</MyTitle>
+      <MyTitle Tag={"h2"}>Подтверждение оплаты</MyTitle>
       <MyText>
         Нажимая на кнопку, вы соглашаетесь с Условиями обработки персональных
         данных, а также с Условиями продажи
       </MyText>
-      <div className={style.CardList}>
+
+      <div>
+        <div>Услуга</div>
+        <div>Стоимость</div>
+        {receiptItems.map((ri) => (
+          <React.Fragment key={ri.description}>
+            <div>{ri.description}</div>
+            <div>{ri.amount.value} руб.</div>
+          </React.Fragment>
+        ))}
+        <div>Итого</div>
+        <div>
+          {receiptItems
+            .reduce((acc, ri) => acc + Number(ri.amount.value), 0)
+            .toFixed(2)}{" "}
+          руб.
+        </div>
+      </div>
+
+      {/* <div className={style.CardList}>
         {CardList.map((card) => (
           <div
             key={card.alt}
@@ -51,19 +112,8 @@ export default function PurchasePage({
             />
           </div>
         ))}
-      </div>
-      <button
-        onClick={() =>
-          makePayment(
-            type === "subscription"
-              ? { type, subscriptionLevel: level_or_id as any }
-              : { type, releaseId: level_or_id },
-            "bank_card"
-          )
-        }
-      >
-        qwe
-      </button>
+      </div> */}
+      <PurchaseConfirm levelOrId={level_or_id} type={type} />
     </div>
   );
 }
