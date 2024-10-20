@@ -4,7 +4,7 @@
 const nextConfig = {
   reactStrictMode: true,
   cleanDistDir: true,
-  // output: "standalone",
+  output: "standalone",
   experimental: {
     serverActions: {
       allowedOrigins: [

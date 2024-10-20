@@ -1,0 +1,106 @@
+services:
+  icecream_crud:
+    container_name: icecream_cron
+    image: icecreammusic_cron:latest
+    environment:
+      DB_USER: ${DB_USER:?error}
+      DB_PASSWORD: ${DB_PASSWORD:?error}
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT:?error}
+      DB_NAME: ${DB_NAME:?error}
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - icecream
+  icecream:
+    container_name: icecream_app
+    image: icecreammusic:latest
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET:?error}
+      SALT_ROUNDS: ${SALT_ROUNDS:?error}
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT:?error}
+      DB_USER: ${DB_USER:?error}
+      DB_PASSWORD: ${DB_PASSWORD:?error}
+      DB_NAME: ${DB_NAME:?error}
+      SMTP_HOST: ${SMTP_HOST:?error}
+      SMTP_PORT: ${SMTP_PORT:?error}
+      SMTP_USER: ${SMTP_USER:?error}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?error}
+      MAGIC_LINK_SECRET: ${MAGIC_LINK_SECRET:?error}
+      S3_HOST: minio
+      S3_PORT: 9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:?error}
+      YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID:?error}
+      YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY:?error}
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - icecream
+  minio: #port 9000
+    container_name: icecream_s3
+    image: minio/minio
+    volumes:
+      - icecream_s3:/data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?error}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?error}
+      MINIO_BROWSER_REDIRECT: false
+    env_file:
+      - .env
+    command: server --console-address ":9001" /data
+    networks:
+      - icecream
+    restart: unless-stopped
+  postgres: #port 5432
+    container_name: icecream_data
+    image: postgres:16.4-bullseye
+    environment:
+      POSTGRES_USER: ${DB_USER:?error}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?error}
+      PGDATA: ${PGDATA:?error}
+    env_file:
+      - .env
+    volumes:
+      - icecream_postgres:/data/postgres
+    networks:
+      - icecream
+    restart: unless-stopped
+  pgadmin:
+    container_name: icecream_db_admin
+    image: elestio/pgadmin:REL-8_12
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?error}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?error}
+      PGADMIN_LISTEN_PORT: 5050
+    env_file:
+      - .env
+    volumes:
+      - icecream_pgadmin:/var/lib/pgadmin
+    networks:
+      - icecream
+    restart: always
+  proxy_manager:
+    container_name: icecream_proxy
+    image: "jc21/nginx-proxy-manager:latest"
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - icecream
+    restart: unless-stopped
+
+volumes:
+  icecream_s3:
+  icecream_postgres:
+  icecream_pgadmin:
+
+networks:
+  icecream:
+    driver: bridge

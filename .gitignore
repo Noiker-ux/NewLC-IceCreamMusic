@@ -39,8 +39,3 @@ next-env.d.ts
 dist
 
 *.tar
-
-*.compose.yaml
-*.compose.yml
-*-compose.yaml
-*-compose.yml

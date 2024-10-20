@@ -1,11 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "sourceMap": true,
     "module": "commonjs",
     "moduleResolution": "Node",
-    "outDir": "dist",
-    "noEmit": false,
-    "jsx": "react"
+    "outDir": "dist"
   },
   "include": ["server.ts"]
 }
