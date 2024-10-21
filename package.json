@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build:cron": "webpack",
+    "build:cron": "webpack --config webpack.config.js",
     "build:app": "next build",
     "build": "npm run build:cron && npm run build:app",
     "start": "dotenvx run -- cross-env NODE_ENV=production node dist/server.js",
