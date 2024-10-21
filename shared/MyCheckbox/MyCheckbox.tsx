@@ -30,7 +30,7 @@ const MyCheckbox = forwardRef<HTMLInputElement, IMyCheckboxProps>(
             <Tooltip
               id={tooltip.id}
               style={{
-                backgroundColor: "var(--wrapper-color);",
+                backgroundColor: "var(--wrapper-color)",
                 color: "var(--light-text-color)",
                 fontSize: "12px",
                 width: "250px",

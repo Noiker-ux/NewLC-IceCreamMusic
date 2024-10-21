@@ -21,3 +21,31 @@
 .selectCard {
   border: 5px solid var(--current-color);
 }
+
+.table {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: grid;
+  padding: 20px;
+  border-radius: 5px;
+  grid-template-columns: 1fr 1fr;
+  width: 700px;
+  border: 1px solid var(--border-color);
+  background-color: var(--wrapper-color);
+}
+.td {
+  padding: 20px;
+  border: 1px solid var(--border-color);
+}
+.td:first-child {
+  border-top-left-radius: 10px;
+}
+.td:nth-child(2) {
+  border-top-right-radius: 10px;
+}
+.td:last-child {
+  border-bottom-right-radius: 10px;
+}
+.bl {
+  border-bottom-left-radius: 10px;
+}
