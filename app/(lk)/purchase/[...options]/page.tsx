@@ -11,6 +11,8 @@ import {
 import { PurchaseConfirm } from "@/widgets/PurchaseConfirm/PurchaseConfirm";
 import { Payment } from "@a2seven/yoo-checkout";
 import React from "react";
+import style from "./page.module.css";
+import classNames from "classnames";
 
 export default async function PurchasePage({
   params,
@@ -71,22 +73,22 @@ export default async function PurchasePage({
   return (
     <div>
       <MyTitle Tag={"h2"}>Подтверждение оплаты</MyTitle>
-      <MyText>
+      <MyText className="mt10">
         Нажимая на кнопку, вы соглашаетесь с Условиями обработки персональных
         данных, а также с Условиями продажи
       </MyText>
 
-      <div>
-        <div>Услуга</div>
-        <div>Стоимость</div>
+      <div className={style.table}>
+        <div className={style.td}>Услуга</div>
+        <div className={style.td}>Стоимость</div>
         {receiptItems.map((ri) => (
           <React.Fragment key={ri.description}>
-            <div>{ri.description}</div>
-            <div>{ri.amount.value} руб.</div>
+            <div className={style.td}>{ri.description}</div>
+            <div className={style.td}>{ri.amount.value} руб.</div>
           </React.Fragment>
         ))}
-        <div>Итого</div>
-        <div>
+        <div className={classNames(style.td, style.itog, style.bl)}>Итого</div>
+        <div className={classNames(style.td, style.itog)}>
           {receiptItems
             .reduce((acc, ri) => acc + Number(ri.amount.value), 0)
             .toFixed(2)}{" "}

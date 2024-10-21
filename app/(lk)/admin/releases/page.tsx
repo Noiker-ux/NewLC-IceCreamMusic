@@ -7,5 +7,14 @@ export default async function AdminReleasesPage() {
     where: (rel, { eq }) => eq(rel.status, "moderating"),
   });
 
-  return <div>{AdminReleasesPage.name}</div>;
+  return (
+    <div>
+      {AdminReleasesPage.name}
+      <p>
+        {data.map((e) => (
+          <p key={e.language}>{e.language}</p>
+        ))}
+      </p>
+    </div>
+  );
 }

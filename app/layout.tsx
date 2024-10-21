@@ -1,8 +1,10 @@
 import { roboto } from "@/fonts";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, Suspense } from "react";
 import "./globals.css";
+import "./static.css";
 import dynamic from "next/dynamic";
 import { cookies } from "next/headers";
+import Loading from "./loading";
 
 export const metadata = {
   title: "Create Next App",
@@ -20,7 +22,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={roboto.className}>{children}</body>
+      <body className={roboto.className}>
+        <Suspense fallback={<Loading />}>{children}</Suspense>
+      </body>
     </html>
   );
 }
