@@ -6,7 +6,7 @@ const webpack = require("webpack");
 
 module.exports = {
   mode: "production",
-  entry: "./server.ts",
+  entry: "server.ts",
   target: "node",
   devtool: "inline-source-map",
   module: {
@@ -22,7 +22,7 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
     plugins: [
       new TsconfigPathsPlugin({
-        configFile: "./tsconfig.server.json",
+        configFile: "tsconfig.server.json",
       }),
     ],
   },

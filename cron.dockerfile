@@ -6,6 +6,28 @@ WORKDIR /app
 
 COPY . .
 
+# COPY ./server.ts .
+
+# COPY ./db ./db
+
+# COPY ./config ./config
+
+# COPY ./utils ./utils
+
+# COPY ./package.json .
+
+# COPY ./package-lock.json .
+
+# COPY ./tsconfig.json .
+
+# COPY ./tsconfig.server.json .
+
+# COPY ./webpack.config.js .
+
+# COPY ./schema ./schema
+
+# COPY ./helpers ./helpers
+
 RUN npm install
 
 RUN npm run build:cron
