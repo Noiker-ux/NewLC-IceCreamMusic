@@ -102,7 +102,7 @@ export async function recoverPassword(email: string) {
   return redirect("/recover/complete");
 }
 
-async function resetPassword(newPassword: string, token: string) {
+export async function resetPassword(newPassword: string, token: string) {
   const hashedPassword = await hashPassword(newPassword);
 
   await db

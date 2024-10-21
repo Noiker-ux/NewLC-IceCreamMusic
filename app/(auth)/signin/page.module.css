@@ -1,5 +1,5 @@
 .form {
-  color: #fff;
+  color: var(--white-color);
   margin: auto;
   border-top: 1px solid #424242;
   border-bottom: 1px solid #424242;

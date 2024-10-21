@@ -5,11 +5,10 @@ import RegistrationWidget from "@/widgets/Registration/Registration";
 import classNames from "classnames";
 import Link from "next/link";
 import style from "./page.module.css";
-import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 
 export default function Registraion() {
   return (
-    <PageTransitionProvider className={style.form}>
+    <div className={style.form}>
       <MyTitle Tag="h2" className={classNames(oswald.className, style.title)}>
         Добро пожаловать!
       </MyTitle>
@@ -21,6 +20,6 @@ export default function Registraion() {
       <MyText className={style.linkReg}>
         Или <Link href={"/signin"}>войдите здесь</Link>, если у Вас есть аккаунт
       </MyText>
-    </PageTransitionProvider>
+    </div>
   );
 }

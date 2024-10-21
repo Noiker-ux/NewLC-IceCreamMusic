@@ -3,9 +3,7 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { unsealData } from "iron-session";
 import { redirect } from "next/navigation";
-import MyButton from "@/shared/MyButton/MyButton";
-import MyInput from "@/shared/MyInput/MyInput";
-// import { resetPassword } from "@/actions/auth";
+import { ResetPasswordForm } from "@/widgets/ResetPassword/ResetPassword";
 
 const wrongUrl = "/reset/wrong";
 
@@ -35,13 +33,9 @@ export default async function ResetPasswordPage({
     redirect(wrongUrl);
   }
 
-  // resetPassword();
-
   return (
-    <div>
-      <MyInput label="Введите пароль" type="text" />
-      <MyInput label="Повторите пароль" type="text" />
-      <MyButton text="Изменить пароль" view="secondary" />
+    <div className="">
+      <ResetPasswordForm token={tokenData.token} />
     </div>
   );
 }

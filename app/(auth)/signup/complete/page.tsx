@@ -1,10 +1,9 @@
-import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
-import style from "./page.module.css";
 import Link from "next/link";
+import style from "./page.module.css";
 
 export default function CompleteSignupPage() {
   return (
-    <PageTransitionProvider className={style.form}>
+    <div className={style.form}>
       <div>
         На указанный адрес эл. почты выслано сообщение с дополнительными
         инструкциями.
@@ -13,6 +12,6 @@ export default function CompleteSignupPage() {
         Вы можете закрыть эту вкладку или перейти на страницу
         <Link href="/auth/signin">входа в систему</Link>
       </div>
-    </PageTransitionProvider>
+    </div>
   );
 }

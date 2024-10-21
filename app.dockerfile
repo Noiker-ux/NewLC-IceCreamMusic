@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.20 as base
+FROM node:lts-alpine3.20 AS base
 
 FROM base AS build
 
@@ -8,7 +8,7 @@ COPY . .
 
 RUN npm install
 
-RUN npm run build
+RUN npm run build:app
 
 FROM base AS main
 

@@ -5,11 +5,9 @@ import Authorization from "@/widgets/Auth/Auth";
 import classNames from "classnames";
 import Link from "next/link";
 import style from "./page.module.css";
-import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 
 export default function Auth() {
   return (
-    // <PageTransitionProvider className={style.form}>
     <div className={style.form}>
       <MyTitle Tag="h2" className={classNames(oswald.className, style.title)}>
         Авторизация
@@ -27,6 +25,5 @@ export default function Auth() {
         <Link href="/recover">Не помню пароль</Link>
       </MyText>
     </div>
-    // </PageTransitionProvider>
   );
 }

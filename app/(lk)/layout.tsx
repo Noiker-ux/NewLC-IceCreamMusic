@@ -8,8 +8,8 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { cookies } from "next/headers";
 import { PropsWithChildren } from "react";
-import { roboto } from "@/fonts";
 import style from "./layout.module.css";
+import AppThemeProvider from "@/providers/ThemeContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,14 +17,10 @@ export const metadata: Metadata = {
 };
 
 export default function CabinetLayout({ children }: PropsWithChildren) {
-  const AppThemeProvider = dynamic(() => import("@/providers/ThemeContext"), {
-    ssr: false,
-  });
-
   const theme = cookies().get("__theme__")?.value || "system";
 
   return (
-    <AppThemeProvider attribute="data-theme" defaultTheme={theme} enableSystem>
+    <AppThemeProvider attribute="data-theme" defaultTheme={theme}>
       <SidebarContextProvider>
         <main className={classNames(style.main, open.className)}>
           <div className={style.row}>
