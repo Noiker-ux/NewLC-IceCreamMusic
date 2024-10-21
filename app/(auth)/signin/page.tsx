@@ -9,7 +9,8 @@ import { PageTransitionProvider } from "@/providers/PageTransitionProvider";
 
 export default function Auth() {
   return (
-    <PageTransitionProvider className={style.form}>
+    // <PageTransitionProvider className={style.form}>
+    <div className={style.form}>
       <MyTitle Tag="h2" className={classNames(oswald.className, style.title)}>
         Авторизация
       </MyTitle>
@@ -25,6 +26,7 @@ export default function Auth() {
       <MyText className={style.linkReg}>
         <Link href="/recover">Не помню пароль</Link>
       </MyText>
-    </PageTransitionProvider>
+    </div>
+    // </PageTransitionProvider>
   );
 }

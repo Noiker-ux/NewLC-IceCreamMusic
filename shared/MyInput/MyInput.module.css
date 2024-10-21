@@ -6,10 +6,10 @@
 
 .input {
   border: 0;
-  border-bottom: 3px solid var(--white-color);
+  border-bottom: 3px solid #fff;
   outline: none;
   background: transparent;
-  color: var(--white-color);
+  color: #fff;
 }
 
 .label {

@@ -49,6 +49,8 @@
   --light-second-impulse: rgb(156 163 175 / 20%);
   --light-third-impulse: rgb(156 163 175 / 10%);
   --light-border-color: rgb(181, 182, 183);
+
+  --light-text-color: rgb(210, 210, 225);
 }
 
 /* [data-theme="light"] {
