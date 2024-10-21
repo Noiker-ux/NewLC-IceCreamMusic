@@ -85,3 +85,10 @@
   font-size: 16px;
   font-weight: 600;
 }
+
+.image {
+  margin-top: -55px;
+}
+.desc {
+  text-align: center;
+}
