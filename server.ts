@@ -31,9 +31,9 @@ import { startCronTasks, stopCronTasks } from "./config/cron";
 function bootstrap() {
   startCronTasks();
 
-  process.on("exit", () => {
-    stopCronTasks();
-  });
+  // process.on("exit", () => {
+  //   stopCronTasks();
+  // });
 }
 
 bootstrap();
