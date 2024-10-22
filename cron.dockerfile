@@ -4,8 +4,6 @@ FROM base AS build
 
 WORKDIR /app
 
-# COPY . .
-
 COPY ./server.ts .
 
 COPY ./db ./db
@@ -27,6 +25,8 @@ COPY ./webpack.config.js .
 COPY ./schema ./schema
 
 COPY ./helpers ./helpers
+
+RUN rm /app/helpers/dataNews.ts
 
 RUN npm install
 
