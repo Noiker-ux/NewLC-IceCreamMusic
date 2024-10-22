@@ -26,8 +26,6 @@ COPY ./schema ./schema
 
 COPY ./helpers ./helpers
 
-RUN rm /app/helpers/dataNews.ts
-
 RUN npm install
 
 RUN npm run build:cron
