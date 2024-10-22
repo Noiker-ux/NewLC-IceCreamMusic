@@ -4,29 +4,29 @@ FROM base AS build
 
 WORKDIR /app
 
-COPY . .
+# COPY . .
 
-# COPY ./server.ts .
+COPY ./server.ts .
 
-# COPY ./db ./db
+COPY ./db ./db
 
-# COPY ./config ./config
+COPY ./config ./config
 
-# COPY ./utils ./utils
+COPY ./utils ./utils
 
-# COPY ./package.json .
+COPY ./package.json .
 
-# COPY ./package-lock.json .
+COPY ./package-lock.json .
 
-# COPY ./tsconfig.json .
+COPY ./tsconfig.json .
 
-# COPY ./tsconfig.server.json .
+COPY ./tsconfig.server.json .
 
-# COPY ./webpack.config.js .
+COPY ./webpack.config.js .
 
-# COPY ./schema ./schema
+COPY ./schema ./schema
 
-# COPY ./helpers ./helpers
+COPY ./helpers ./helpers
 
 RUN npm install
 

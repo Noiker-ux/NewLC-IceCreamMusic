@@ -1,4 +1,4 @@
-import INewsCardProps from "@/entities/NewsList/NewsCard/NewsCard.props";
+import INewsCardProps from "../entities/NewsList/NewsCard/NewsCard.props";
 
 export const dataNews: INewsCardProps[] = [
   {
