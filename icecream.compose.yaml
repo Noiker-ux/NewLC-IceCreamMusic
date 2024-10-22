@@ -1,7 +1,7 @@
 services:
   icecream_crud:
     container_name: icecream_cron
-    image: icecreammusic_cron:latest
+    image: icecreammusic_cron:21-10-2024
     environment:
       DB_USER: ${DB_USER:?error}
       DB_PASSWORD: ${DB_PASSWORD:?error}
@@ -13,9 +13,11 @@ services:
     restart: unless-stopped
     networks:
       - icecream
+    depends_on:
+      postgres:
   icecream:
     container_name: icecream_app
-    image: icecreammusic:latest
+    image: icecreammusic:latest:21-10-2024
     environment:
       AUTH_SECRET: ${AUTH_SECRET:?error}
       SALT_ROUNDS: ${SALT_ROUNDS:?error}
@@ -39,6 +41,9 @@ services:
     restart: unless-stopped
     networks:
       - icecream
+    depends_on:
+      postgres:
+      minio:
   minio: #port 9000
     container_name: icecream_s3
     image: minio/minio
@@ -82,6 +87,8 @@ services:
     networks:
       - icecream
     restart: always
+    depends_on:
+      postgres:
   proxy_manager:
     container_name: icecream_proxy
     image: "jc21/nginx-proxy-manager:latest"
