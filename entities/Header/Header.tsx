@@ -13,8 +13,15 @@ import moneyFormatter from "@/utils/moneyFormatter";
 import { useTheme } from "next-themes";
 import { cookies } from "next/headers";
 import ThemeToggle from "@/widgets/ThemeToggle/ThemeToggle";
+import Link from "next/link";
 
-const Header = () => {
+export type THeader = {
+  userid: string;
+  username: string;
+  avatar: string | null;
+};
+
+const Header = ({ avatar, username, userid }: THeader) => {
   const [showWallet, setShowWallet] = useState(false);
 
   const handleShowWalletPopup = () => {
@@ -43,18 +50,18 @@ const Header = () => {
             </div>
           </button>
 
-          <button className={style.noStyle}>
+          <Link className={style.noStyle} href="/profile">
             <div className={style.header__wrapper_avatar}>
               <Image
                 className={style.avatar}
                 alt="Аватарка"
-                src={"/assets/avatar.jpg"}
+                src={`/avatars/${userid}.${avatar}`}
                 height={40}
                 width={40}
               />
-              <MyText>Noiker</MyText>
+              <MyText>{username}</MyText>
             </div>
-          </button>
+          </Link>
         </div>
       </div>
       {showWallet && (

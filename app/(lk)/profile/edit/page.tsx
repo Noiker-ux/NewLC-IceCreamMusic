@@ -5,8 +5,16 @@ import MyTextArea from "@/shared/MyTextArea/MyTextArea";
 import MyTitle from "@/shared/MyTitle/MyTitle";
 import classNames from "classnames";
 import style from "./page.module.css";
+import { db } from "@/db";
+import { getAuthSession } from "@/actions/auth";
 
-export default function EditProfilePage() {
+export default async function EditProfilePage() {
+  const session = await getAuthSession();
+
+  const userData = await db.query.users.findFirst({
+    where: (us, { eq }) => eq(us.id, session.user!.id),
+  });
+
   return (
     <div className={style.myProfile}>
       <div className="row">
@@ -17,8 +25,14 @@ export default function EditProfilePage() {
           <MyTitle Tag={"h4"} className="mb30">
             Личные ланные
           </MyTitle>
-          <MyInput type={"text"} label={"Имя"} inpLk className="w100" />
-          <MyTextArea label={"Обо мне"} />
+          <MyInput
+            type={"text"}
+            label={"Имя"}
+            inpLk
+            className="w100"
+            defaultValue={userData?.name}
+          />
+          {/* <MyTextArea label={"Обо мне"} /> */}
         </div>
       </div>
       <div className={classNames("mt20")}>
@@ -41,7 +55,7 @@ export default function EditProfilePage() {
               label={"Дата рождения"}
               inpLk
               className="w100"
-            />{" "}
+            />
             <MyInput type={"text"} label={"Страна"} inpLk className="w100" />
             <MyInput type={"text"} label={"Лейбл"} inpLk className="w100" />
             <MyInput

@@ -97,7 +97,7 @@ export async function recoverPassword(email: string) {
     return { success: false, message: "No user with this email" };
   }
 
-  sendResetPasswordEmail(email);
+  sendResetPasswordEmail(matchedUser.email);
 
   return redirect("/recover/complete");
 }

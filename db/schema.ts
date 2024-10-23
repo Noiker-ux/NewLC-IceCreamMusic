@@ -29,11 +29,11 @@ export const users = schema.table("user", {
   resetPasswordToken: text("resetPasswordToken"),
   isVerifiedAuthor: boolean("isVerifiedAuthor").notNull().default(false),
   isAdmin: boolean("isAdmin").notNull().default(false),
-  isSuperUser: boolean("isSuperUser").notNull().default(false),
   isSubscribed: boolean("isSubscribed").notNull().default(false),
   subscriptionLevel: subscriptionLevels("subscribeLevel"),
   subscriptionExpires: timestamp("expiresAt"),
   freeReleases: doublePrecision("freeReleases").notNull().default(0),
+  // country: text('country'),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

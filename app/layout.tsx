@@ -1,10 +1,7 @@
 import { roboto } from "@/fonts";
-import { PropsWithChildren, Suspense } from "react";
+import { PropsWithChildren } from "react";
 import "./globals.css";
 import "./static.css";
-import dynamic from "next/dynamic";
-import { cookies } from "next/headers";
-import Loading from "./loading";
 
 export const metadata = {
   title: "Create Next App",
@@ -14,17 +11,9 @@ export const metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<PropsWithChildren>) {
-  const AppThemeProvider = dynamic(() => import("../providers/ThemeContext"), {
-    ssr: false,
-  });
-
-  const theme = cookies().get("__theme__")?.value || "system";
-
   return (
     <html lang="en">
-      <body className={roboto.className}>
-        <Suspense fallback={<Loading />}>{children}</Suspense>
-      </body>
+      <body className={roboto.className}>{children}</body>
     </html>
   );
 }

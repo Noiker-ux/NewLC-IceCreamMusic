@@ -1,26 +1,26 @@
-import MyInpFile from "@/shared/MyInpFile/MyInpFile";
-import style from "./page.module.css";
-import MyInput from "@/shared/MyInput/MyInput";
-import MyTextArea from "@/shared/MyTextArea/MyTextArea";
-import MyTitle from "@/shared/MyTitle/MyTitle";
-import classNames from "classnames";
-import RelizeItem from "@/widgets/RelizeItem/RelizeItem";
 import { getAuthSession } from "@/actions/auth";
 import { db } from "@/db";
-import MyButton from "@/shared/MyButton/MyButton";
-import Image from "next/image";
+import { Error } from "@/entities/Error";
 import MyText from "@/shared/MyText/MyText";
+import MyTitle from "@/shared/MyTitle/MyTitle";
+import RelizeItem from "@/widgets/RelizeItem/RelizeItem";
+import classNames from "classnames";
+import Image from "next/image";
 import Link from "next/link";
+import style from "./page.module.css";
 
 export default async function ProfilePage() {
   const session = await getAuthSession();
 
-  // if (!session || !session.user) {
-  //   return <Error statusCode={404} />;
-  // }
+  if (!session || !session.user || !session.user.id) {
+    return <Error statusCode={404} />;
+  }
 
-  const releasesData = await db.query.release.findMany({
-    where: (release, { eq }) => eq(release.authorId, session.user!.id),
+  const userData = await db.query.users.findFirst({
+    where: (us, { eq }) => eq(us.id, session.user!.id),
+    with: {
+      releases: { limit: 3, orderBy: (rel, { desc }) => desc(rel.startDate) },
+    },
   });
 
   return (
@@ -40,16 +40,18 @@ export default async function ProfilePage() {
         </div>
         <div>
           <MyTitle Tag={"h2"} className="fs36">
-            Noiker666
+            {userData?.name}
           </MyTitle>
-          <MyText className="fs20">Super User</MyText>
-          <MyText className={style.description}>
+          <MyText className="fs20">
+            {userData?.isAdmin ? "Admin" : "User"}
+          </MyText>
+          {/* <MyText className={style.description}>
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Omnis id
             dignissimos, illo voluptatibus quis in fugit sint, iusto dicta
             quisquam, consectetur excepturi facilis veritatis voluptatum
             consequuntur odit debitis ullam nesciunt.
-          </MyText>
-          <div>
+          </MyText> */}
+          {/* <div>
             <MyTitle Tag={"h3"} className="mt30">
               Мои соцсети
             </MyTitle>
@@ -64,8 +66,8 @@ export default async function ProfilePage() {
                 https://yandex.ru/search/?text=0%BA%D1%82%D0%BE%D1%80&lr=22&clid=2411725&src=suggest_B
               </li>
             </ul>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <MyTitle Tag={"h3"} className="mt30">
               Дополнительная информация
             </MyTitle>
@@ -75,14 +77,14 @@ export default async function ProfilePage() {
               <MyText>Лейбл: DeadDynasty</MyText>
               <MyText>Личный сайт: https://yandex.ru/search/?</MyText>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className={classNames(style.myRelizes, "w100")}>
         <MyTitle Tag={"h3"} className="mb20">
           Мои релизы
         </MyTitle>
-        {releasesData.map((release) => {
+        {userData?.releases.map((release) => {
           return (
             <RelizeItem
               key={release.id}

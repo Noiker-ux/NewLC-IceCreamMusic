@@ -76,6 +76,7 @@
   cursor: pointer;
   margin-left: 10px;
   background-color: transparent;
+  text-decoration: none;
 }
 .header__wrapper_avatar {
   display: flex;
