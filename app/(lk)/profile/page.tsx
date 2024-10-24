@@ -28,7 +28,7 @@ export default async function ProfilePage() {
       <div className={classNames("row", "gap50")}>
         <div className={classNames("col", "gap30")}>
           <Image
-            src={"/assets/avatar.jpg"}
+            src={`/avatars/${userData!.id}.${userData!.avatar}`}
             alt={"Avatar"}
             width={250}
             height={250}

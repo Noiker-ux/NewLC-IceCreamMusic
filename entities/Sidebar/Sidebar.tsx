@@ -106,6 +106,17 @@ const Sidebar = () => {
             Мои подписки
           </Link>
         </div>
+        <div className={style.section}>
+          <MyText className={style.section__name}>Учетная запись</MyText>
+          <Link className={style.section__item} href={"/profile"}>
+            <LightningIcon className={style.section__icon} />
+            Профиль
+          </Link>
+          <Link className={style.section__item} href={"/signout"}>
+            <LikeIcon className={style.section__icon} />
+            Выход
+          </Link>
+        </div>
       </div>
     </aside>
   );
