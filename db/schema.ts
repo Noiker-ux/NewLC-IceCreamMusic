@@ -33,7 +33,7 @@ export const users = schema.table("user", {
   subscriptionLevel: subscriptionLevels("subscribeLevel"),
   subscriptionExpires: timestamp("expiresAt"),
   freeReleases: doublePrecision("freeReleases").notNull().default(0),
-  // country: text('country'),
+  balance: doublePrecision("balance").notNull().default(0),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -266,6 +266,7 @@ export const payouts = schema.table("payouts", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   createdAt: timestamp("createdAt").defaultNow(),
+  confirmed: boolean("confirmed").default(false),
 });
 
 export const payouts_relations = relations(payouts, ({ one }) => ({

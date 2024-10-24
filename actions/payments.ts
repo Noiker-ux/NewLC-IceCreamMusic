@@ -6,13 +6,15 @@ import { Payment } from "@a2seven/yoo-checkout";
 import { redirect } from "next/navigation";
 import { getAuthSession } from "./auth";
 import { getFullUrl } from "./url";
-import { orders } from "@/db/schema";
+import { orders, payouts, users } from "@/db/schema";
 import { premiumPlans } from "@/helpers/premiumPlans";
 import {
   currency,
   calculateSubscriptionEstimate,
   calculateReleaseEstimate,
 } from "@/utils/calculateServices";
+import { eq } from "drizzle-orm";
+import dateFormatter from "@/utils/dateFormatter";
 
 const unauthorizedResult = {
   success: false,
@@ -138,4 +140,83 @@ export async function makePayment(
   });
 
   redirect(payment.confirmation.confirmation_url);
+}
+
+export async function topUp(userId: string, amount: number) {
+  const session = await getAuthSession();
+
+  if (!session || !session.user || !session.user.id) {
+    return { success: false, message: "You need to log in first." };
+  }
+
+  const admin = await db.query.users.findFirst({
+    where: (us, { and, eq }) =>
+      and(eq(us.id, session.user!.id), eq(us.isAdmin, true)),
+  });
+
+  if (!admin) {
+    return {
+      success: false,
+      message: "You must be admin to perform this operation.",
+    };
+  }
+
+  await db.update(users).set({ balance: amount }).where(eq(users.id, userId));
+
+  return { success: true };
+}
+
+export async function makePayout(userId: string, payoutToken: string) {
+  const session = await getAuthSession();
+
+  if (!session || !session.user || !session.user.id) {
+    return { success: false, message: "You need to log in first." };
+  }
+
+  const user = await db.query.users.findFirst({
+    where: (us, { eq }) => eq(us.id, userId),
+  });
+
+  if (!user) {
+    return { success: false, message: "You need to log in first." };
+  }
+
+  if (user.balance === 0) {
+    return {
+      success: false,
+      message: "Can not make payout. Your balance is 0.",
+    };
+  }
+
+  const payout = await (
+    await fetch("https://api.yookassa.ru/v3/payouts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "Basic " +
+          btoa(
+            `${process.env.YOOKASSA_SHOP_ID}:${process.env.YOOKASSA_SECRET_KEY}`
+          ),
+      },
+      body: JSON.stringify({
+        amount: {
+          value: user.balance.toFixed(2),
+          currency: "RUB",
+        },
+        payout_token: payoutToken,
+        description: `Выплата за ${dateFormatter(new Date())}`,
+      }),
+    })
+  )
+    .json()
+    .catch(() => null);
+
+  if (!payout) {
+    return { success: false, message: "Smth went wrong" };
+  }
+
+  await db.insert(payouts).values({ id: payout.id, userId: user.id });
+
+  return { success: true };
 }
