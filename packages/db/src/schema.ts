@@ -9,6 +9,8 @@ import {
   timestamp,
   uuid,
   smallint,
+  varchar,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
@@ -24,7 +26,7 @@ export const users = schema.table("user", {
   name: text("name").notNull(),
   email: text("email").unique().notNull(),
   emailVerified: timestamp("emailVerified"),
-  password: text("password").notNull(),
+  password: text("password"),
   avatar: text("avatar"),
   verificationToken: text("verificationToken"),
   resetPasswordToken: text("resetPasswordToken"),
@@ -51,7 +53,70 @@ export const usersRelations = relations(users, ({ many }) => ({
   orders: many(orders),
   payment_methods: many(payment_method),
   payouts: many(payouts),
+  accounts: many(accounts),
+  verificationTokens: many(verificationTokens),
+  sessions: many(sessions),
 }));
+
+export const accounts = schema.table(
+  "accounts",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 16 }).notNull(),
+    provider: varchar("provider", { length: 256 }).notNull(),
+    providerAccountId: varchar("provider_ccount_id", { length: 256 }).notNull(),
+    refresh_token: varchar("refresh_token", { length: 256 }),
+    access_token: varchar("access_token", { length: 256 }),
+    expires_at: timestamp("expires_at", { mode: "date" }),
+    token_type: varchar("token_type", { length: 256 }),
+    scope: varchar("scope", { length: 256 }),
+    id_token: varchar("id_token", { length: 256 }),
+    session_state: varchar("session_state", { length: 256 }),
+  },
+  (account) => [
+    {
+      compoundKey: primaryKey({
+        columns: [account.provider, account.providerAccountId],
+      }),
+    },
+  ]
+);
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, { fields: [accounts.userId], references: [users.id] }),
+}));
+
+export const sessions = schema.table("sessions", {
+  sessionToken: varchar("session_token", { length: 128 }).primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { mode: "date", withTimezone: true }).notNull(),
+});
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}));
+
+export const verificationTokens = schema.table("verification_tokens", {
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  token: text("token").notNull().primaryKey(),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+});
+
+export const verificationTokensRelations = relations(
+  verificationTokens,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [verificationTokens.userId],
+      references: [users.id],
+    }),
+  })
+);
 
 export const news = schema.table("news", {
   id: uuid("id").defaultRandom().primaryKey(),

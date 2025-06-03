@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@heroui/button';
 import Image from 'next/image';
 
 export default function Home() {
@@ -23,6 +24,7 @@ export default function Home() {
 					className=' absolute bg-top l-0 top-0 h-full w-full object-cover'
 				/>
 			</div>
+			<Button onPress={() => alert('qwe')}>qwe</Button>
 			<div>
 				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure, ab magni
 				soluta eum, aliquid expedita rem fugit facilis harum, nobis voluptatibus

@@ -16,6 +16,7 @@ export default function YouKassaWallet({
       type: "payout",
       account_id: "407649", //Идентификатор шлюза (agentId в личном кабинете)
       success_callback: async function (data: any) {
+        console.log("data", JSON.stringify(data));
         await makePayout(data.payout_token).then((payoutData) => {
           enqueueSnackbar({
             message: payoutData.message,

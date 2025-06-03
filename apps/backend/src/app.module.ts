@@ -1,12 +1,15 @@
-/* eslint-disable prettier/prettier */
-
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import * as dbSchema from 'db/schema';
 import { DrizzlePGModule } from '@knaadh/nestjs-drizzle-pg';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TrpcModule } from './trpc/trpc.module';
+import { AuthModule } from './auth/auth.module';
+import { TaskModule } from './task/task.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    TrpcModule,
     ConfigModule.forRoot({ isGlobal: true }),
     DrizzlePGModule.registerAsync({
       tag: 'DB_TAG',
@@ -20,7 +23,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
         return {
           pg: {
-            connection: 'client',
+            connection: 'pool',
             config: {
               connectionString: `postgres://${user}:${password}@${host}:${port}/${dbName}`,
             },
@@ -31,6 +34,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         };
       },
     }),
+    AuthModule,
+    ScheduleModule.forRoot(),
+    TaskModule,
   ],
 })
 export class AppModule implements OnModuleInit {

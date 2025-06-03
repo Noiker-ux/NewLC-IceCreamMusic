@@ -163,8 +163,10 @@ export async function makePayout(payoutToken: string) {
     };
   }
 
+  console.log(payoutToken);
+
   const isSuccess = await db
-    .transaction(async () => {
+    .transaction(async (tx) => {
       const payout = await (
         await fetch("https://api.yookassa.ru/v3/payouts", {
           method: "POST",
@@ -187,7 +189,7 @@ export async function makePayout(payoutToken: string) {
         })
       ).json();
 
-      await db.insert(payouts).values({ id: payout.id, userId: user.id });
+      await tx.insert(payouts).values({ id: payout.id, userId: user.id });
     })
     .catch(() => false)
     .then(() => true);

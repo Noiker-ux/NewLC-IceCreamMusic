@@ -6,9 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new ConsoleLogger({
       colors: true,
-      json: true,
+      json: false,
     }),
   });
+
   await app.listen(5000);
 }
 

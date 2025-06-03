@@ -4,17 +4,18 @@
   "private": true,
   "exports": {
     ".": {
+      "require": "./lib/index.js",
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
     },
     "./schema": {
+      "require": "./lib/schema.js",
       "types": "./lib/schema.d.ts",
       "default": "./lib/schema.js"
     }
   },
   "type": "commonjs",
   "scripts": {
-    "dev": "rimraf lib && tsc --watch",
     "generate": "dotenvx run -- drizzle-kit generate",
     "migrate": "dotenvx run -- drizzle-kit migrate",
     "drop": "dotenvx run -- drizzle-kit drop",
@@ -27,16 +28,16 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "drizzle-orm": "0.36.4",
-    "pg": "^8.13.1"
+    "drizzle-orm": "0.43.1",
+    "pg": "^8.16.0"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "^1.24.5",
-    "@types/pg": "^8.11.10",
+    "@dotenvx/dotenvx": "^1.44.0",
+    "@types/pg": "^8.15.1",
     "@vercel/ncc": "^0.38.3",
     "cpy-cli": "^5.0.0",
-    "drizzle-kit": "^0.28.1",
+    "drizzle-kit": "^0.31.1",
     "rimraf": "^6.0.1",
-    "typescript": "^5.7.2"
+    "typescript": "^5.8.3"
   }
 }
