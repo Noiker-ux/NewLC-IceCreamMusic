@@ -11,3 +11,9 @@
 .swiper-wrapper {
 	height: auto !important;
 }
+
+.slider__img {
+	width: 500px !important;
+	height: 500px !important;
+	object-fit: cover;
+}

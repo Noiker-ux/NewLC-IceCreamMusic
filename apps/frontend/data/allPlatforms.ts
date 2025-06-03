@@ -6,230 +6,230 @@ export type TPlatfrom = {
 export const allPlatforms: TPlatfrom[] = [
 	{
 		name: 'Apple Music',
-		icon: '/Plarforms/appleMusic.svg',
+		icon: '/assets/Plarforms/appleMusic.svg',
 	},
 	{
 		name: 'Spotify',
-		icon: '/Plarforms/spotify.svg',
+		icon: '/assets/Plarforms/spotify.svg',
 	},
 	{
 		name: 'Amazon Music',
-		icon: '/Plarforms/amazonMusic.svg',
+		icon: '/assets/Plarforms/amazonMusic.svg',
 	},
 	{
 		name: 'Boom Play',
-		icon: '/Plarforms/BoomPlay.ico',
+		icon: '/assets/Plarforms/BoomPlay.ico',
 	},
 	{
 		name: 'Cron Telecom',
-		icon: '/Plarforms/CronTelecom.ico',
+		icon: '/assets/Plarforms/CronTelecom.ico',
 	},
 	{
 		name: 'Fon Mix',
-		icon: '/Plarforms/FonMix.png',
+		icon: '/assets/Plarforms/FonMix.png',
 	},
 	{
 		name: 'hitter/IZI Music',
-		icon: '/Plarforms/iziMusic.png',
+		icon: '/assets/Plarforms/iziMusic.png',
 	},
 	{
 		name: 'LINE MUSIC / Rythm',
-		icon: '/Plarforms/LineMusicRythm.ico',
+		icon: '/assets/Plarforms/LineMusicRythm.ico',
 	},
 	{
 		name: 'LiveXLive Powered By Slacker',
-		icon: '/Plarforms/LiveXLive.webp',
+		icon: '/assets/Plarforms/LiveXLive.webp',
 	},
 	{
 		name: 'LyricFind',
-		icon: '/Plarforms/LyricFind.png',
+		icon: '/assets/Plarforms/LyricFind.png',
 	},
 	{
 		name: 'mobi music',
-		icon: '/Plarforms/mobiMusic.png',
+		icon: '/assets/Plarforms/mobiMusic.png',
 	},
 	{
 		name: 'Presto Music',
-		icon: '/Plarforms/PrestoMusic.svg',
+		icon: '/assets/Plarforms/PrestoMusic.svg',
 	},
 	{
 		name: 'Qishui Yinyue',
-		icon: '/Plarforms/SodaMusic(QishuiYinyue).webp',
+		icon: '/assets/Plarforms/SodaMusic(QishuiYinyue).webp',
 	},
 	{
 		name: 'TikTok Music Video',
-		icon: '/Plarforms/TickTock.png',
+		icon: '/assets/Plarforms/TickTock.png',
 	},
 	{
 		name: 'VK Видео',
-		icon: '/Plarforms/VK.svg',
+		icon: '/assets/Plarforms/VK.svg',
 	},
 	{
 		name: 'VK Музыка',
-		icon: '/Plarforms/VK.svg',
+		icon: '/assets/Plarforms/VK.svg',
 	},
 	{
 		name: 'Wink Клипы',
-		icon: '/Plarforms/Wink.svg',
+		icon: '/assets/Plarforms/Wink.svg',
 	},
 	{
 		name: 'YouTube Copyright',
-		icon: '/Plarforms/YouTube.svg',
+		icon: '/assets/Plarforms/YouTube.svg',
 	},
 	{
 		name: 'YouTube Music',
-		icon: '/Plarforms/YouTube.svg',
+		icon: '/assets/Plarforms/YouTube.svg',
 	},
 	{
 		name: 'YouTube (Sound Recording)',
-		icon: '/Plarforms/YouTube.svg',
+		icon: '/assets/Plarforms/YouTube.svg',
 	},
 	{
 		name: 'Билайн (РБТ)',
-		icon: '/Plarforms/beeline.ico',
+		icon: '/assets/Plarforms/beeline.ico',
 	},
 	{
 		name: 'Теле2 (РБТ)',
-		icon: '/Plarforms/tele2.png',
+		icon: '/assets/Plarforms/tele2.png',
 	},
 	{
 		name: 'Звук / Wink Music',
-		icon: '/Plarforms/zvuk.ico',
+		icon: '/assets/Plarforms/zvuk.ico',
 	},
 	{
 		name: 'Иная дистрибуция',
-		icon: '/Plarforms/inaya.png',
+		icon: '/assets/Plarforms/inaya.png',
 	},
 	{
 		name: 'МегаФон (РБТ)',
-		icon: '/Plarforms/megafon.png',
+		icon: '/assets/Plarforms/megafon.png',
 	},
 	{
 		name: 'МТС (РБТ)',
-		icon: '/Plarforms/mts.png',
+		icon: '/assets/Plarforms/mts.png',
 	},
 	{
 		name: 'Яндекс Видео',
-		icon: '/Plarforms/YandexVideo.png',
+		icon: '/assets/Plarforms/YandexVideo.png',
 	},
 	{
 		name: 'Яндекс Музыка',
-		icon: '/Plarforms/YandexMusic.svg',
+		icon: '/assets/Plarforms/YandexMusic.svg',
 	},
 	{
 		name: '7digital',
-		icon: '/Plarforms/7digital.jpg',
+		icon: '/assets/Plarforms/7digital.jpg',
 	},
 	{
 		name: 'ACRCloud',
-		icon: '/Plarforms/ACRCloud.png',
+		icon: '/assets/Plarforms/ACRCloud.png',
 	},
 	{
 		name: 'Anghami',
-		icon: '/Plarforms/Anghami.png',
+		icon: '/assets/Plarforms/Anghami.png',
 	},
 	{
 		name: 'AudibleMagic',
-		icon: '/Plarforms/AudibleMagic.png',
+		icon: '/assets/Plarforms/AudibleMagic.png',
 	},
 	{
 		name: 'AWA',
-		icon: '/Plarforms/awa.ico',
+		icon: '/assets/Plarforms/awa.ico',
 	},
 	{
 		name: 'CapCut',
-		icon: '/Plarforms/capcut.svg',
+		icon: '/assets/Plarforms/capcut.svg',
 	},
 	{
 		name: 'ClicknClear',
-		icon: '/Plarforms/clickcleaner.webp',
+		icon: '/assets/Plarforms/clickcleaner.webp',
 	},
 	{
 		name: 'Deezer',
-		icon: '/Plarforms/deezer.ico',
+		icon: '/assets/Plarforms/deezer.ico',
 	},
 	{
 		name: 'GoMusic',
-		icon: '/Plarforms/GoMusic.png',
+		icon: '/assets/Plarforms/GoMusic.png',
 	},
 	{
 		name: 'iHeart',
-		icon: '/Plarforms/iHeart.ico',
+		icon: '/assets/Plarforms/iHeart.ico',
 	},
 	{
 		name: 'Jaxsta',
-		icon: '/Plarforms/jaxsta.ico',
+		icon: '/assets/Plarforms/jaxsta.ico',
 	},
 	{
 		name: 'JioSaavn',
-		icon: '/Plarforms/JioSaavn.ico',
+		icon: '/assets/Plarforms/JioSaavn.ico',
 	},
 	{
 		name: 'Kanjian',
-		icon: '/Plarforms/kanjian.png',
+		icon: '/assets/Plarforms/kanjian.png',
 	},
 	{
 		name: 'KKBOX',
-		icon: '/Plarforms/kkbox.png',
+		icon: '/assets/Plarforms/kkbox.png',
 	},
 	{
 		name: 'Likee',
-		icon: '/Plarforms/Likee.ico',
+		icon: '/assets/Plarforms/Likee.ico',
 	},
 	{
 		name: 'Mixcloud',
-		icon: '/Plarforms/mixCloud.png',
+		icon: '/assets/Plarforms/mixCloud.png',
 	},
 	{
 		name: 'MusixMatch',
-		icon: '/Plarforms/MusixMathc.png',
+		icon: '/assets/Plarforms/MusixMathc.png',
 	},
 	{
 		name: 'Netease',
-		icon: '/Plarforms/NetEase.png',
+		icon: '/assets/Plarforms/NetEase.png',
 	},
 	{
 		name: 'Pandora',
-		icon: '/Plarforms/Pandora.png',
+		icon: '/assets/Plarforms/Pandora.png',
 	},
 	{
 		name: 'Pretzel',
-		icon: '/Plarforms/Pretzel.ico',
+		icon: '/assets/Plarforms/Pretzel.ico',
 	},
 	{
 		name: 'Qobuz',
-		icon: '/Plarforms/Qobuz.png',
+		icon: '/assets/Plarforms/Qobuz.png',
 	},
 	{
 		name: 'Smule',
-		icon: '/Plarforms/Smule.ico',
+		icon: '/assets/Plarforms/Smule.ico',
 	},
 	{
 		name: 'SoundCloud',
-		icon: '/Plarforms/Soundcloud.png',
+		icon: '/assets/Plarforms/Soundcloud.png',
 	},
 	{
 		name: 'SoundExchange',
-		icon: '/Plarforms/SoundExchange.webp',
+		icon: '/assets/Plarforms/SoundExchange.webp',
 	},
 	{
 		name: 'Tencent',
-		icon: '/Plarforms/Tencent.png',
+		icon: '/assets/Plarforms/Tencent.png',
 	},
 	{
 		name: 'TIDAL',
-		icon: '/Plarforms/Tidal.ico',
+		icon: '/assets/Plarforms/Tidal.ico',
 	},
 	{
 		name: 'TikTok',
-		icon: '/Plarforms/TickTock.png',
+		icon: '/assets/Plarforms/TickTock.png',
 	},
 	{
 		name: 'TREBEL',
-		icon: '/Plarforms/TRBEL.png',
+		icon: '/assets/Plarforms/TRBEL.png',
 	},
 	{
 		name: 'Yappy',
-		icon: '/Plarforms/Yappy.png',
+		icon: '/assets/Plarforms/Yappy.png',
 	},
 ];

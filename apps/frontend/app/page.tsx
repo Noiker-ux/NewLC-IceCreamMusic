@@ -8,7 +8,7 @@ export default function Home() {
 		<div>
 			<div className='w-full overflow-hidden relative h-[calc(100vh-104px)]'>
 				<Image
-					src={'/circle.png'}
+					src={'/assets/circle.png'}
 					width={1920}
 					height={1080}
 					alt='Обложка'
@@ -16,7 +16,7 @@ export default function Home() {
 					className=' absolute bg-top l-0 top-0 h-full w-full object-cover'
 				/>
 				<Image
-					src={'/girl.png'}
+					src={'/assets/girl.png'}
 					width={1920}
 					height={1080}
 					alt='Обложка'

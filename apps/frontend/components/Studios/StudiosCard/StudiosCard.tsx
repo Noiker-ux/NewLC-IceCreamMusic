@@ -13,7 +13,7 @@ export default function StudiosCard({
 			className='w-full rounded-xl bg-zinc-900 relative h-fit cursor-pointer hover:scale-95 transition-all
         '>
 			<Image
-				src={`/Studios/${preview}`}
+				src={`/assets/Studios/${preview}`}
 				alt={''}
 				width={250}
 				height={250}

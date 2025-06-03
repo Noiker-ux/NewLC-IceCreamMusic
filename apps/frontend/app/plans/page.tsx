@@ -13,7 +13,7 @@ export default function PlansPage() {
 				</div>
 				<div className='w-4/12 relative mobile:hidden'>
 					<Image
-						src={'/Tarifs/photo_5319064615684010758_y.jpg'}
+						src={'/assets/Tarifs/photo_5319064615684010758_y.jpg'}
 						alt={''}
 						width={500}
 						height={500}

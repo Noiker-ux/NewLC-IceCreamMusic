@@ -22,7 +22,7 @@ export default function StudioDetail() {
 		<>
 			<StudiosPreview
 				bgImage={'black-mamba-snake-pale-gray-spots-val4upfryn4ad5ac.jpg'}
-				logo={'M2.png'}
+				logo={'photo_2025-05-18_20-30-50.jpg'}
 				mainColor={''}
 			/>
 			<StudioAbout />
@@ -49,7 +49,7 @@ export default function StudioDetail() {
 					<div className={cn(style['slider__wrapper'])}>
 						<SwiperSlide className={cn(style['slider__item'])}>
 							<Image
-								src={'/Studios/photo_2025-04-28_16-17-24.jpg'}
+								src={'/assets/Studios/photo_2025-05-18_20-30-47.jpg'}
 								alt=''
 								width={500}
 								height={500}
@@ -58,7 +58,7 @@ export default function StudioDetail() {
 						</SwiperSlide>
 						<SwiperSlide className={cn(style['slider__item'])}>
 							<Image
-								src={'/Studios/photo_2025-04-28_16-17-25 (2).jpg'}
+								src={'/assets/Studios/photo_2025-05-18_20-30-49 (2).jpg'}
 								alt=''
 								width={500}
 								height={500}
@@ -67,7 +67,7 @@ export default function StudioDetail() {
 						</SwiperSlide>
 						<SwiperSlide className={cn(style['slider__item'])}>
 							<Image
-								src={'/Studios/photo_2025-04-28_16-17-25 (2).jpg'}
+								src={'/assets/Studios/photo_2025-05-18_20-30-49.jpg'}
 								alt=''
 								width={500}
 								height={500}
@@ -76,7 +76,7 @@ export default function StudioDetail() {
 						</SwiperSlide>
 						<SwiperSlide className={cn(style['slider__item'])}>
 							<Image
-								src={'/Studios/photo_2025-04-28_16-17-25 (2).jpg'}
+								src={'/assets/Studios/photo_2025-05-18_20-30-48.jpg'}
 								alt=''
 								width={500}
 								height={500}
@@ -88,7 +88,7 @@ export default function StudioDetail() {
 			</div>
 			<StudiosTeam
 				losung={
-					'SLATT RECORDS состоит из квалифицированных специалистов высшего уровня'
+					' Showbiz Records состоит из квалифицированных специалистов высшего уровня'
 				}
 				people={people}
 			/>

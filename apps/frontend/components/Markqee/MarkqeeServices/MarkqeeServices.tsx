@@ -5,50 +5,55 @@ export default function MarkqeeServices() {
 	return (
 		<Marquee className='rounded-xl'>
 			<Image
-				src={'/MusicServices/apple_music.svg'}
+				src={'/assets/MusicServices/apple_music.svg'}
 				alt={''}
 				width={200}
 				height={150}
 			/>
 			<Image
-				src={'/MusicServices/deezer.svg'}
+				src={'/assets/MusicServices/deezer.svg'}
 				alt={''}
 				width={200}
 				height={150}
 			/>
 			<Image
-				src={'/MusicServices/spotify.svg'}
+				src={'/assets/MusicServices/spotify.svg'}
 				alt={''}
 				width={200}
 				height={150}
 			/>
 			<Image
-				src={'/MusicServices/tidal.svg'}
+				src={'/assets/MusicServices/tidal.svg'}
 				alt={''}
 				width={200}
 				height={150}
 			/>
 			<Image
-				src={'/MusicServices/tiktok.svg'}
-				alt={''}
-				width={200}
-				height={150}
-			/>
-			<Image src={'/MusicServices/vk.svg'} alt={''} width={200} height={150} />
-			<Image
-				src={'/MusicServices/yandex.svg'}
+				src={'/assets/MusicServices/tiktok.svg'}
 				alt={''}
 				width={200}
 				height={150}
 			/>
 			<Image
-				src={'/MusicServices/youtube_music.svg'}
+				src={'/assets/MusicServices/vk.svg'}
 				alt={''}
 				width={200}
 				height={150}
 			/>
 			<Image
-				src={'/MusicServices/zvuk.svg'}
+				src={'/assets/MusicServices/yandex.svg'}
+				alt={''}
+				width={200}
+				height={150}
+			/>
+			<Image
+				src={'/assets/MusicServices/youtube_music.svg'}
+				alt={''}
+				width={200}
+				height={150}
+			/>
+			<Image
+				src={'/assets/MusicServices/zvuk.svg'}
 				alt={''}
 				width={200}
 				height={150}

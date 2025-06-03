@@ -6,7 +6,7 @@ export default function YandexMusic() {
 	return (
 		<div className='bg-zinc-900 rounded-xl p-5 w-full'>
 			<Image
-				src={'/MusicServices/yandex.svg'}
+				src={'/assets/MusicServices/yandex.svg'}
 				alt='Yandex Music'
 				width={300}
 				height={300}

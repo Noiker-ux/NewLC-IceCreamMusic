@@ -26,7 +26,7 @@ export default function StudiosPreview({ bgImage, logo }: TStudiosPreview) {
 			<div className='flex justify-center items-center '>
 				<div className='relative max-w-[500px] '>
 					<Image
-						src={`/Studios/${logo}`}
+						src={`/assets/Studios/${logo}`}
 						alt={'da'}
 						width={500}
 						height={500}
@@ -50,7 +50,7 @@ export default function StudiosPreview({ bgImage, logo }: TStudiosPreview) {
 					'text-7xl font-semibold text-center py-20',
 					advent.className,
 				)}>
-				SLATT RECORDS
+				Showbiz Records
 			</h1>
 		</div>
 	);
