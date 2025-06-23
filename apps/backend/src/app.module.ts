@@ -6,7 +6,7 @@ import * as dbSchema from 'db/schema';
 import { AuthModule } from './auth/auth.module';
 import { TaskModule } from './task/task.module';
 import { VerificationModule } from './verification/verification.module';
-import { AuthGuard } from './auth/auth.guard';
+import { FincanceModule } from './finance/finance.module';
 
 @Module({
   imports: [
@@ -36,6 +36,7 @@ import { AuthGuard } from './auth/auth.guard';
     }),
     AuthModule,
     VerificationModule,
+    FincanceModule,
     ScheduleModule.forRoot(),
     TaskModule,
   ],

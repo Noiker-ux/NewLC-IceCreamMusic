@@ -24,8 +24,9 @@ export type TPageQuery = {
   size: number;
 };
 
-export type TTicketRegistrationData = InferInsertModel<
-  typeof schema.verification
+export type TTicketRegistrationData = Omit<
+  InferInsertModel<typeof schema.verification>,
+  'rejectReason' | 'status'
 >;
 
 export type TTicketStatusUpdateData = {

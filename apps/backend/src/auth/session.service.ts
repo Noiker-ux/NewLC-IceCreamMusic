@@ -4,10 +4,7 @@ import { encodeBase32NoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 
-type User = Pick<
-  InferSelectModel<typeof schema.users>,
-  'id' | 'isAdmin' | 'email' | 'avatar' | 'name'
->;
+type User = InferSelectModel<typeof schema.users>;
 
 type Session = InferInsertModel<typeof schema.sessions>;
 
@@ -17,13 +14,7 @@ type SessionValidationResult =
 
 const sessionTable = schema.sessions;
 
-const userTable = {
-  id: schema.users.id,
-  email: schema.users.email,
-  name: schema.users.name,
-  isAdmin: schema.users.isAdmin,
-  avatar: schema.users.avatar,
-};
+const userTable = schema.users;
 
 const emptySession = {
   session: null,
