@@ -11,18 +11,14 @@ import { schema, type DB } from 'db';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { TSuccessionResponse } from '../shared/types';
+import { TPageQuery, TSuccessionResponse } from '../shared/types';
+import { ApiTags } from '@nestjs/swagger';
 
 export type TVerification = InferSelectModel<typeof schema.verification>;
 
 export type VerificationTicketsResponse = TVerification[];
 
 export type TStatus = 'approved' | 'rejected' | 'moderating';
-
-export type TPageQuery = {
-  page: number;
-  size: number;
-};
 
 export type TTicketRegistrationData = Omit<
   InferInsertModel<typeof schema.verification>,
@@ -33,6 +29,7 @@ export type TTicketStatusUpdateData = {
   status: TStatus;
 };
 
+@ApiTags('verification')
 @Controller('verification')
 @UseGuards(AuthGuard)
 export class VerificationController {

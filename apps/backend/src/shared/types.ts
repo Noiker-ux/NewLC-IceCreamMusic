@@ -7,6 +7,11 @@ export type TAmount = {
   currency: string;
 };
 
+export type TPageQuery = {
+  page: number;
+  size: number;
+};
+
 export type TStatus =
   | 'pending'
   | 'waiting_for_capture'

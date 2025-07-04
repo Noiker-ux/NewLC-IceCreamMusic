@@ -6,7 +6,15 @@ import * as dbSchema from 'db/schema';
 import { AuthModule } from './auth/auth.module';
 import { TaskModule } from './task/task.module';
 import { VerificationModule } from './verification/verification.module';
-import { FincanceModule } from './finance/finance.module';
+import { FinanceModule } from './finance/finance.module';
+import { NestMinioModule } from 'nestjs-minio';
+import { FAQModule } from './faq/faq.module';
+import { NewsModule } from './news/news.module';
+import { PromoLinkModule } from './promo-link/promo-link.module';
+import { StudioModule } from './studio/studio.module';
+import { ReleaseModule } from './release/release.module';
+import { UserModule } from './user/user.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -34,12 +42,37 @@ import { FincanceModule } from './finance/finance.module';
         };
       },
     }),
-    AuthModule,
-    VerificationModule,
-    FincanceModule,
+    NestMinioModule.registerAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory(config: ConfigService) {
+        const s3Endpoint = config.getOrThrow<string>('S3_HOST');
+        const s3Port = config.getOrThrow<number>('S3_PORT');
+        const s3AccessKey = config.getOrThrow<string>('S3_ACCESS_KEY');
+        const s3SecretKey = config.getOrThrow<string>('S3_SECRET_KEY');
+
+        return {
+          endPoint: s3Endpoint,
+          port: s3Port,
+          useSSL: false,
+          accessKey: s3AccessKey,
+          secretKey: s3SecretKey,
+        };
+      },
+    }),
     ScheduleModule.forRoot(),
+    AuthModule,
+    FAQModule,
+    FinanceModule,
+    NewsModule,
+    VerificationModule,
+    PromoLinkModule,
+    StudioModule,
+    ReleaseModule,
+    UserModule,
     TaskModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule implements OnModuleInit {
   logger = new Logger(AppModule.name);

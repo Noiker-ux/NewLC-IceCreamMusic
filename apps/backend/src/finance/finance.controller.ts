@@ -22,6 +22,7 @@ import {
   releaseMetadataSchema,
   subscriptionMetadataSchema,
 } from 'shared/schema/order.schema';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 export type TCreateOrderResponse = {
   redirect_url: string;
@@ -41,6 +42,7 @@ export type TMakeOrderResponse = {
   confirmation_url: string;
 };
 
+@ApiTags('finance')
 @Controller('finance')
 export class FinanceController {
   logger = new Logger(FinanceController.name);
@@ -51,6 +53,7 @@ export class FinanceController {
     private readonly financeService: FinanceService,
   ) {}
 
+  @ApiSecurity('bearer')
   @UseGuards(AuthGuard)
   @TypedRoute.Post()
   async createOrder(
@@ -264,4 +267,16 @@ export class FinanceController {
 
     return { success: true };
   }
+
+  // @TypedRoute.Post('/payouts')
+  // async createPayoutTicket() {}
+
+  // @TypedRoute.Patch('/payouts/:ticketId')
+  // async updatePayoutTicketStatus() {}
+
+  // @TypedRoute.Get('/payouts')
+  // async getPayoutTickets() {}
+
+  // @TypedRoute.Get('/payouts/:ticketId')
+  // async getPayoutTicket() {}
 }

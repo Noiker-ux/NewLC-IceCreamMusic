@@ -14,6 +14,8 @@ import { AuthService } from './auth.service';
 import { Session } from './session.decorator';
 import { SessionService } from './session.service';
 import { TSuccessionResponse } from '../shared/types';
+import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger';
 
 export type TOauthAccountData = {
   providerAccountId: string;
@@ -69,6 +71,9 @@ export type TRequestPasswordRecoveryResponse = {
 
 export type TUser = InferSelectModel<typeof schema.users>;
 
+export type TTokenValue = (typeof verificationTokenTypeValues)[number];
+
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   logger = new Logger(AuthController.name);
@@ -77,6 +82,7 @@ export class AuthController {
     private readonly sessionService: SessionService,
     private readonly authService: AuthService,
     @Inject('DB_TAG') private readonly db: DB,
+    private readonly config: ConfigService,
   ) {}
 
   @TypedRoute.Get()
@@ -320,7 +326,7 @@ export class AuthController {
   @TypedRoute.Get('token/:type/:token')
   async verifyEmailToken(
     @TypedParam('token') emailToken: string,
-    @TypedParam('type') type: (typeof verificationTokenTypeValues)[number],
+    @TypedParam('type') type: TTokenValue,
   ): Promise<TSuccessionResponse> {
     const dbToken = await this.db.query.verificationTokens.findFirst({
       where: and(
