@@ -267,6 +267,20 @@
       "when": 1750084265963,
       "tag": "0037_eager_namor",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1751475725928,
+      "tag": "0038_absurd_william_stryker",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1751476192871,
+      "tag": "0039_colossal_toro",
+      "breakpoints": true
     }
   ]
 }
