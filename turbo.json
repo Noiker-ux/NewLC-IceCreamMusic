@@ -4,7 +4,7 @@
   "ui": "tui",
   "tasks": {
     "sdk#build": {
-      "dependsOn": ["db#build", "shared#build"],
+      "dependsOn": ["db#build", "shared#build", "backend#build"],
       "outputs": ["lib"]
     },
     "db#build": {
