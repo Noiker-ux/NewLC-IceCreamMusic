@@ -1,15 +1,23 @@
-import { Logger, Module, OnModuleInit } from '@nestjs/common';
-import * as dbSchema from 'db/schema';
 import { DrizzlePGModule } from '@knaadh/nestjs-drizzle-pg';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TrpcModule } from './trpc/trpc.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import * as dbSchema from 'db/schema';
 import { AuthModule } from './auth/auth.module';
 import { TaskModule } from './task/task.module';
-import { ScheduleModule } from '@nestjs/schedule';
+import { VerificationModule } from './verification/verification.module';
+import { FinanceModule } from './finance/finance.module';
+import { NestMinioModule } from 'nestjs-minio';
+import { FAQModule } from './faq/faq.module';
+import { NewsModule } from './news/news.module';
+import { PromoLinkModule } from './promo-link/promo-link.module';
+import { StudioModule } from './studio/studio.module';
+import { ReleaseModule } from './release/release.module';
+import { UserModule } from './user/user.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
-    TrpcModule,
     ConfigModule.forRoot({ isGlobal: true }),
     DrizzlePGModule.registerAsync({
       tag: 'DB_TAG',
@@ -34,10 +42,37 @@ import { ScheduleModule } from '@nestjs/schedule';
         };
       },
     }),
-    AuthModule,
+    NestMinioModule.registerAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory(config: ConfigService) {
+        const s3Endpoint = config.getOrThrow<string>('S3_HOST');
+        const s3Port = config.getOrThrow<number>('S3_PORT');
+        const s3AccessKey = config.getOrThrow<string>('S3_ACCESS_KEY');
+        const s3SecretKey = config.getOrThrow<string>('S3_SECRET_KEY');
+
+        return {
+          endPoint: s3Endpoint,
+          port: s3Port,
+          useSSL: false,
+          accessKey: s3AccessKey,
+          secretKey: s3SecretKey,
+        };
+      },
+    }),
     ScheduleModule.forRoot(),
+    AuthModule,
+    FAQModule,
+    FinanceModule,
+    NewsModule,
+    VerificationModule,
+    PromoLinkModule,
+    StudioModule,
+    ReleaseModule,
+    UserModule,
     TaskModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule implements OnModuleInit {
   logger = new Logger(AppModule.name);

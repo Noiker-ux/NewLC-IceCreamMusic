@@ -1,5 +1,6 @@
 'use client';
 
+// import { oauth } from '@/shared/api/indes';
 import { Button } from '@heroui/button';
 import Image from 'next/image';
 
@@ -24,8 +25,15 @@ export default function Home() {
 					className=' absolute bg-top l-0 top-0 h-full w-full object-cover'
 				/>
 			</div>
-			<Button onPress={() => alert('qwe')}>qwe</Button>
-			<div>
+			{/* <Button onPress={() => oauth().then(JSON.stringify).then(alert)}>
+				qwe
+			</Button> */}
+			<div
+				dangerouslySetInnerHTML={{
+					__html: `<div class="flourish-embed flourish-chart" data-src="visualisation/23297172"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/23297172/thumbnail" width="100%" alt="chart visualization" /></noscript></div>`,
+				}}
+				suppressHydrationWarning></div>
+			{/* <div>
 				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure, ab magni
 				soluta eum, aliquid expedita rem fugit facilis harum, nobis voluptatibus
 				adipisci in quas temporibus corporis consectetur sit laudantium? Sit.
@@ -193,7 +201,7 @@ export default function Home() {
 				voluptate asperiores, quam excepturi iusto incidunt voluptates
 				laudantium eum sint recusandae similique vitae reprehenderit eaque?
 				Quam, nemo!
-			</div>
+			</div> */}
 		</div>
 	);
 }

@@ -8,7 +8,9 @@
     "apps/*"
   ],
   "devDependencies": {
-    "turbo": "^2.5.3",
-    "typescript": "^5.8.3"
+    "turbo": "^2.5.3"
+  },
+  "scripts": {
+    "prepare": "ts-patch install"
   }
 }

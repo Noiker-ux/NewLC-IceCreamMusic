@@ -28,12 +28,14 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@types/pg": "^8.10.0",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "drizzle-orm": "^0.43.1",
+    "drizzle-orm": "0.44.2",
     "drizzle-zod": "^0.7.1",
+    "pg": "^8.10.0",
     "zod": "^3.25.1"
   }
 }

@@ -1,7 +1,0 @@
-.wrapper {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  &:hover {
-    background-color: var(--hover-color);
-  }
-}
