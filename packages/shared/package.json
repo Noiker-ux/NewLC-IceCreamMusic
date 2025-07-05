@@ -6,15 +6,21 @@
   "exports": {
     "./schema/*": {
       "types": "./lib/schema/*.d.ts",
-      "default": "./lib/schema/*.js"
+      "default": "./lib/schema/*.js",
+      "require": "./lib/schema/*.js"
     },
-    "./api/*": {
-      "types": "./lib/api/*.d.ts",
-      "default": "./lib/api/*.js"
+    "./config/*": {
+      "types": "./lib/config/*.d.ts",
+      "default": "./lib/config/*.js",
+      "require": "./lib/config/*.js"
+    },
+    "./helpers/*": {
+      "types": "./lib/helpers/*.d.ts",
+      "default": "./lib/helpers/*.js",
+      "require": "./lib/helpers/*.js"
     }
   },
   "scripts": {
-    "dev": "rimraf lib && tsc --watch",
     "build": "rimraf lib && tsc"
   },
   "keywords": [],
@@ -23,6 +29,11 @@
   "type": "commonjs",
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.43.1",
+    "drizzle-zod": "^0.7.1",
+    "zod": "^3.25.1"
   }
 }

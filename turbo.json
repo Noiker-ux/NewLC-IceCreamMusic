@@ -14,17 +14,8 @@
       "with": ["db#build", "shared#build"],
       "outputs": [".next/**", "!.next/cache/**", "dist", "lib"]
     },
-    "db#dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "shared#dev": {
-      "with": ["db#dev"],
-      "cache": false,
-      "persistent": true
-    },
     "dev": {
-      "with": ["shared#dev"],
+      "dependsOn": ["db#build", "shared#build"],
       "cache": false,
       "persistent": true
     }

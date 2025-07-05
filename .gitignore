@@ -45,4 +45,5 @@ data
 
 **/.next
 **/lib
+!apps/**/lib
 .turbo

@@ -1,6 +1,0 @@
-{
-  "watch": ["./src/*.ts"],
-  "exec": "ncc build src/index.ts && node dist/index.js",
-  "ext": "js ts",
-  "stdin": false
-}
