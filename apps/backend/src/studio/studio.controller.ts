@@ -39,13 +39,13 @@ export type TCreateStudioResponse = {
 
 export type TAddPhotoResponse = Pick<TStudioPhotoData, 'url'>;
 
-export type TUpdateStudioBody = Partial<Omit<TStudioData, 'id'>>;
+export type TUpdateStudioBody = {
+  data: Partial<Omit<TStudioData, 'id'>>;
+};
 
 export type TUpdateStudioResponse = {
   logo: string;
 };
-
-const publicUrl = new URL(process.env.NEXT_PUBLIC_S3_URL!);
 
 @ApiTags('studios')
 @Controller('studios')
@@ -93,6 +93,8 @@ export class StudioController {
     @TypedBody() body: TCreateStudioBody,
   ): Promise<TCreateStudioResponse> {
     const { photos, studio } = body;
+
+    const publicUrl = new URL(process.env.NEXT_PUBLIC_S3_URL!);
 
     const result = await this.db.transaction(async (tx) => {
       const newStudio = (
@@ -185,6 +187,8 @@ export class StudioController {
     @TypedParam('studioId') studioId: string,
     @TypedBody() body: TAddPhotoBody,
   ): Promise<TAddPhotoResponse> {
+    const publicUrl = new URL(process.env.NEXT_PUBLIC_S3_URL!);
+
     const result = await this.db.transaction(async (tx) => {
       const studio = await tx.query.studios.findFirst({
         where: eq(schema.studios.id, studioId),
@@ -283,6 +287,8 @@ export class StudioController {
     @TypedBody() body: TUpdateStudioBody,
     @TypedParam('studioId') studioId: string,
   ): Promise<TUpdateStudioResponse> {
+    const publicUrl = new URL(process.env.NEXT_PUBLIC_S3_URL!);
+
     const result = await this.db.transaction(async (tx) => {
       const studio = await tx.query.studios.findFirst({
         where: eq(schema.studios.id, studioId),
@@ -290,10 +296,10 @@ export class StudioController {
 
       if (!studio) throw new BadRequestException('Студия не найдена');
 
-      if (!body.logo) {
+      if (!body.data.logo) {
         const noLogoResult = await tx
           .update(schema.studios)
-          .set(body)
+          .set(body.data)
           .where(eq(schema.studios.id, studioId))
           .returning();
 
@@ -307,7 +313,7 @@ export class StudioController {
 
       const privateLogoUrl = await this.s3Client.presignedPutObject(
         'studios',
-        `${studioId}:${body.logo}`,
+        `${studioId}:${body.data.logo}`,
         60 * 60,
       );
 
