@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
 		serverActions: {
 			allowedOrigins: ['localhost'],
 		},
+		viewTransition: true,
 	},
 	images: {
 		unoptimized: true,

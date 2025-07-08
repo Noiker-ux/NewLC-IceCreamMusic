@@ -1,6 +1,4 @@
-import { TFAQ } from './FAQItem/FAQItem.props';
-
-export const listFAQList: TFAQ[] = [
+export const listFAQList = [
 	{
 		question: 'Что это за сервис?',
 		answer:
