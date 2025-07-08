@@ -17,7 +17,7 @@ import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
-import { TPageQuery } from '../sdk/structures/TPageQuery';
+import { TPageQuery } from '../shared/types';
 import { AnalyticsService } from './analytics.service';
 
 export type TAnalytics = InferSelectModel<typeof schema.analytics>;
