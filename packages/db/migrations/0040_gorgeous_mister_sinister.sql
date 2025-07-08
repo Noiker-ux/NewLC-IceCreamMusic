@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."studios" ALTER COLUMN "rating" SET DATA TYPE real;
