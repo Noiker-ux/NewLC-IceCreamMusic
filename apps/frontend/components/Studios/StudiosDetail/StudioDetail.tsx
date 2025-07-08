@@ -8,7 +8,13 @@ import 'swiper/css';
 import Image from 'next/image';
 import StudioAbout from './StudioAbout/StudioAbout';
 import StudiosTeam from './StudiosTeam/StudiosTeam';
-export default function StudioDetail() {
+import { TGetStudiosResponse } from 'sdk/lib/studio/studio.controller';
+import { Primitive } from 'sdk';
+export default function StudioDetail({
+	studio,
+}: {
+	studio: Primitive<TGetStudiosResponse>[number];
+}) {
 	const people = [
 		{
 			name: 'Leslie Alexander',
@@ -25,7 +31,13 @@ export default function StudioDetail() {
 				logo={'photo_2025-05-18_20-30-50.jpg'}
 				mainColor={''}
 			/>
-			<StudioAbout />
+			<StudioAbout
+				name={studio.name}
+				description={studio.description}
+				studioPhotos={studio.photos.filter((photo) => {
+					return photo.type == 'studio_photo';
+				})}
+			/>
 			<div className='text-4xl mb-20 font-semibold max-h-[75vh] tracking-tight text-pretty text-white sm:text-5xl overflow-hidden'>
 				<h2
 					className={cn(

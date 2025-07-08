@@ -5,6 +5,7 @@ import { FaVk } from 'react-icons/fa';
 import { RiWhatsappFill } from 'react-icons/ri';
 import { FaViber } from 'react-icons/fa6';
 
+export const dynamic = 'force-dynamic';
 export default function FAQPage() {
 	return (
 		<div className='flex flex-col gap-3'>
