@@ -306,13 +306,15 @@ export const release = schema.table("release", {
   yandexSoonNewRelease: timestamp("yandexSoonNewRelease"),
 });
 
-export const releaseRelations = relations(release, ({ one, many }) => ({
+export const release_relations = relations(release, ({ one, many }) => ({
   author: one(users, {
     fields: [release.authorId],
     references: [users.id],
   }),
 
   tracks: many(track),
+
+  promoLinks: many(promoLinks),
 }));
 
 export const track = schema.table("track", {

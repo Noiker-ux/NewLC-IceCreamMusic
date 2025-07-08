@@ -38,6 +38,7 @@
     "@oslojs/encoding": "^1.1.0",
     "@oslojs/jwt": "^0.3.0",
     "bcrypt-ts": "^7.1.0",
+    "deep-object-diff": "^1.1.9",
     "drizzle-orm": "0.44.2",
     "drizzle-zod": "0.7.1",
     "minio": "^8.0.5",
