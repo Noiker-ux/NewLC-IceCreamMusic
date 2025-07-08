@@ -18,6 +18,7 @@ import {
   verificationStatusValues,
   verificationTokenTypeValues,
 } from "./types";
+import { real } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
 
@@ -453,7 +454,7 @@ export const studios = schema.table("studios", {
 
   name: text("name").notNull(),
 
-  rating: smallint("rating").notNull().default(0),
+  rating: real("rating").notNull().default(0),
 
   address: text("address").notNull(),
 
