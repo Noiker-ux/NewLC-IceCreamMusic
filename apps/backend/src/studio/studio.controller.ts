@@ -36,7 +36,7 @@ export type TCreateStudioBody = {
 export type TAddPhotoBody = Omit<TStudioPhotoData, 'id' | 'studioId'>;
 
 export type TCreateStudioResponse = {
-  studio: Pick<TStudioData, 'logo'>;
+  studio: Pick<TStudioData, 'logo' | 'background'>;
   photos: Pick<TStudioPhotoData, 'url'>[];
 };
 
@@ -48,6 +48,7 @@ export type TUpdateStudioBody = {
 
 export type TUpdateStudioResponse = {
   logo: string;
+  background: string;
 };
 
 @ApiTags('studios')
@@ -58,7 +59,6 @@ export class StudioController {
   constructor(
     @Inject('DB_TAG') private readonly db: DB,
     @InjectMinio() private readonly s3Client: Client,
-    // private readonly sessionService: SessionService,
     private readonly studioService: StudioService,
   ) {}
 
@@ -111,6 +111,13 @@ export class StudioController {
         `${newStudio.id}.${newStudio.logo}`,
       );
 
+      const backgroundPublicUrl = newStudio.background
+        ? await this.studioService.createPublicUrl(
+            'studio-backgrounds',
+            `${newStudio.id}.${newStudio.background}`,
+          )
+        : '';
+
       const photosData = photos.map((p) => ({ ...p, studioId: newStudio.id }));
 
       const newPhotos = await tx
@@ -134,11 +141,15 @@ export class StudioController {
         photoUrls.push({ url: photoUrl });
       }
 
-      return { photos: photoUrls, logo: logoPublicUrl };
+      return {
+        photos: photoUrls,
+        logo: logoPublicUrl,
+        background: backgroundPublicUrl,
+      };
     });
 
     return {
-      studio: { logo: result.logo },
+      studio: { logo: result.logo, background: result.background },
       photos: result.photos,
     };
   }
@@ -225,37 +236,40 @@ export class StudioController {
     @TypedBody() body: TUpdateStudioBody,
     @TypedParam('studioId') studioId: string,
   ): Promise<TUpdateStudioResponse> {
-    const result = await this.db.transaction(async (tx) => {
+    const { data } = body;
+
+    return await this.db.transaction(async (tx) => {
       const studio = await tx.query.studios.findFirst({
         where: eq(schema.studios.id, studioId),
       });
 
       if (!studio) throw new BadRequestException('Студия не найдена');
 
-      if (!body.data.logo) {
-        const noLogoResult = await tx
-          .update(schema.studios)
-          .set(body.data)
-          .where(eq(schema.studios.id, studioId))
-          .returning();
+      const noLogoResult = await tx
+        .update(schema.studios)
+        .set(data)
+        .where(eq(schema.studios.id, studioId))
+        .returning();
 
-        if (noLogoResult.length !== 1)
-          throw new InternalServerErrorException(
-            'Ошибка при обновлении студии',
-          );
+      if (noLogoResult.length !== 1)
+        throw new InternalServerErrorException('Ошибка при обновлении студии');
 
-        return { logo: '' };
-      }
+      const logoUrl = data.logo
+        ? await this.studioService.createPublicUrl(
+            'studios',
+            `${studioId}:${data.logo}`,
+          )
+        : '';
 
-      const logoUrl = await this.studioService.createPublicUrl(
-        'studios',
-        `${studioId}:${body.data.logo}`,
-      );
+      const backgroundUrl = data.background
+        ? await this.studioService.createPublicUrl(
+            'studio-backgrounds',
+            `${studioId}:${data.background}`,
+          )
+        : '';
 
-      return { logo: logoUrl };
+      return { logo: logoUrl, background: backgroundUrl };
     });
-
-    return result;
   }
 
   @ApiSecurity('bearer')

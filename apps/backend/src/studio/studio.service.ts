@@ -45,6 +45,11 @@ export class StudioService {
 
     await this.s3Client.removeObject('studios', `${studioId}.${studio.logo}`);
 
+    await this.s3Client.removeObject(
+      'studio-backgrounds',
+      `${studioId}.${studio.background}`,
+    );
+
     for (const photo of studio.photos) {
       await this.s3Client.removeObject(
         'studio-photos',

@@ -452,6 +452,8 @@ export const studios = schema.table("studios", {
 
   logo: text("logo").notNull(),
 
+  background: text("background"),
+
   name: text("name").notNull(),
 
   rating: real("rating").notNull().default(0),
