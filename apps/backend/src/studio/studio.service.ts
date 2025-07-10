@@ -38,7 +38,7 @@ export class StudioService {
   async deleteAssets(studioId: string) {
     const studio = await this.db.query.studios.findFirst({
       where: eq(schema.studios.id, studioId),
-      with: { photos: true },
+      with: { photos: true, team: true },
     });
 
     if (!studio) return false;
@@ -54,6 +54,13 @@ export class StudioService {
       await this.s3Client.removeObject(
         'studio-photos',
         `${photo.id}.${photo.url}`,
+      );
+    }
+
+    for (const employee of studio.team) {
+      await this.s3Client.removeObject(
+        'studio-employees',
+        `${employee.id}.${employee.photo}`,
       );
     }
 

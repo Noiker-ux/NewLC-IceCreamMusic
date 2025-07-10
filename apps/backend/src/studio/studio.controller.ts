@@ -24,6 +24,14 @@ export type TStudioPhotoData = Primitive<
   InferSelectModel<typeof schema.studioPhotos>
 >;
 
+export type TStudioTeamData = Primitive<
+  InferSelectModel<typeof schema.studioTeam>
+>;
+
+export type TStudioStatData = Primitive<
+  InferSelectModel<typeof schema.studioStats>
+>;
+
 export type TCompleteStudioData = TStudioData & { photos: TStudioPhotoData[] };
 
 export type TGetStudiosResponse = TCompleteStudioData[];
@@ -31,16 +39,35 @@ export type TGetStudiosResponse = TCompleteStudioData[];
 export type TCreateStudioBody = {
   studio: Omit<TStudioData, 'id'>;
   photos: Omit<TStudioPhotoData, 'id' | 'studioId'>[];
+  employees: Omit<TStudioTeamData, 'id' | 'studioId'>[];
+  stats: Omit<TStudioStatData, 'id' | 'studioId'>[];
 };
-
-export type TAddPhotoBody = Omit<TStudioPhotoData, 'id' | 'studioId'>;
 
 export type TCreateStudioResponse = {
   studio: Pick<TStudioData, 'logo' | 'background'>;
   photos: Pick<TStudioPhotoData, 'url'>[];
+  employees: Pick<TStudioTeamData, 'photo'>[];
 };
 
+export type TAddPhotoBody = Omit<TStudioPhotoData, 'id' | 'studioId'>;
+
 export type TAddPhotoResponse = Pick<TStudioPhotoData, 'url'>;
+
+export type TAddStudioEmployeeBody = {
+  data: Omit<TStudioTeamData, 'id' | 'studioId'>;
+};
+
+export type TAddStudioEmployeeResponse = {
+  photo: string;
+};
+
+export type TUpdateStudioEmployee = {
+  data: Partial<TAddStudioEmployeeBody['data']>;
+};
+
+export type TAddStudioStatsBody = {
+  data: Omit<TStudioStatData, 'id' | 'studioId'>;
+};
 
 export type TUpdateStudioBody = {
   data: Partial<Omit<TStudioData, 'id'>>;
@@ -96,7 +123,7 @@ export class StudioController {
   async createStudio(
     @TypedBody() body: TCreateStudioBody,
   ): Promise<TCreateStudioResponse> {
-    const { photos, studio } = body;
+    const { photos, studio, employees, stats } = body;
 
     const result = await this.db.transaction(async (tx) => {
       const newStudio = (
@@ -141,16 +168,57 @@ export class StudioController {
         photoUrls.push({ url: photoUrl });
       }
 
+      const employeesData = employees.map((e) => ({
+        ...e,
+        studioId: newStudio.id,
+      }));
+
+      const newEmployees = await tx
+        .insert(schema.studioTeam)
+        .values(employeesData)
+        .returning();
+
+      if (newEmployees.length !== employees.length)
+        throw new InternalServerErrorException(
+          'Ошибка при создании фотографий студии',
+        );
+
+      const employeePhotoUrls: TCreateStudioResponse['employees'] = [];
+
+      for (const employee of newEmployees) {
+        const photoUrl = await this.studioService.createPublicUrl(
+          'studio-employees',
+          `${employee.id}.${employee.photo}`,
+        );
+
+        employeePhotoUrls.push({ photo: photoUrl });
+      }
+
+      const statsData = stats.map((s) => ({ ...s, studioId: newStudio.id }));
+
+      const newStats = await tx
+        .insert(schema.studioStats)
+        .values(statsData)
+        .returning();
+
+      if (newStats.length !== stats.length) {
+        throw new InternalServerErrorException(
+          'Ошибка при создании статистики студии',
+        );
+      }
+
       return {
         photos: photoUrls,
         logo: logoPublicUrl,
         background: backgroundPublicUrl,
+        employees: employeePhotoUrls,
       };
     });
 
     return {
       studio: { logo: result.logo, background: result.background },
       photos: result.photos,
+      employees: result.employees,
     };
   }
 
@@ -162,7 +230,7 @@ export class StudioController {
     @TypedParam('studioId') studioId: string,
     @TypedBody() body: TAddPhotoBody,
   ): Promise<TAddPhotoResponse> {
-    const result = await this.db.transaction(async (tx) => {
+    return await this.db.transaction(async (tx) => {
       const studio = await tx.query.studios.findFirst({
         where: eq(schema.studios.id, studioId),
       });
@@ -186,8 +254,6 @@ export class StudioController {
 
       return { url: photoUrl };
     });
-
-    return result;
   }
 
   @ApiSecurity('bearer')
@@ -210,12 +276,10 @@ export class StudioController {
         .where(eq(schema.studioPhotos.id, photoId))
         .returning();
 
-      if (photos.length !== 1)
-        throw new InternalServerErrorException('Ошибка при удалении фото');
-
       const photo = photos.at(0);
 
-      if (!photo) throw new BadRequestException('Фото не найдено');
+      if (photos.length !== 1 || !photo)
+        throw new InternalServerErrorException('Ошибка при удалении фото');
 
       await this.s3Client
         .removeObject('studio-photos', `${photo.id}.${photo.url}`)
@@ -223,6 +287,144 @@ export class StudioController {
           this.logger.error(e);
           throw new InternalServerErrorException('Что-то пошло не так');
         });
+    });
+
+    return { success: true };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Post(':studioId/team')
+  async addStudioEmployee(
+    @TypedParam('studioId') studioId: string,
+    @TypedBody() body: TAddStudioEmployeeBody,
+  ): Promise<TAddStudioEmployeeResponse> {
+    return await this.db.transaction(async (tx) => {
+      const studio = await tx.query.studios.findFirst({
+        where: eq(schema.studios.id, studioId),
+      });
+
+      if (!studio) throw new BadRequestException('Студия не найдена');
+
+      const newEmployees = await tx
+        .insert(schema.studioTeam)
+        .values({ ...body.data, studioId: studio.id })
+        .returning();
+
+      const employee = newEmployees.at(0);
+
+      if (!employee || newEmployees.length !== 1)
+        throw new InternalServerErrorException(
+          'Ошибка при добавлении сотрудника',
+        );
+
+      const photoUrl = await this.studioService.createPublicUrl(
+        'studio-employees',
+        `${employee.id}.${employee.photo}`,
+      );
+
+      return { photo: photoUrl };
+    });
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Delete(':studioId/team/:employeeId')
+  async deleteStudioEmployee(
+    @TypedParam('studioId') studioId: string,
+    @TypedParam('employeeId') employeeId: string,
+  ): Promise<TSuccessionResponse> {
+    await this.db.transaction(async (tx) => {
+      const studio = await tx.query.studios.findFirst({
+        where: eq(schema.studios.id, studioId),
+      });
+
+      if (!studio) throw new BadRequestException('Студия не найдена');
+
+      const employees = await tx
+        .delete(schema.studioTeam)
+        .where(eq(schema.studioTeam.id, employeeId))
+        .returning();
+
+      const employee = employees.at(0);
+
+      if (employees.length !== 1 || !employee)
+        throw new InternalServerErrorException('Ошибка при удалении фото');
+
+      await this.s3Client
+        .removeObject('studio-employees', `${employee.id}.${employee.photo}`)
+        .catch((e) => {
+          this.logger.error(e);
+          throw new InternalServerErrorException('Что-то пошло не так');
+        });
+    });
+
+    return { success: true };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Post(':studioId/stats')
+  async addStudioStats(
+    @TypedParam('studioId') studioId: string,
+    @TypedBody() body: TAddStudioStatsBody,
+  ): Promise<TSuccessionResponse> {
+    const { data } = body;
+
+    await this.db.transaction(async (tx) => {
+      const studio = await tx.query.studios.findFirst({
+        where: eq(schema.studios.id, studioId),
+      });
+
+      if (!studio) throw new BadRequestException('Студия не найдена');
+
+      const stats = await tx
+        .insert(schema.studioStats)
+        .values({ ...data, studioId: studio.id })
+        .returning();
+
+      if (stats.length !== 1)
+        throw new InternalServerErrorException(
+          'Ошибка при добавлении статистики',
+        );
+    });
+
+    return { success: true };
+  }
+
+  // @ApiSecurity('bearer')
+  // @UseGuards(AuthGuard)
+  // @AdminGuard()
+  // @TypedRoute.Patch(':studioId/stats/:statId')
+  // async updateStudioStats() {}
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Delete(':studioId/stats/:statId')
+  async deleteStudioStats(
+    @TypedParam('studioId') studioId: string,
+    @TypedParam('statId') statId: string,
+  ) {
+    await this.db.transaction(async (tx) => {
+      const studio = await tx.query.studios.findFirst({
+        where: eq(schema.studios.id, studioId),
+      });
+
+      if (!studio) throw new BadRequestException('Студия не найдена');
+
+      const stats = await tx
+        .delete(schema.studioStats)
+        .where(eq(schema.studioStats.id, statId))
+        .returning();
+
+      if (stats.length !== 1)
+        throw new InternalServerErrorException(
+          'Ошибка при добавлении статистики',
+        );
     });
 
     return { success: true };
