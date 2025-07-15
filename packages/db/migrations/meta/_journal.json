@@ -302,6 +302,13 @@
       "when": 1752058624141,
       "tag": "0042_late_callisto",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1752581684802,
+      "tag": "0043_lumpy_tigra",
+      "breakpoints": true
     }
   ]
 }
