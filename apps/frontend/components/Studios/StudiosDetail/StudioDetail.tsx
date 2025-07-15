@@ -27,9 +27,9 @@ export default function StudioDetail({
 	return (
 		<>
 			<StudiosPreview
-				bgImage={'black-mamba-snake-pale-gray-spots-val4upfryn4ad5ac.jpg'}
-				logo={'photo_2025-05-18_20-30-50.jpg'}
-				mainColor={''}
+				bgImage={`${process.env.NEXT_PUBLIC_S3_URL}/studio-backgrounds/${studio.id}.${studio.background}`}
+				logo={`${process.env.NEXT_PUBLIC_S3_URL}/studios/${studio.id}.${studio.logo}`}
+				name={studio.name}
 			/>
 			<StudioAbout
 				name={studio.name}
@@ -59,42 +59,25 @@ export default function StudioDetail({
 						},
 					}}>
 					<div className={cn(style['slider__wrapper'])}>
-						<SwiperSlide className={cn(style['slider__item'])}>
-							<Image
-								src={'/assets/Studios/photo_2025-05-18_20-30-47.jpg'}
-								alt=''
-								width={500}
-								height={500}
-								className={style['slider__img']}
-							/>
-						</SwiperSlide>
-						<SwiperSlide className={cn(style['slider__item'])}>
-							<Image
-								src={'/assets/Studios/photo_2025-05-18_20-30-49 (2).jpg'}
-								alt=''
-								width={500}
-								height={500}
-								className={style['slider__img']}
-							/>
-						</SwiperSlide>
-						<SwiperSlide className={cn(style['slider__item'])}>
-							<Image
-								src={'/assets/Studios/photo_2025-05-18_20-30-49.jpg'}
-								alt=''
-								width={500}
-								height={500}
-								className={style['slider__img']}
-							/>
-						</SwiperSlide>
-						<SwiperSlide className={cn(style['slider__item'])}>
-							<Image
-								src={'/assets/Studios/photo_2025-05-18_20-30-48.jpg'}
-								alt=''
-								width={500}
-								height={500}
-								className={style['slider__img']}
-							/>
-						</SwiperSlide>
+						{studio.photos
+							.filter((photo) => {
+								return photo.type == 'studio_photo';
+							})
+							.map((photo) => (
+								<SwiperSlide
+									key={photo.id}
+									className={cn(style['slider__item'])}>
+									<Image
+										src={`${process.env.NEXT_PUBLIC_S3_URL}/studio-photos/${photo.id}.${
+											photo.url
+										}`}
+										alt=''
+										width={500}
+										height={500}
+										className={style['slider__img']}
+									/>
+								</SwiperSlide>
+							))}
 					</div>
 				</Swiper>
 			</div>

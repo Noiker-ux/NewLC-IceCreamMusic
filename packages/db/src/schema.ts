@@ -461,14 +461,72 @@ export const studios = schema.table("studios", {
   address: text("address").notNull(),
 
   description: text("description"),
-
-  yearsOld: smallint("yearsOld"),
-
-  numberOfReleases: integer("number_of_releases"),
 });
 
 export const studios_relations = relations(studios, ({ many }) => ({
   photos: many(studioPhotos),
+  team: many(studioTeam),
+}));
+
+export const studioPhotos = schema.table("studio_photos", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  name: text("name").notNull(),
+
+  url: text("url").notNull(),
+
+  studioId: uuid("studioId")
+    .notNull()
+    .references(() => studios.id, { onUpdate: "cascade", onDelete: "cascade" }),
+});
+
+export const studio_photos_relations = relations(studioPhotos, ({ one }) => ({
+  studio: one(studios, {
+    fields: [studioPhotos.studioId],
+    references: [studios.id],
+  }),
+}));
+
+export const studioTeam = schema.table("studio_team", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  studioId: uuid("studioId")
+    .notNull()
+    .references(() => studios.id, { onUpdate: "cascade", onDelete: "cascade" }),
+
+  photo: text("photo").notNull(),
+
+  name: text("name").notNull(),
+
+  position: text("position").notNull(),
+
+  place: text("place").notNull(),
+});
+
+export const studio_team_relations = relations(studioTeam, ({ one }) => ({
+  studio: one(studios, {
+    fields: [studioTeam.studioId],
+    references: [studios.id],
+  }),
+}));
+
+export const studioStats = schema.table("studio_stats", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  studioId: uuid("studioId")
+    .notNull()
+    .references(() => studios.id, { onUpdate: "cascade", onDelete: "cascade" }),
+
+  name: text("name").notNull(),
+
+  value: text("value").notNull(),
+});
+
+export const studio_stats_relations = relations(studioStats, ({ one }) => ({
+  studio: one(studios, {
+    fields: [studioStats.studioId],
+    references: [studios.id],
+  }),
 }));
 
 export const analytics = schema.table("analytics", {
@@ -494,32 +552,6 @@ export const analytics_relations = relations(analytics, ({ one }) => ({
   user: one(users, {
     fields: [analytics.userId],
     references: [users.id],
-  }),
-}));
-
-export const studioPhotoTypes = schema.enum("studio_photo_types", [
-  "team_photo",
-  "studio_photo",
-]);
-
-export const studioPhotos = schema.table("studio_photos", {
-  id: uuid("id").primaryKey().defaultRandom(),
-
-  name: text("name").notNull(),
-
-  type: studioPhotoTypes("type").notNull(),
-
-  url: text("url").notNull(),
-
-  studioId: uuid("studioId")
-    .notNull()
-    .references(() => studios.id, { onUpdate: "cascade", onDelete: "cascade" }),
-});
-
-export const studio_photos_relations = relations(studioPhotos, ({ one }) => ({
-  studio: one(studios, {
-    fields: [studioPhotos.studioId],
-    references: [studios.id],
   }),
 }));
 

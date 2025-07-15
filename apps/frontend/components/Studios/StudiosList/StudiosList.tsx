@@ -19,7 +19,7 @@ export default async function StudiosList() {
 				<Link href={`/studios/${studia.id}`} key={studia.id}>
 					<StudiosCard
 						name={studia.name}
-						preview={`${process.env.NEXT_PUBLIC_S3_URL}/${studia.id}.${studia.logo}`}
+						preview={`${process.env.NEXT_PUBLIC_S3_URL}/studios/${studia.id}.${studia.logo}`}
 						rating={studia.rating}
 						place={studia.address}
 					/>

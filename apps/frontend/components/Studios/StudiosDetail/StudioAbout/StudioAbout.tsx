@@ -1,5 +1,6 @@
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
+import Markdown from 'react-markdown';
 
 export default function StudioAbout({
 	name,
@@ -18,9 +19,9 @@ export default function StudioAbout({
 					<h1 className='mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-100 sm:text-5xl'>
 						{name}
 					</h1>
-					<p className='mt-6 text-xl/8 text-balance text-gray-200'>
-						{description}
-					</p>
+					<div className='mt-6 text-xl/8 text-balance text-gray-200 max-w-[85%]'>
+						<Markdown>{description}</Markdown>
+					</div>
 				</div>
 				<section className='mt-20 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-16'>
 					<div className='lg:pr-8'>
