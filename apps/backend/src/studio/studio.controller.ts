@@ -32,7 +32,11 @@ export type TStudioStatData = Primitive<
   InferSelectModel<typeof schema.studioStats>
 >;
 
-export type TCompleteStudioData = TStudioData & { photos: TStudioPhotoData[] };
+export type TCompleteStudioData = TStudioData & {
+  photos: TStudioPhotoData[];
+  team: TStudioTeamData[];
+  stats: TStudioStatData[];
+};
 
 export type TGetStudiosResponse = TCompleteStudioData[];
 
@@ -98,6 +102,8 @@ export class StudioController {
       offset: (params.page - 1) * params.size,
       with: {
         photos: true,
+        stats: true,
+        team: true,
       },
     });
   }
@@ -108,7 +114,7 @@ export class StudioController {
   ): Promise<TCompleteStudioData> {
     const studio = await this.db.query.studios.findFirst({
       where: eq(schema.studios.id, studioId),
-      with: { photos: true },
+      with: { photos: true, team: true, stats: true },
     });
 
     if (!studio) throw new BadRequestException('Студия не найдена');

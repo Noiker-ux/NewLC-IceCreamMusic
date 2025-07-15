@@ -468,6 +468,7 @@ export const studios = schema.table("studios", {
 export const studios_relations = relations(studios, ({ many }) => ({
   photos: many(studioPhotos),
   team: many(studioTeam),
+  stats: many(studioStats),
 }));
 
 export const studioPhotos = schema.table("studio_photos", {
