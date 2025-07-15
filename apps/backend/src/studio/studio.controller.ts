@@ -408,7 +408,7 @@ export class StudioController {
   async deleteStudioStats(
     @TypedParam('studioId') studioId: string,
     @TypedParam('statId') statId: string,
-  ) {
+  ): Promise<TSuccessionResponse> {
     await this.db.transaction(async (tx) => {
       const studio = await tx.query.studios.findFirst({
         where: eq(schema.studios.id, studioId),

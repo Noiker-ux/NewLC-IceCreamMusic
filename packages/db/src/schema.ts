@@ -460,6 +460,8 @@ export const studios = schema.table("studios", {
 
   address: text("address").notNull(),
 
+  annotation: text("annotation"),
+
   description: text("description"),
 });
 
