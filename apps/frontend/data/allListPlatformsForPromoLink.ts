@@ -6,78 +6,78 @@ export type TPromoLink = {
 export const allListPlatformsForPromoLink: TPromoLink[] = [
 	{
 		name: 'Yandex Music',
-		icon: '/Plarforms/YandexMusic.svg',
+		icon: '/assets/Plarforms/YandexMusic.svg',
 	},
 	{
 		name: 'VK Музыка',
-		icon: '/Plarforms/VKMusic.png',
+		icon: '/assets/Plarforms/VKMusic.png',
 	},
 	{
 		name: 'МТС Музыка',
-		icon: '/Plarforms/mts.png',
+		icon: '/assets/Plarforms/mts.png',
 	},
 	{
 		name: 'ЗВУК',
-		icon: '/Plarforms/zvuk.ico',
+		icon: '/assets/Plarforms/zvuk.ico',
 	},
 	{
 		name: 'WINK',
-		icon: '/Plarforms/Wink.svg',
+		icon: '/assets/Plarforms/Wink.svg',
 	},
 	{
 		name: 'Apple Music',
-		icon: '/Plarforms/appleMusic.svg',
+		icon: '/assets/Plarforms/appleMusic.svg',
 	},
 	{
 		name: 'Spotify',
-		icon: '/Plarforms/spotify.svg',
+		icon: '/assets/Plarforms/spotify.svg',
 	},
 	{
 		name: 'YouTube Music',
-		icon: '/Plarforms/YouTube.svg',
+		icon: '/assets/Plarforms/YouTube.svg',
 	},
 	{
 		name: 'TicTok',
-		icon: '/Plarforms/TickTock.png',
+		icon: '/assets/Plarforms/TickTock.png',
 	},
 	{
 		name: 'SoundCloud',
-		icon: '/Plarforms/Soundcloud.png',
+		icon: '/assets/Plarforms/Soundcloud.png',
 	},
 	{
 		name: 'iTunes',
-		icon: '/Plarforms/iTunes.png',
+		icon: '/assets/Plarforms/iTunes.png',
 	},
 	{
 		name: 'Deezer',
-		icon: '/Plarforms/deezer.ico',
+		icon: '/assets/Plarforms/deezer.ico',
 	},
 	{
 		name: 'Одноклассники',
-		icon: '/Plarforms/Odnoklassniki.svg.png',
+		icon: '/assets/Plarforms/Odnoklassniki.svg.png',
 	},
 	{
 		name: 'TIDAL',
-		icon: '/Plarforms/Tidal.ico',
+		icon: '/assets/Plarforms/Tidal.ico',
 	},
 	{
 		name: 'AmazonMusic',
-		icon: '/Plarforms/amazonMusic.svg',
+		icon: '/assets/Plarforms/amazonMusic.svg',
 	},
 	{
 		name: 'hitter',
-		icon: '/Plarforms/hitter.svg',
+		icon: '/assets/Plarforms/hitter.svg',
 	},
 	{
 		name: 'Huawei Music',
-		icon: '/Plarforms/Huawei.png',
+		icon: '/assets/Plarforms/Huawei.png',
 	},
 	{
 		name: 'Likee',
-		icon: '/Plarforms/Likee.ico',
+		icon: '/assets/Plarforms/Likee.ico',
 	},
 	{
 		name: 'Qobuz',
-		icon: '/Plarforms/Qobuz.png',
+		icon: '/assets/Plarforms/Qobuz.png',
 	},
 ];

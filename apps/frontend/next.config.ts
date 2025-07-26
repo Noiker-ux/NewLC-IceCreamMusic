@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
 		serverActions: {
 			allowedOrigins: ['www.icecreammusic.net'],
 		},
+		viewTransition: true,
 	},
 	images: {
 		unoptimized: true,

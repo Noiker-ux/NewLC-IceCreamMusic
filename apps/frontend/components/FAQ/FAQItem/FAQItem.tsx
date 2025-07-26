@@ -1,6 +1,10 @@
-import { TFAQItem } from './FAQItem.props';
+import { TGetFAQResponse } from 'sdk/lib/faq/faq.controller';
 
-export default function FAQItem({ FAQItem }: TFAQItem) {
+export default function FAQItem({
+	FAQItem,
+}: {
+	FAQItem: TGetFAQResponse[number];
+}) {
 	const { question, answer } = FAQItem;
 
 	return (

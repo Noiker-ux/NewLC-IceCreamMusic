@@ -22,7 +22,7 @@ export default function RootLayout({
 				<GlobalProvider>
 					<Image
 						className='fixed bottom-0 '
-						src='/BG/docs-left.png'
+						src='/assets/BG/docs-left.png'
 						alt='dots1'
 						draggable='false'
 						width={550}
@@ -30,7 +30,7 @@ export default function RootLayout({
 					/>
 					<Image
 						className='fixed right-0 aspect-square w-1/3'
-						src='/BG/docs-right.png'
+						src='/assets/BG/docs-right.png'
 						alt='dots2'
 						draggable='false'
 						width={550}

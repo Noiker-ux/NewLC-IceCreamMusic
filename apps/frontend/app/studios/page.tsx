@@ -1,9 +1,10 @@
-import StudioDetail from '@/components/Studios/StudiosDetail/StudioDetail';
+import StudiosList from '@/components/Studios/StudiosList/StudiosList';
 
-export default function StudiosPage() {
+export const dynamic = 'force-dynamic';
+export default function Page() {
 	return (
 		<div>
-			<StudioDetail />
+			<StudiosList />
 		</div>
 	);
 }

@@ -13,7 +13,7 @@ export default function PromoLinkCartLong() {
 	return (
 		<div className='w-full flex-col sm:flex-row  p-5  flex gap-5 bg-zinc-900 rounded-lg overflow-hidden  '>
 			<Image
-				src='/XaQw7AVPHNY.jpg'
+				src='/assets/XaQw7AVPHNY.jpg'
 				alt='Обложка релиза'
 				width={180}
 				height={180}

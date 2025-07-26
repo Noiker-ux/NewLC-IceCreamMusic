@@ -43,16 +43,6 @@ export default function SideBarBody({ menu }: { menu: TMenu[] }) {
 									: 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
 								'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full',
 							)}>
-							<span
-								aria-hidden='true'
-								className={cn(
-									item.href
-										? 'text-white'
-										: 'text-indigo-200 group-hover:text-white',
-									'shrink-0',
-									'size-6',
-									'icon-[' + item.icon + ']',
-								)}></span>
 							<Icon
 								icon={item.icon}
 								aria-hidden='true'

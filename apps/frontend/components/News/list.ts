@@ -4,7 +4,7 @@ export const News: TNewsDetail[] = [
 	{
 		id: '1',
 		title: 'IceCremMusic и Twitch',
-		image: '/News/news1.jpg',
+		image: '/assets/News/news1.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -32,7 +32,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '2',
 		title: 'Новое сотрудничество с кампанией VK',
-		image: '/News/news2.jpg',
+		image: '/assets/News/news2.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -60,7 +60,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '3',
 		title: 'Новое сотрудничество с Twitch',
-		image: '/News/news3.jpg',
+		image: '/assets/News/news3.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -88,7 +88,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '4',
 		title: 'Светоч или тьма',
-		image: '/News/news4.jpg',
+		image: '/assets/News/news4.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -116,7 +116,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '5',
 		title: 'Музыкальные тренды 2025: что слушать этой осенью?',
-		image: '/News/news5.jpg',
+		image: '/assets/News/news5.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -144,7 +144,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '6',
 		title: 'Грандиозный концерт [Исполнитель] собрал тысячи поклонников',
-		image: '/News/news1.jpg',
+		image: '/assets/News/news1.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -172,7 +172,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '7',
 		title: 'Топ-10 самых ожидаемых музыкальных релизов лета 2025',
-		image: '/News/news2.jpg',
+		image: '/assets/News/news2.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -200,7 +200,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '8',
 		title: 'Возвращение легенды: [Артист] анонсировал новый тур',
-		image: '/News/news3.jpg',
+		image: '/assets/News/news3.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -228,7 +228,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '9',
 		title: 'Интервью с [Артист]: вдохновение и секреты творчества',
-		image: '/News/news4.jpg',
+		image: '/assets/News/news4.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -256,7 +256,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '10',
 		title: 'Новый хит [Исполнитель] взорвал чарты: что стоит за успехом?',
-		image: '/News/news5.jpg',
+		image: '/assets/News/news5.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -284,7 +284,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '11',
 		title: 'Музыка и технологии: как AI меняет создание музыки',
-		image: '/News/news1.jpg',
+		image: '/assets/News/news1.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -312,7 +312,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '12',
 		title: 'Скандал в мире музыки: [Артист] обвинен в плагиате',
-		image: '/News/news2.jpg',
+		image: '/assets/News/news2.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -340,7 +340,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '13',
 		title: 'Лучшие каверы на хиты 2023: кто удивил публику?',
-		image: '/News/news3.jpg',
+		image: '/assets/News/news3.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -368,7 +368,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '14',
 		title: 'Звезды на красной дорожке: лучшие наряды на [Событие]',
-		image: '/News/news4.jpg',
+		image: '/assets/News/news4.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -396,7 +396,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '15',
 		title: 'Как [Группа] вдохновила новое поколение музыкантов',
-		image: '/News/news5.jpg',
+		image: '/assets/News/news5.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -424,7 +424,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '16',
 		title: 'Музыкальные премии [Название]: кто стал победителем?',
-		image: '/News/news1.jpg',
+		image: '/assets/News/news1.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -452,7 +452,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '17',
 		title: 'Секреты успеха: как [Артист] добился мировой популярности',
-		image: '/News/news2.jpg',
+		image: '/assets/News/news2.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -480,7 +480,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 	{
 		id: '18',
 		title: 'Новые имена на музыкальной сцене: кто стоит вашего внимания?',
-		image: '/News/news3.jpg',
+		image: '/assets/News/news3.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -509,7 +509,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 		id: '19',
 		title:
 			'Музыка для души: как [Исполнитель] помогает справляться с трудностями',
-		image: '/News/news4.jpg',
+		image: '/assets/News/news4.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.
@@ -538,7 +538,7 @@ Reprehenderit magni eveniet aut. Non illo voluptatibus provident, sunt ab obcaec
 		id: '20',
 		title:
 			'Классика в новом свете: [Группа] переосмысляет известные произведения',
-		image: '/News/news5.jpg',
+		image: '/assets/News/news5.jpg',
 		description: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusamus cumque accusantium hic reprehenderit debitis voluptatem rem eligendi deleniti minima. Provident esse animi quaerat nisi iure! Ab sapiente itaque nesciunt fugiat.
 Recusandae nemo minus eaque eius optio architecto quos repellat, aliquam illo est alias mollitia inventore ipsum quam suscipit perspiciatis quia placeat! Sed optio accusantium minus quas non modi? Eligendi, numquam.
 Accusantium inventore officia et, modi quidem qui quaerat voluptatibus tempore, voluptatum adipisci quod, distinctio expedita excepturi consectetur architecto odio sequi eligendi sunt necessitatibus nam. Doloremque dolorum corrupti qui labore maiores.

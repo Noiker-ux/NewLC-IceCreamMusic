@@ -1,24 +1,35 @@
-import { News } from '@/components/News/list';
 import NewsDetail from '@/components/News/NewsDetail/NewsDetail';
-import { use } from 'react';
+import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { functional, Primitive } from 'sdk';
+import { TGetNewsByIdResponse } from 'sdk/lib/news/news.controller';
 
-export default function NewsDetailPage({
+export const dynamic = 'force-dynamic';
+
+const connection = createSDKConnection({
+	next: {
+		tags: ['News'],
+	},
+});
+
+export default async function NewsDetailPage({
 	params,
 }: {
 	params: Promise<{ detail: string }>;
 }) {
-	const { detail } = use(params);
-	const detailItem = News.filter((e) => e.id === detail)[0];
+	const newsDetail = await functional.v1.news.getNewsById(
+		connection,
+		(await params).detail,
+	);
 
 	return (
 		<>
 			<NewsDetail
-				id={detailItem.id}
-				title={detailItem.title}
-				image={detailItem.image}
-				description={detailItem.description}
-				date={detailItem.date}
-				tags={detailItem.tags}
+				id={newsDetail.data.id}
+				title={newsDetail.data.title}
+				preview={newsDetail.data.preview}
+				content={newsDetail.data.content}
+				createdAt={newsDetail.data.createdAt}
+				// tags={newsDetail.data.tags}
 			/>
 		</>
 	);

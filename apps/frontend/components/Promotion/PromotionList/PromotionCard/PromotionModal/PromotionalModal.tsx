@@ -23,7 +23,7 @@ export default function PromotionalModal({
 						</ModalHeader>
 						<ModalBody className='text-center'>
 							<Image
-								src={'/TG.png'}
+								src={'/assets/TG.png'}
 								alt='Иконка телеграмм'
 								width={140}
 								height={140}

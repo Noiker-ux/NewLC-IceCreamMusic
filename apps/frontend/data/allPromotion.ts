@@ -3,7 +3,7 @@ import { TPromotionCard } from '@/components/Promotion/PromotionList/PromotionCa
 export const allPromotion: TPromotionCard[] = [
 	{
 		title: 'Первичная консультация',
-		imageCard: '/Promotion/FirstConsult.png',
+		imageCard: '/assets/Promotion/FirstConsult.png',
 		advantages: [
 			'Персональная консультация',
 			'Базовая оценка перспективности релиза',
@@ -12,7 +12,7 @@ export const allPromotion: TPromotionCard[] = [
 	},
 	{
 		title: 'Первичная консультация и оценка перспективности',
-		imageCard: '/Promotion/FirstConsultMarkProduct.jpg',
+		imageCard: '/assets/Promotion/FirstConsultMarkProduct.jpg',
 		advantages: [
 			'Персональная консультация',
 			'Полная оценка перспективности релиза',
@@ -23,7 +23,7 @@ export const allPromotion: TPromotionCard[] = [
 	},
 	{
 		title: 'Таргет: Базовый',
-		imageCard: '/Promotion/Global.webp',
+		imageCard: '/assets/Promotion/Global.webp',
 		advantages: [
 			'Персональная консультация',
 			'Полная оценка перспективности релиза',
@@ -35,7 +35,7 @@ export const allPromotion: TPromotionCard[] = [
 	},
 	{
 		title: 'Таргет: Стандартный',
-		imageCard: '/Promotion/standart.webp',
+		imageCard: '/assets/Promotion/standart.webp',
 		advantages: [
 			'Персональная консультация',
 			'Полная оценка перспективности релиза',
@@ -48,7 +48,7 @@ export const allPromotion: TPromotionCard[] = [
 	},
 	{
 		title: 'Расширенный Таргет + TikTok',
-		imageCard: '/Promotion/promotik.webp',
+		imageCard: '/assets/Promotion/promotik.webp',
 		advantages: [
 			'Персональная консультация',
 			'Полная оценка перспективности релиза',
@@ -62,7 +62,7 @@ export const allPromotion: TPromotionCard[] = [
 	},
 	{
 		title: 'Премиум пакет',
-		imageCard: '/Promotion/prempromo.jpg',
+		imageCard: '/assets/Promotion/prempromo.jpg',
 		advantages: [
 			'Персональная консультация',
 			'Полная оценка перспективности релиза',

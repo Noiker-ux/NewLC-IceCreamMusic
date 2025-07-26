@@ -23,7 +23,7 @@ export default function ChatModal({
 						<ModalHeader className='flex flex-col gap-1'>Поддержка</ModalHeader>
 						<ModalBody className='text-center'>
 							<Image
-								src={'/TG.png'}
+								src={'/assets/TG.png'}
 								alt='Иконка телеграмм'
 								width={140}
 								height={140}

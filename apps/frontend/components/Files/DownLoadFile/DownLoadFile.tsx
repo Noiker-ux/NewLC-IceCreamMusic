@@ -13,7 +13,7 @@ export default function DownLoadFile({
 			<div className='mb-5 border-2 py-5 flex gap-4 px-6 rounded-lg bg-slate-400 mobile:text-xs mobile:p-3'>
 				<Image
 					className='self-start mobile:w-10'
-					src={`/Formats/${getIcon(href)}.svg`}
+					src={`/assets/Formats/${getIcon(href)}.svg`}
 					alt={`${getIcon(href)}Icon`}
 					width={50}
 					height={30}

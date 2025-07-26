@@ -23,7 +23,7 @@ export default function RelizecCard() {
 			<div className='col-span-3'>
 				<div className='flex gap-5'>
 					<Image
-						src='/XaQw7AVPHNY.jpg'
+						src='/assets/XaQw7AVPHNY.jpg'
 						alt='Превью'
 						width={110}
 						height={110}

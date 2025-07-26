@@ -7,7 +7,7 @@ export default function SideBarHeader() {
 				width={32}
 				height={32}
 				alt='ICECREAMMUSIC'
-				src='/Logo.svg'
+				src='/assets/Logo.svg'
 				className='w-auto'
 			/>
 			<div>

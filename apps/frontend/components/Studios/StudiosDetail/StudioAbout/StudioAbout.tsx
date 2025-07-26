@@ -1,17 +1,25 @@
+import { cn } from '@/utils/cn';
 import Image from 'next/image';
 
-export default function StudioAbout() {
+export default function StudioAbout({
+	name,
+	description,
+	studioPhotos,
+}: {
+	name: string;
+	description: string;
+	studioPhotos: any;
+}) {
 	return (
 		<div className='overflow-hidden  py-24 sm:py-32'>
 			<div className='mx-auto'>
 				<div className='max-w-4xl'>
 					<p className='text-base/7 font-semibold text-wite'>О студии</p>
 					<h1 className='mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-100 sm:text-5xl'>
-						SLATT RECORDS
+						{name}
 					</h1>
 					<p className='mt-6 text-xl/8 text-balance text-gray-200'>
-						Продюсерский центр полного цикла по созданию и продвижению
-						музыкального контента в современной медиа индустрии.
+						{description}
 					</p>
 				</div>
 				<section className='mt-20 grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-16'>
@@ -44,9 +52,33 @@ export default function StudioAbout() {
 					</div>
 					<div className='pt-16 lg:row-span-2 lg:-mr-16 xl:mr-auto'>
 						<div className='-mx-8 grid grid-cols-2 gap-4 sm:-mx-16 sm:grid-cols-4 lg:mx-0 lg:grid-cols-2 lg:gap-4 xl:gap-8'>
+							{studioPhotos.map((photo, idx) => (
+								<div
+									className={cn(
+										'aspect-square overflow-hidden rounded-xl shadow-xl outline-1 -outline-offset-1 outline-black/10',
+									)}>
+									<Image
+										src={'/assets/Studios/photo_2025-05-18_20-30-49 (2).jpg'}
+										alt=''
+										width={350}
+										height={350}
+										className='block size-full object-cover'
+									/>
+								</div>
+							))}
+
+							<div className='-mt-8 aspect-square overflow-hidden rounded-xl shadow-xl outline-1 -outline-offset-1 outline-black/10 lg:-mt-40'>
+								<Image
+									src={'/assets/Studios/photo_2025-05-18_20-30-49.jpg'}
+									alt=''
+									width={350}
+									height={350}
+									className='block size-full object-cover'
+								/>
+							</div>
 							<div className='aspect-square overflow-hidden rounded-xl shadow-xl outline-1 -outline-offset-1 outline-black/10'>
 								<Image
-									src={'/Studios/photo_2025-04-28_16-17-24.jpg'}
+									src={'/assets/Studios/photo_2025-05-18_20-30-48.jpg'}
 									alt=''
 									width={350}
 									height={350}
@@ -55,25 +87,7 @@ export default function StudioAbout() {
 							</div>
 							<div className='-mt-8 aspect-square overflow-hidden rounded-xl shadow-xl outline-1 -outline-offset-1 outline-black/10 lg:-mt-40'>
 								<Image
-									src={'/Studios/photo_2025-04-28_16-17-25 (2).jpg'}
-									alt=''
-									width={350}
-									height={350}
-									className='block size-full object-cover'
-								/>
-							</div>
-							<div className='aspect-square overflow-hidden rounded-xl shadow-xl outline-1 -outline-offset-1 outline-black/10'>
-								<Image
-									src={'/Studios/photo_2025-04-28_16-17-25.jpg'}
-									alt=''
-									width={350}
-									height={350}
-									className='block size-full object-cover'
-								/>
-							</div>
-							<div className='-mt-8 aspect-square overflow-hidden rounded-xl shadow-xl outline-1 -outline-offset-1 outline-black/10 lg:-mt-40'>
-								<Image
-									src={'/Studios/photo_2025-04-28_16-17-26.jpg'}
+									src={'/assets/Studios/photo_2025-05-18_20-30-47.jpg'}
 									alt=''
 									width={350}
 									height={350}
@@ -97,9 +111,9 @@ export default function StudioAbout() {
 							<div className='flex flex-col gap-y-2 border-b border-dotted border-gray-200 pb-4'>
 								<dt className='text-sm/6 text-gray-300'>Лет на рынке</dt>
 								<dd className='order-first text-6xl font-semibold tracking-tight'>
-									<span>7</span>
+									<span>6</span>
 								</dd>
-							</div>{' '}
+							</div>
 							<div className='flex flex-col gap-y-2'>
 								<dt className='text-sm/6 text-gray-300'>Наш рейтинг</dt>
 								<dd className='order-first text-6xl font-semibold tracking-tight'>
