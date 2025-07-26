@@ -5,17 +5,18 @@ import { BsFillTelephoneFill } from 'react-icons/bs';
 import { Checkbox } from '@heroui/checkbox';
 import { Button } from '@heroui/button';
 import { ChangeEvent, useState } from 'react';
-import { Form } from '@heroui/form';
 import { getLocalTimeZone, today } from '@internationalized/date';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { TVerification } from 'sdk/lib/verification/verification.controller';
+import { action } from './action';
 
 export default function VerificationForm() {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const [submitted, setSubmitted] = useState<any>(null);
+	const methods = useForm<TVerification>({});
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		const data = Object.fromEntries(new FormData(e.currentTarget));
-		setSubmitted(data);
+	const onSubmit: SubmitHandler<TVerification> = async (data) => {
+		action({
+			...data,
+		});
 	};
 
 	const [phone, setPhone] = useState('');
@@ -30,7 +31,9 @@ export default function VerificationForm() {
 	};
 
 	return (
-		<Form className='flex flex-col gap-5' onSubmit={onSubmit}>
+		<form
+			className='flex flex-col gap-5'
+			onSubmit={methods.handleSubmit(onSubmit)}>
 			<div className='w-full'>
 				<p className='font-semibold text-xl'>Основная информация</p>
 				<p className='mt-1 text-xs'>
@@ -39,12 +42,12 @@ export default function VerificationForm() {
 				<div className='mt-4 grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 gap-4'>
 					<Input
 						label='Фамилия'
-						name='surname'
 						labelPlacement={'outside'}
 						placeholder='Введите фамилию'
 						type='text'
 						isRequired
 						radius='sm'
+						{...methods.register('middleName')}
 						pattern='^[A-ZА-Я][a-zа-я]+$'
 						errorMessage={({ validationDetails, validationErrors }) => {
 							if (validationDetails.patternMismatch) {
@@ -55,12 +58,12 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Имя'
-						name='name'
 						labelPlacement={'outside'}
 						placeholder='Введите имя'
 						type='text'
 						isRequired
 						radius='sm'
+						{...methods.register('firstName')}
 						pattern='^[A-ZА-Я][a-zа-я]+$'
 						errorMessage={({ validationDetails, validationErrors }) => {
 							if (validationDetails.patternMismatch) {
@@ -71,11 +74,11 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Отчество'
-						name='patronymic'
 						labelPlacement={'outside'}
 						placeholder='Введите отчество'
 						type='text'
 						radius='sm'
+						{...methods.register('lastName')}
 						pattern='^[A-ZА-Я][a-zа-я]+$'
 						errorMessage={({ validationDetails, validationErrors }) => {
 							if (validationDetails.patternMismatch) {
@@ -86,9 +89,14 @@ export default function VerificationForm() {
 					/>
 					<DatePicker
 						isRequired
-						name='birthDay'
 						label='Дата рождения'
 						labelPlacement={'outside'}
+						{...methods.register('birthDate')}
+						onChange={(value) => {
+							if (value) {
+								methods.setValue('birthDate', value.toDate(getLocalTimeZone()));
+							}
+						}}
 						maxValue={today(getLocalTimeZone())}
 						validate={(value) => {
 							if (value.toDate(getLocalTimeZone()) > new Date()) {
@@ -103,7 +111,7 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Место рождения'
-						name='borenPlace'
+						{...methods.register('birthPlace')}
 						labelPlacement={'outside'}
 						placeholder='Введите место рождения'
 						type='text'
@@ -112,7 +120,7 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Телефон'
-						name='telephone'
+						{...methods.register('tel')}
 						labelPlacement={'outside'}
 						placeholder='Введите телефон'
 						startContent={<BsFillTelephoneFill className='w-4' color='gray' />}
@@ -135,7 +143,7 @@ export default function VerificationForm() {
 				<div className='mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
 					<Input
 						label='Серия паспорта'
-						name='PassportSeries'
+						{...methods.register('passSeries')}
 						labelPlacement={'outside'}
 						placeholder='Введите серию'
 						type='text'
@@ -152,7 +160,7 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Номер паспорта'
-						name='PassportNumber'
+						{...methods.register('passNumber')}
 						labelPlacement={'outside'}
 						placeholder='Введите номер'
 						type='text'
@@ -168,8 +176,13 @@ export default function VerificationForm() {
 						}}
 					/>
 					<DatePicker
-						name='getDate'
 						isRequired
+						{...methods.register('getDate')}
+						onChange={(value) => {
+							if (value) {
+								methods.setValue('getDate', value.toDate(getLocalTimeZone()));
+							}
+						}}
 						label='Дата получения'
 						labelPlacement={'outside'}
 						validate={(value) => {
@@ -185,7 +198,7 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Кем выдан'
-						name='whoGive'
+						{...methods.register('givenBy')}
 						labelPlacement={'outside'}
 						placeholder='Введите кем выдан'
 						type='text'
@@ -194,7 +207,7 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Код подразделения'
-						name='code'
+						{...methods.register('subunitCode')}
 						labelPlacement={'outside'}
 						placeholder='Введите код подразделения'
 						type='text'
@@ -211,7 +224,7 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Адрес регистрации'
-						name='registration'
+						{...methods.register('registrationAddress')}
 						labelPlacement={'outside'}
 						placeholder='Введите адрес'
 						type='text'
@@ -229,7 +242,7 @@ export default function VerificationForm() {
 				<div className='mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
 					<Input
 						label='Номер счета'
-						name='AccountNumber'
+						{...methods.register('accountNumber')}
 						labelPlacement={'outside'}
 						placeholder='Введите серию'
 						type='text'
@@ -246,7 +259,7 @@ export default function VerificationForm() {
 					/>
 					<Input
 						label='Наименование банка'
-						name='NameBank'
+						{...methods.register('bankName')}
 						labelPlacement={'outside'}
 						placeholder='Введите наименование банка'
 						type='text'
@@ -267,11 +280,6 @@ export default function VerificationForm() {
 					Отправить
 				</Button>
 			</div>
-			{submitted && (
-				<div className='text-small text-default-500'>
-					You submitted: <code>{JSON.stringify(submitted)}</code>
-				</div>
-			)}
-		</Form>
+		</form>
 	);
 }
