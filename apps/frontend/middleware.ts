@@ -26,7 +26,6 @@ export const middleware = async function (request: NextRequest) {
 		authHeaders.set('Authorization', sessionToken);
 
 		const connecttion = createSDKConnection({
-			next: { tags: ['authorize'] },
 			headers: authHeaders,
 		});
 
