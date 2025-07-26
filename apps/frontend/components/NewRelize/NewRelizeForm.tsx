@@ -16,6 +16,7 @@ import AdditionalParams from './Additional/AdditionalParams/AdditionalParams';
 import YandexMusic from './Additional/YandexMusic/YandexMusic';
 import CheckRelizeForm from './CheckRelizeForm/CheckRelizeForm';
 import CommentForModerator from './Additional/CommentForModerator/CommentForModerator';
+import { action } from './action';
 
 export default function NewRelizeForm() {
 	const methods = useForm<TReleaseInsertForm>({
@@ -31,6 +32,11 @@ export default function NewRelizeForm() {
 
 	const onSubmit: SubmitHandler<TReleaseInsertForm> = (data) => {
 		console.log(data);
+		// action({
+		// 	...data,
+		// 	preview:
+		// 		data.preview.type.split('/')[data.preview.type.split('/').length - 1],
+		// });
 	};
 
 	return (

@@ -8,35 +8,25 @@ import 'swiper/css';
 import Image from 'next/image';
 import StudioAbout from './StudioAbout/StudioAbout';
 import StudiosTeam from './StudiosTeam/StudiosTeam';
-import { TGetStudiosResponse } from 'sdk/lib/studio/studio.controller';
-import { Primitive } from 'sdk';
+import { TCompleteStudioData } from 'sdk/lib/studio/studio.controller';
 export default function StudioDetail({
 	studio,
 }: {
-	studio: Primitive<TGetStudiosResponse>[number];
+	studio: TCompleteStudioData;
 }) {
-	const people = [
-		{
-			name: 'Leslie Alexander',
-			role: 'Co-Founder / CEO',
-			imageUrl: '/photo_2025-04-28_15-07-23.jpg',
-			location: 'Toronto, Canada',
-		},
-		// More people...
-	];
 	return (
 		<>
 			<StudiosPreview
-				bgImage={'black-mamba-snake-pale-gray-spots-val4upfryn4ad5ac.jpg'}
-				logo={'photo_2025-05-18_20-30-50.jpg'}
-				mainColor={''}
+				bgImage={`${process.env.NEXT_PUBLIC_S3_URL}/studio-backgrounds/${studio.id}.${studio.background}`}
+				logo={`${process.env.NEXT_PUBLIC_S3_URL}/studios/${studio.id}.${studio.logo}`}
+				name={studio.name}
 			/>
 			<StudioAbout
 				name={studio.name}
 				description={studio.description}
-				studioPhotos={studio.photos.filter((photo) => {
-					return photo.type == 'studio_photo';
-				})}
+				anotation={studio.annotation}
+				studioPhotos={studio.photos}
+				stats={studio.stats}
 			/>
 			<div className='text-4xl mb-20 font-semibold max-h-[75vh] tracking-tight text-pretty text-white sm:text-5xl overflow-hidden'>
 				<h2
@@ -59,51 +49,23 @@ export default function StudioDetail({
 						},
 					}}>
 					<div className={cn(style['slider__wrapper'])}>
-						<SwiperSlide className={cn(style['slider__item'])}>
-							<Image
-								src={'/assets/Studios/photo_2025-05-18_20-30-47.jpg'}
-								alt=''
-								width={500}
-								height={500}
-								className={style['slider__img']}
-							/>
-						</SwiperSlide>
-						<SwiperSlide className={cn(style['slider__item'])}>
-							<Image
-								src={'/assets/Studios/photo_2025-05-18_20-30-49 (2).jpg'}
-								alt=''
-								width={500}
-								height={500}
-								className={style['slider__img']}
-							/>
-						</SwiperSlide>
-						<SwiperSlide className={cn(style['slider__item'])}>
-							<Image
-								src={'/assets/Studios/photo_2025-05-18_20-30-49.jpg'}
-								alt=''
-								width={500}
-								height={500}
-								className={style['slider__img']}
-							/>
-						</SwiperSlide>
-						<SwiperSlide className={cn(style['slider__item'])}>
-							<Image
-								src={'/assets/Studios/photo_2025-05-18_20-30-48.jpg'}
-								alt=''
-								width={500}
-								height={500}
-								className={style['slider__img']}
-							/>
-						</SwiperSlide>
+						{studio.photos.map((photo) => (
+							<SwiperSlide key={photo.id} className={cn(style['slider__item'])}>
+								<Image
+									src={`${process.env.NEXT_PUBLIC_S3_URL}/studio-photos/${photo.id}.${
+										photo.url
+									}`}
+									alt=''
+									width={500}
+									height={500}
+									className={style['slider__img']}
+								/>
+							</SwiperSlide>
+						))}
 					</div>
 				</Swiper>
 			</div>
-			<StudiosTeam
-				losung={
-					' Showbiz Records состоит из квалифицированных специалистов высшего уровня'
-				}
-				people={people}
-			/>
+			<StudiosTeam people={studio.team} />
 		</>
 	);
 }

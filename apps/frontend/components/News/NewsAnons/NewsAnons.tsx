@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { TNewsAnonsItem } from './NewsAnons.props';
+
 import { TGetNewsResponse } from 'sdk/lib/news/news.controller';
 import { Primitive } from 'sdk';
 import { unstable_ViewTransition as ViewTransition } from 'react';

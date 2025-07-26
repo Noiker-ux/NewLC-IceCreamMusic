@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Icon } from '@iconify/react';
 import { TStudiosCard } from './StudiosCard.props';
+import { unstable_ViewTransition as ViewTransition } from 'react';
 
 export default function StudiosCard({
 	name,
@@ -12,13 +13,15 @@ export default function StudiosCard({
 		<div
 			className='w-full rounded-xl bg-zinc-900 relative h-fit cursor-pointer hover:scale-95 transition-all
         '>
-			<Image
-				src={`/assets/Studios/${preview}`}
-				alt={''}
-				width={250}
-				height={250}
-				className=' w-full aspect-square rounded-t-xl'
-			/>
+			<ViewTransition name='studioTransit'>
+				<Image
+					src={preview}
+					alt={''}
+					width={250}
+					height={250}
+					className=' w-full aspect-square rounded-t-xl'
+				/>
+			</ViewTransition>
 			<div className='py-3 px-5'>
 				<div className='flex justify-between'>
 					<p>{name}</p>
