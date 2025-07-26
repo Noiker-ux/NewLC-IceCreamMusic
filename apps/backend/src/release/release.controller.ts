@@ -23,6 +23,8 @@ import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { ReleaseService } from './release.sercice';
+import { FinanceService } from '../finance/finance.service';
+import { Payment } from '@a2seven/yoo-checkout';
 
 export type TPromoLink = InferSelectModel<typeof schema.promoLinks>;
 
@@ -89,6 +91,10 @@ export type TUpdateReleaseStatusBody = {
   data: TRelease['status'];
 };
 
+export type TGetReleasePriceResponse = {
+  data: Payment['receipt']['items'];
+};
+
 @ApiTags('releases')
 @ApiSecurity('bearer')
 @UseGuards(AuthGuard)
@@ -100,6 +106,7 @@ export class ReleaseController {
     @Inject('DB_TAG') private readonly db: DB,
     private readonly sessionService: SessionService,
     private readonly releaseService: ReleaseService,
+    private readonly financeService: FinanceService,
   ) {}
 
   @TypedRoute.Get('my')
@@ -144,6 +151,30 @@ export class ReleaseController {
       throw new ForbiddenException('Недостаточно прав для просмотра релиза');
 
     return { data: release };
+  }
+
+  @TypedRoute.Get(':releaseId/price')
+  async getReleasePrice(
+    @Session() sessionToken: string,
+    @TypedParam('releaseId') releaseId: string,
+  ) {
+    const { user } = await this.sessionService.validateSession(sessionToken);
+
+    if (!user) throw new ForbiddenException('Необходима авторизация');
+
+    const release = await this.db.query.release.findFirst({
+      where: eq(schema.release.id, releaseId),
+    });
+
+    if (!release || release.authorId !== user.id)
+      throw new BadRequestException('Релиз не найден');
+
+    const subscriptionLevel = user.subscriptionLevel ?? 'none';
+
+    return this.financeService.calculateReleaseEstimate(
+      release.id,
+      subscriptionLevel,
+    );
   }
 
   @AdminGuard()

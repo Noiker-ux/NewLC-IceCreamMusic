@@ -1,28 +1,32 @@
 import { Payment } from '@a2seven/yoo-checkout';
-import { TypedBody, TypedParam, TypedRoute } from '@nestia/core';
+import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import {
   BadRequestException,
   Controller,
+  ForbiddenException,
   Inject,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
-import { AuthGuard } from '../auth/auth.guard';
-import { Session } from '../auth/session.decorator';
-import { SessionService } from '../auth/session.service';
-import { checkout, currency } from '../shared/checkout';
-import { TSuccessionResponse } from '../shared/types';
-import { FinanceService } from './finance.service';
 import {
   releaseMetadataSchema,
   subscriptionMetadataSchema,
 } from 'shared/schema/order.schema';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { Primitive } from 'typia';
+import { AdminGuard } from '../auth/admin.guard';
+import { AuthGuard } from '../auth/auth.guard';
+import { Session } from '../auth/session.decorator';
+import { SessionService } from '../auth/session.service';
+import { checkout, currency } from '../shared/checkout';
+import { TPageQuery, TSuccessionResponse } from '../shared/types';
+import { FinanceService } from './finance.service';
 
 export type TCreateOrderResponse = {
   redirect_url: string;
@@ -40,6 +44,30 @@ export type TCreateOrderBody =
 
 export type TMakeOrderResponse = {
   confirmation_url: string;
+};
+
+export type TPayoutTicketData = InferSelectModel<typeof schema.payouts>;
+
+export type TGetPayoutTicketsResponse = {
+  data: TPayoutTicketData[];
+};
+
+export type TGetPayoutTicketsQuery = TPageQuery & {
+  confirmed?: boolean;
+};
+
+export type TGetPayoutTicketResponse = {
+  data: TPayoutTicketData;
+};
+
+export type TCreatePayoutTicketBody = {
+  data: Primitive<
+    Pick<InferInsertModel<typeof schema.payouts>, 'recieverName' | 'amount'>
+  >;
+};
+
+export type TUpdatePayoutTicketStatusBody = {
+  data: Pick<Primitive<TPayoutTicketData>, 'confirmed'>;
 };
 
 @ApiTags('finance')
@@ -268,15 +296,106 @@ export class FinanceController {
     return { success: true };
   }
 
-  // @TypedRoute.Post('/payouts')
-  // async createPayoutTicket() {}
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Get('/payouts')
+  async getPayoutTickets(
+    @TypedQuery() params: TGetPayoutTicketsQuery,
+  ): Promise<TGetPayoutTicketsResponse> {
+    return {
+      data: await this.db.query.payouts.findMany({
+        where: eq(schema.payouts.confirmed, params.confirmed ?? false),
+        limit: params.size,
+        offset: (params.page - 1) * params.size,
+      }),
+    };
+  }
 
-  // @TypedRoute.Patch('/payouts/:ticketId')
-  // async updatePayoutTicketStatus() {}
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @TypedRoute.Get('/payouts/my')
+  async getMyPayoutTickets(
+    @Session() sessionToken: string,
+    @TypedQuery() params: TGetPayoutTicketsQuery,
+  ): Promise<TGetPayoutTicketsResponse> {
+    const { user } = await this.sessionService.validateSession(sessionToken);
 
-  // @TypedRoute.Get('/payouts')
-  // async getPayoutTickets() {}
+    if (!user) throw new UnauthorizedException('Не авторизован');
 
-  // @TypedRoute.Get('/payouts/:ticketId')
-  // async getPayoutTicket() {}
+    return {
+      data: await this.db.query.payouts.findMany({
+        where: and(
+          eq(schema.payouts.confirmed, params.confirmed ?? false),
+          eq(schema.payouts.userId, user?.id),
+        ),
+        limit: params.size,
+        offset: (params.page - 1) * params.size,
+      }),
+    };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @TypedRoute.Get('/payouts/:ticketId')
+  async getPayoutTicket(
+    @TypedParam('ticketId') ticketId: string,
+    @Session() sessionToken: string,
+  ): Promise<TGetPayoutTicketResponse> {
+    const { user } = await this.sessionService.validateSession(sessionToken);
+
+    if (!user) throw new UnauthorizedException('Не авторизован');
+
+    const ticket = await this.db.query.payouts.findFirst({
+      where: eq(schema.payouts.id, ticketId),
+    });
+
+    if (!ticket) throw new NotFoundException('Тикет не найден');
+
+    if (ticket.userId !== user.id || !user.isAdmin)
+      throw new ForbiddenException('Нет доступа');
+
+    return {
+      data: ticket,
+    };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @TypedRoute.Post('/payouts')
+  async createPayoutTicket(
+    @Session() sessionToken: string,
+    @TypedBody() body: TCreatePayoutTicketBody,
+  ): Promise<TSuccessionResponse> {
+    const { user } = await this.sessionService.validateSession(sessionToken);
+
+    if (!user) throw new UnauthorizedException('Не авторизован');
+
+    await this.db.insert(schema.payouts).values({
+      userId: user.id,
+      amount: body.data.amount,
+      recieverName: body.data.recieverName,
+      confirmed: false,
+    });
+
+    return { success: true };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Patch('/payouts/:ticketId/status')
+  async updatePayoutTicketStatus(
+    @TypedParam('ticketId') ticketId: string,
+    @TypedBody() body: TUpdatePayoutTicketStatusBody,
+  ): Promise<TSuccessionResponse> {
+    await this.db
+      .update(schema.payouts)
+      .set({
+        confirmed: body.data.confirmed,
+      })
+      .where(eq(schema.payouts.id, ticketId));
+
+    return { success: true };
+  }
 }

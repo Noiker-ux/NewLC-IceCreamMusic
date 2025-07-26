@@ -2,6 +2,7 @@ import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import {
   BadRequestException,
   Controller,
+  ForbiddenException,
   Inject,
   InternalServerErrorException,
   Logger,
@@ -14,6 +15,8 @@ import { AuthGuard } from '../auth/auth.guard';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Primitive } from 'typia';
+import { Session } from '../auth/session.decorator';
+import { SessionService } from '../auth/session.service';
 
 export type TVerification = InferSelectModel<typeof schema.verification>;
 
@@ -25,7 +28,7 @@ export type TTicketRegistrationData = {
   data: Primitive<
     Omit<
       InferInsertModel<typeof schema.verification>,
-      'rejectReason' | 'status'
+      'rejectReason' | 'status' | 'userId' | 'id'
     >
   >;
 };
@@ -45,7 +48,10 @@ export type TTicketUpdateBody = {
 export class VerificationController {
   logger = new Logger(VerificationController.name);
 
-  constructor(@Inject('DB_TAG') private readonly db: DB) {}
+  constructor(
+    @Inject('DB_TAG') private readonly db: DB,
+    private readonly sessionService: SessionService,
+  ) {}
 
   @AdminGuard()
   @TypedRoute.Get('/:status')
@@ -65,12 +71,21 @@ export class VerificationController {
   @TypedRoute.Post()
   async registerVerifiactionTicket(
     @TypedBody() body: TTicketRegistrationData,
+    @Session() sessionToken: string,
   ): Promise<TSuccessionResponse> {
+    const { user } = await this.sessionService.validateSession(sessionToken);
+
+    if (!user) throw new ForbiddenException('Недостаточно прав');
+
+    if (user.isVerifiedAuthor)
+      throw new BadRequestException('Вы уже верифицированы');
+
     const { getDate, birthDate, ...insertionData } = body.data;
 
     const rows = await this.db
       .insert(schema.verification)
       .values({
+        userId: user.id,
         ...insertionData,
         getDate: new Date(getDate),
         birthDate: new Date(birthDate),
