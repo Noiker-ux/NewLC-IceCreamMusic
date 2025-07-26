@@ -8,24 +8,24 @@ import { z } from 'zod';
 const tokensSchema = z.object({
 	refresh_token: z.string(),
 	access_token: z.string(),
-	id_token: z.string(),
 	token_type: z.string(),
 	expires_in: z.number(),
-	user_id: z.number(),
-	state: z.string(),
-	scope: z.string(),
+	scope: z.string().optional(),
 });
 
 const accountSchema = z.object({
-	user: z.object({
-		user_id: z.string(),
-		first_name: z.string(),
-		last_name: z.string(),
-		avatar: z.string(),
-		email: z.string(),
-		sex: z.number(),
-		verified: z.boolean(),
-		birthday: z.string(),
+	id: z.string(),
+	first_name: z.string(),
+	last_name: z.string(),
+	display_name: z.string(),
+	default_email: z.string(),
+	sex: z.string(),
+	birthday: z.string(),
+	default_avatar_id: z.string(),
+	is_avatar_empty: z.boolean(),
+	default_phone: z.object({
+		id: z.number(),
+		number: z.string(),
 	}),
 });
 
@@ -44,21 +44,18 @@ export async function GET(request: NextRequest) {
 		headers: request.headers,
 	});
 
-	const deviceId = requestUrl.searchParams.get('device_id');
-
 	const code = requestUrl.searchParams.get('code');
 
 	const state = requestUrl.searchParams.get('state');
 
 	const cookiesStore = await cookies();
 
-	const cookieState = cookiesStore.get('example-state')?.value;
+	const cookieState = cookiesStore.get('icecream-yandex-state')?.value;
 
-	const codeVerifier = cookiesStore.get('example-verifier')?.value;
+	const codeVerifier = cookiesStore.get('icecream-yandex-verifier')?.value;
 
 	if (
 		!code ||
-		!deviceId ||
 		!state ||
 		!cookieState ||
 		!codeVerifier ||
@@ -69,26 +66,28 @@ export async function GET(request: NextRequest) {
 
 	requestUrl.search = '';
 
+	const tokenHeaders = new Headers();
+
+	tokenHeaders.set(
+		'Authorization',
+		`Basic ${Buffer.from(`${process.env.AUTH_YANDEX_ID}:${process.env.AUTH_YANDEX_SECRET}`).toString('base64')}`,
+	);
+	tokenHeaders.set('Content-Type', 'application/x-www-form-urlencoded');
+
 	const tokensObject = {
 		grant_type: 'authorization_code',
 		code_verifier: codeVerifier,
 		code,
-		state,
-		client_id: process.env.AUTH_VK_ID!,
-		device_id: deviceId,
-		redirect_uri: requestUrl.href,
 	};
 
 	const tokensBody = new URLSearchParams(
 		Object.entries(tokensObject),
 	).toString();
 
-	const tokensResponse = await fetch('https://id.vk.com/oauth2/auth', {
+	const tokensResponse = await fetch('https://oauth.yandex.ru/token', {
 		method: 'POST',
 		body: tokensBody,
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
+		headers: tokenHeaders,
 	});
 
 	const tokensData = await tokensResponse.json();
@@ -101,28 +100,17 @@ export async function GET(request: NextRequest) {
 
 	const validTokens = tokensResult.data;
 
-	if (validTokens.state !== cookieState) {
-		return badRedirect;
-	}
+	const accountHeaders = new Headers();
 
-	const accountObject = {
-		client_id: process.env.AUTH_VK_ID!,
-		access_token: validTokens.access_token,
-	};
+	accountHeaders.set('Authorization', `OAuth ${validTokens.access_token}`);
 
-	const accountBody = new URLSearchParams(
-		Object.entries(accountObject),
-	).toString();
-
-	const accountResponse = await fetch('https://id.vk.com/oauth2/user_info', {
-		method: 'POST',
-		body: accountBody,
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
+	const accountResponse = await fetch('https://login.yandex.ru/info', {
+		headers: accountHeaders,
 	});
 
 	const userAccount = await accountResponse.json();
+
+	console.log(userAccount);
 
 	const accountValidationResult = accountSchema.safeParse(userAccount);
 
@@ -130,43 +118,41 @@ export async function GET(request: NextRequest) {
 		return badRedirect;
 	}
 
-	const validAccount = accountValidationResult.data.user;
+	const validAccount = accountValidationResult.data;
 
 	const tokenExpires = new Date(
 		new Date().getTime() + validTokens.expires_in * 1000,
 	);
 
-	const session = await functional.v1.auth.oauth
-		.OAuthSignin(connection, {
-			providerAccountId: validAccount.user_id,
-			provider: 'vk',
-			email: validAccount.email,
-			tokenType: validTokens.token_type,
-			accessToken: validTokens.access_token,
-			refreshToken: validTokens.refresh_token,
-			expiresAt: tokenExpires.toISOString(),
-			scope: validTokens.scope,
-			name: `${validAccount.first_name} ${validAccount.last_name}`,
-			avatar: validAccount.avatar,
-			verified: validAccount.verified,
-		})
-		.catch((e) => console.error(new Date().toISOString() + ' ' + e.message));
+	const avatarUrl = new URL(
+		`${validAccount.default_avatar_id}/islands-200`,
+		'https://avatars.yandex.net/get-yapic',
+	);
 
-	if (!session) {
-		return badRedirect;
-	}
+	const tokenRes = await functional.v1.auth.oauth.OAuthSignin(connection, {
+		provider: 'yandex',
+		providerAccountId: validAccount.id,
+		accessToken: validTokens.access_token,
+		refreshToken: validTokens.refresh_token,
+		expiresAt: tokenExpires.toISOString(),
+		tokenType: validTokens.token_type,
+		scope: validTokens.scope ?? '',
+		email: validAccount.default_email,
+		name: validAccount.display_name,
+		avatar: avatarUrl.href,
+		verified: true,
+		phone: validAccount.default_phone.number,
+	});
 
-	cookiesStore.delete('icecream-vk-verifier');
+	cookiesStore.delete('icecream-yandex-verifier');
 
-	cookiesStore.delete('icecream-vk-state');
+	cookiesStore.delete('icecream-yandex-state');
 
 	const callbackUrl = cookiesStore.get('icecream-callback')?.value;
 
 	cookiesStore.delete('icecream-callback');
 
-	cookiesStore.delete('icecream-callback');
-
-	cookiesStore.set('icecream-auth', session.session_token, {
+	cookiesStore.set('icecream-auth', tokenRes.session_token, {
 		httpOnly: true,
 		secure: true,
 		sameSite: 'lax',
@@ -180,7 +166,7 @@ export async function GET(request: NextRequest) {
 
 	const goodRedirectUrl = badRedirectUrl.clone();
 
-	goodRedirectUrl.pathname = '/dashboard';
+	goodRedirectUrl.pathname = '/';
 
 	return NextResponse.redirect(goodRedirectUrl, { headers: request.headers });
 }

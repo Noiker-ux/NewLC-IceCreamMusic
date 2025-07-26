@@ -309,6 +309,13 @@
       "when": 1752581684802,
       "tag": "0043_lumpy_tigra",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1753280605531,
+      "tag": "0044_right_millenium_guard",
+      "breakpoints": true
     }
   ]
 }

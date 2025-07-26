@@ -1,6 +1,6 @@
 'use client';
 
-// import { oauth } from '@/shared/api/indes';
+import { yandexSignIn } from '@/features/auth/api/signin/yandex';
 import { Button } from '@heroui/button';
 import Image from 'next/image';
 
@@ -25,9 +25,14 @@ export default function Home() {
 					className=' absolute bg-top l-0 top-0 h-full w-full object-cover'
 				/>
 			</div>
-			{/* <Button onPress={() => oauth().then(JSON.stringify).then(alert)}>
+			<Button
+				onPress={() =>
+					yandexSignIn('https://www.baconcs.duckdns.org')
+						.then(JSON.stringify)
+						.then(alert)
+				}>
 				qwe
-			</Button> */}
+			</Button>
 			<div
 				dangerouslySetInnerHTML={{
 					__html: `<div class="flourish-embed flourish-chart" data-src="visualisation/23297172"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/23297172/thumbnail" width="100%" alt="chart visualization" /></noscript></div>`,

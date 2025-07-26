@@ -425,7 +425,7 @@ export const payment_methodRelations = relations(payment_method, ({ one }) => ({
 }));
 
 export const payouts = schema.table("payouts", {
-  id: uuid("id").primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
 
   userId: uuid("userId")
     .notNull()

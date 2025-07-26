@@ -8,7 +8,7 @@
   "scripts": {
     "build": "rimraf dist && webpack",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "node dist/server.js",
+    "start": "dotenvx run -- node dist/server.js",
     "dev": "dotenvx run -- nest start --watch",
     "sdk": "nestia sdk",
     "start:debug": "nest start --debug --watch",
