@@ -137,47 +137,5 @@ export async function POST(req: Request) {
 		return goodResponse;
 	}
 
-	// if (data.event === 'payout.succeeded') {
-	// 	const payout = await (
-	// 		await fetch(`https://api.yookassa.ru/v3/payouts/${data.object.id}`, {
-	// 			headers: {
-	// 				'Content-Type': 'application/json',
-	// 				Authorization:
-	// 					'Basic ' +
-	// 					btoa(
-	// 						`${process.env.YOOKASSA_SHOP_ID}:${process.env.YOOKASSA_SECRET_KEY}`,
-	// 					),
-	// 			},
-	// 			method: 'GET',
-	// 			cache: 'no-store',
-	// 		})
-	// 	)
-	// 		.json()
-	// 		.catch(() => null);
-
-	// 	if (!payout || !payout.status !== data.object.status) {
-	// 		return badResponse;
-	// 	}
-
-	// 	const dbPayout = await db.query.payouts.findFirst({
-	// 		where: (po, { eq }) => eq(po.id, payout.id),
-	// 	});
-
-	// 	if (!dbPayout) {
-	// 		return badResponse;
-	// 	}
-
-	// 	await db.transaction(async () => {
-	// 		await db
-	// 			.update(payouts)
-	// 			.set({ confirmed: true })
-	// 			.where(eq(payouts.id, dbPayout.id));
-	// 		await db
-	// 			.update(users)
-	// 			.set({ balance: 0 })
-	// 			.where(eq(users.id, dbPayout.userId));
-	// 	});
-	// }
-
 	return badResponse;
 }

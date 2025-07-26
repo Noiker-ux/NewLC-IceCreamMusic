@@ -29,21 +29,21 @@ export async function vkSignIn(callbackUrl: string) {
 
 	const cookiesStore = await cookies();
 
-	cookiesStore.set('example-state', state, {
+	cookiesStore.set('icecream-vk-state', state, {
 		secure: true,
 		httpOnly: true,
 		sameSite: 'lax',
 		maxAge: 60 * 10,
 	});
 
-	cookiesStore.set('example-verifier', codeVerifier, {
+	cookiesStore.set('icecream-vk-verifier', codeVerifier, {
 		secure: true,
 		httpOnly: true,
 		sameSite: 'lax',
 		maxAge: 60 * 10,
 	});
 
-	cookiesStore.set('example-callback', callbackUrl, {
+	cookiesStore.set('icecream-callback', callbackUrl, {
 		secure: true,
 		httpOnly: true,
 		sameSite: 'lax',
