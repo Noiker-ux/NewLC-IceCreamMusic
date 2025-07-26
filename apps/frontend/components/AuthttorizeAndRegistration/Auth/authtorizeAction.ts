@@ -39,5 +39,5 @@ export async function actionAuthtorize(data: TSignInClientSchema) {
 			maxAge: 60 * 60 * 24,
 		});
 	}
-	redirect('/main/news/');
+	redirect('/dashboard/main/news/');
 }

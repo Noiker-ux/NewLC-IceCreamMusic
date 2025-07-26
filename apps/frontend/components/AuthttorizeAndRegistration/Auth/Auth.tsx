@@ -44,6 +44,8 @@ export default function Authorization() {
 			/>
 			<Checkbox {...methods.register('rememberMe')}>Запомнить пароль</Checkbox>
 			<Button type='submit'>Войти</Button>
+			<div>Yandex</div>
+			<div>VK</div>
 		</form>
 	);
 }
