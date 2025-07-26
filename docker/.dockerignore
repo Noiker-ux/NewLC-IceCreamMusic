@@ -10,3 +10,9 @@ letsencrypt
 .eslintrc.json
 .env
 nodemon.json
+lib
+.turbo
+.vscode
+turbo.json
+*.compose.yaml
+

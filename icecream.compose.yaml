@@ -19,9 +19,7 @@ services:
     container_name: icecream_app
     image: icecreammusic:latest
     environment:
-      AUTH_SECRET: ${AUTH_SECRET:?error}
       SALT_ROUNDS: ${SALT_ROUNDS:?error}
-      AUTH_DOMAIN: ${AUTH_DOMAIN:?error}
       DB_HOST: postgres
       DB_PORT: ${DB_PORT:?error}
       DB_USER: ${DB_USER:?error}
@@ -32,7 +30,6 @@ services:
       SMTP_USER: ${SMTP_USER:?error}
       SMTP_SECURE: ${SMTP_SECURE:?error}
       SMTP_PASSWORD: ${SMTP_PASSWORD:?error}
-      MAGIC_LINK_SECRET: ${MAGIC_LINK_SECRET:?error}
       S3_HOST: minio
       S3_PORT: 9000
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:?error}
