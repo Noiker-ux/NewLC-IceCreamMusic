@@ -47,6 +47,10 @@ export type TCredentialsSignUpBody = {
   name: string;
 };
 
+export type TCredentialsSignUpResponse = {
+  verificationToken: string;
+};
+
 export type TRecoverPasswordBody = {
   token: string;
   password: string;
@@ -290,7 +294,7 @@ export class AuthController {
   @TypedRoute.Post('signup')
   async credentialsSignUp(
     @TypedBody() body: TCredentialsSignUpBody,
-  ): Promise<TSuccessionResponse> {
+  ): Promise<TCredentialsSignUpResponse> {
     const { email, password, name } = body;
 
     const existingUser = await this.db.query.users.findFirst({
@@ -320,7 +324,12 @@ export class AuthController {
       throw new InternalServerErrorException('Что-то пошло не так');
     }
 
-    return { success: true };
+    const verificationToken = await this.authService.registerEmailToken(
+      newUser.id,
+      'confirm',
+    );
+
+    return { verificationToken: verificationToken.token };
   }
 
   @TypedRoute.Get('token/:type/:token')
