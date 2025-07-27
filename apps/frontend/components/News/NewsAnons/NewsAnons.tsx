@@ -13,7 +13,7 @@ export default function NewsAnons({
 
 	return (
 		<Link href={'/main/news/' + id}>
-			<ViewTransition name='fade'>
+			<ViewTransition name={`fade-${newsItem.id}`}>
 				<div
 					className={`relative  w-full min-h-52 md:min-h-96 bg-zinc-900 rounded-2xl  bg-no-repeat bg-cover bg-center cursor-pointer  transition-all hover:scale-95`}
 					style={{

@@ -18,7 +18,7 @@ export default function Authorization() {
 
 	const onSubmit: SubmitHandler<TSignInClientSchema> = async (data) => {
 		const result = await actionAuthtorize(data);
-		if (!result.success) {
+		if (result && !result.success) {
 			methods.setError('password', {
 				message: JSON.parse(result?.error).message,
 			});

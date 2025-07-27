@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import '../globals.css';
+import '../../globals.css';
 import SideBarProvider from '@/providers/SideBar.provider';
 import SideBar from '@/components/Layout/SideBar/SideBar';
 import { Suspense } from 'react';
