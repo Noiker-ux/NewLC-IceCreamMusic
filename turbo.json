@@ -3,6 +3,10 @@
   "globalDependencies": [".env"],
   "ui": "tui",
   "tasks": {
+    "sdk#build": {
+      "dependsOn": ["db#build", "shared#build", "backend#build"],
+      "outputs": ["lib"]
+    },
     "db#build": {
       "outputs": ["lib"]
     },
@@ -11,11 +15,15 @@
       "outputs": ["lib"]
     },
     "build": {
-      "with": ["db#build", "shared#build"],
+      "with": ["db#build"],
       "outputs": [".next/**", "!.next/cache/**", "dist", "lib"]
     },
     "dev": {
-      "dependsOn": ["db#build", "shared#build"],
+      "dependsOn": ["db#build", "shared#build", "sdk#build"],
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
       "cache": false,
       "persistent": true
     }

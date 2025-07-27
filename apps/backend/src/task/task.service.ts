@@ -1,23 +1,23 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
+import { DB } from 'db';
 import * as schema from 'db/schema';
-import { inArray } from 'drizzle-orm';
-import { lte } from 'drizzle-orm';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { inArray, lte } from 'drizzle-orm';
 import { checkout } from 'shared/config/aquiring';
-import { TSubscriptionMetadata } from 'shared/schema/order.schema';
 import { calculateSubscriptionEstimate } from 'shared/helpers/calculateServices';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
+import { TSubscriptionMetadata } from 'shared/schema/order.schema';
 
 @Injectable()
 export class TaskService {
-  private readonly logger = new Logger(TaskService.name);
+  private readonly logger = new Logger('TaskService');
 
   constructor(
-    @Inject('DB_TAG') private readonly db: NodePgDatabase<typeof schema>,
+    @Inject('DB_TAG') private readonly db: DB,
+    private schedulerRegistry: SchedulerRegistry,
   ) {}
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT, { name: 'checkSubscription' })
   async invalidateSubscripttion() {
     this.logger.log('updating subscriptions');
 
@@ -37,7 +37,7 @@ export class TaskService {
 
     const expiredUserIds: string[] = [];
 
-    for (let user of usersWithSubscriptionExpired) {
+    for (const user of usersWithSubscriptionExpired) {
       if (!user.subscriptionLevel) continue;
 
       const paymentMethod = user.payment_methods.find((m) => m.isDefault);
@@ -63,7 +63,7 @@ export class TaskService {
 
           payment_method_id: paymentMethod.id,
 
-          description: `Оплата подписки уровня ${premiumPlans[user.subscriptionLevel].name}`,
+          description: `Оплата подписки уровня ${premiumPlans[user.subscriptionLevel].name} для пользователя ${user.id}`,
         })
         .catch((e) => {
           this.logger.error(e);
@@ -91,5 +91,12 @@ export class TaskService {
     this.logger.log(
       `updated subscription status for ${updatedSubscriptions.length ?? 0} users`,
     );
+  }
+
+  taskInfo(name: string) {
+    this.schedulerRegistry.getCronJobs();
+
+    const task = this.schedulerRegistry.getCronJob(name);
+    return `Task "${name}" will be ran at ${task.nextDate().toISO()}`;
   }
 }

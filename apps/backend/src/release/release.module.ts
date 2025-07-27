@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ReleaseService } from './release.service';
-import { ReleaseRouter } from './release.router';
+import { AuthModule } from '../auth/auth.module';
+import { ReleaseController } from './release.controller';
 
 @Module({
-  providers: [ReleaseRouter],
-  exports: [ReleaseService],
+  imports: [AuthModule],
+  controllers: [ReleaseController],
 })
 export class ReleaseModule {}

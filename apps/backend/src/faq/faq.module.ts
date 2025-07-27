@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { FAQRouter } from './faq.router';
+import { AuthModule } from '../auth/auth.module';
+import { FAQController } from './faq.controller';
 
 @Module({
-  providers: [FAQRouter],
+  imports: [AuthModule],
+  controllers: [FAQController],
 })
 export class FAQModule {}

@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
-import { FinanceRouter } from './finance.router';
+import { AuthModule } from '../auth/auth.module';
+import { FinanceController } from './finance.controller';
+import { FinanceService } from './finance.service';
 
 @Module({
-  providers: [FinanceRouter],
+  imports: [AuthModule],
+  controllers: [FinanceController],
+  providers: [FinanceService],
 })
-export class FincanceModule {}
+export class FinanceModule {}
