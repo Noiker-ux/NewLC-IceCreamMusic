@@ -316,6 +316,13 @@
       "when": 1753280605531,
       "tag": "0044_right_millenium_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1753625034312,
+      "tag": "0045_careless_virginia_dare",
+      "breakpoints": true
     }
   ]
 }

@@ -6,6 +6,7 @@ import {
 	defaultAdminRedirect,
 	defaultAuthRedirect,
 	routes,
+	sessionCookieName,
 } from '@/shared/lib/config/auth';
 import { TCheckSessionResponse } from 'sdk/lib/auth/auth.controller';
 
@@ -18,7 +19,7 @@ export const middleware = async function (request: NextRequest) {
 
 	const isPublicPath = pathTest(routes.public, nextUrl.href);
 
-	const sessionToken = await request.cookies.get('icecream-auth')?.value;
+	const sessionToken = await request.cookies.get(sessionCookieName)?.value;
 
 	if (!!sessionToken) {
 		const authHeaders = new Headers();

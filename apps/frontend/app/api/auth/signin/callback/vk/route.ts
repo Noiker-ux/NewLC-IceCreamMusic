@@ -1,3 +1,10 @@
+import {
+	callbackCoolieName,
+	sessionCookieName,
+	sessionCookieOptions,
+	stateCookieName,
+	verifierCookeiName,
+} from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { buildHostUrl } from '@/shared/lib/url/url';
 import { cookies } from 'next/headers';
@@ -26,6 +33,7 @@ const accountSchema = z.object({
 		sex: z.number(),
 		verified: z.boolean(),
 		birthday: z.string(),
+		phone: z.string().optional(),
 	}),
 });
 
@@ -52,9 +60,9 @@ export async function GET(request: NextRequest) {
 
 	const cookiesStore = await cookies();
 
-	const cookieState = cookiesStore.get('example-state')?.value;
+	const cookieState = cookiesStore.get(stateCookieName)?.value;
 
-	const codeVerifier = cookiesStore.get('example-verifier')?.value;
+	const codeVerifier = cookiesStore.get(verifierCookeiName)?.value;
 
 	if (
 		!code ||
@@ -93,9 +101,12 @@ export async function GET(request: NextRequest) {
 
 	const tokensData = await tokensResponse.json();
 
+	// console.dir(tokensData, { depth: Infinity });
+
 	const tokensResult = tokensSchema.safeParse(tokensData);
 
 	if (!tokensResult.success) {
+		console.error(new Date().toISOString() + ' ' + tokensResult.error.message);
 		return badRedirect;
 	}
 
@@ -124,6 +135,8 @@ export async function GET(request: NextRequest) {
 
 	const userAccount = await accountResponse.json();
 
+	console.dir(userAccount, { depth: Infinity });
+
 	const accountValidationResult = accountSchema.safeParse(userAccount);
 
 	if (!accountValidationResult.success) {
@@ -148,7 +161,7 @@ export async function GET(request: NextRequest) {
 			scope: validTokens.scope,
 			name: `${validAccount.first_name} ${validAccount.last_name}`,
 			avatar: validAccount.avatar,
-			verified: validAccount.verified,
+			verified: true,
 		})
 		.catch((e) => console.error(new Date().toISOString() + ' ' + e.message));
 
@@ -156,21 +169,16 @@ export async function GET(request: NextRequest) {
 		return badRedirect;
 	}
 
-	cookiesStore.delete('icecream-vk-verifier');
+	cookiesStore.delete(verifierCookeiName);
 
-	cookiesStore.delete('icecream-vk-state');
+	cookiesStore.delete(stateCookieName);
 
-	const callbackUrl = cookiesStore.get('icecream-callback')?.value;
+	const callbackUrl = cookiesStore.get(callbackCoolieName)?.value;
 
-	cookiesStore.delete('icecream-callback');
+	cookiesStore.delete(callbackCoolieName);
 
-	cookiesStore.delete('icecream-callback');
-
-	cookiesStore.set('icecream-auth', session.session_token, {
-		httpOnly: true,
-		secure: true,
-		sameSite: 'lax',
-		path: '/',
+	cookiesStore.set(sessionCookieName, session.session_token, {
+		...sessionCookieOptions,
 		maxAge: 60 * 60 * 24 * 30,
 	});
 

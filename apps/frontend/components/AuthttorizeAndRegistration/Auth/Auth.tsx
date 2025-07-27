@@ -10,6 +10,8 @@ import {
 } from '@/schema/signin.schema';
 import { actionAuthtorize } from './authtorizeAction';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { yandexSignIn } from '@/features/auth/api/signin/yandex';
+import { vkSignIn } from '@/features/auth/api/signin/vk';
 
 export default function Authorization() {
 	const methods = useForm({
@@ -44,8 +46,20 @@ export default function Authorization() {
 			/>
 			<Checkbox {...methods.register('rememberMe')}>Запомнить пароль</Checkbox>
 			<Button type='submit'>Войти</Button>
-			<div>Yandex</div>
-			<div>VK</div>
+			<hr />
+			<Button
+				onPress={() => {
+					yandexSignIn('/dashboard');
+				}}>
+				yandex
+			</Button>
+			<hr />
+			<Button
+				onPress={() => {
+					vkSignIn('/dashboard');
+				}}>
+				vk
+			</Button>
 		</form>
 	);
 }

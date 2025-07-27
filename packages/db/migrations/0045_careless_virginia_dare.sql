@@ -1,0 +1,2 @@
+ALTER TABLE "icecream"."accounts" ALTER COLUMN "refresh_token" SET DATA TYPE varchar(1024);--> statement-breakpoint
+ALTER TABLE "icecream"."accounts" ALTER COLUMN "access_token" SET DATA TYPE varchar(1024);

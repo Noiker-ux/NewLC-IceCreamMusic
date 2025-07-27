@@ -12,8 +12,6 @@ export function createSDKConnection(options: RequestInit): IConnection & {
 		host: process.env.API_URL!,
 		options,
 		headers,
-		async fetch(url, opts) {
-			return fetch(url, { ...opts, ...options });
-		},
+		fetch,
 	};
 }

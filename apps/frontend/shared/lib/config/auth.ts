@@ -31,6 +31,14 @@ export type TSessionData = TAuthUserSchema;
 
 export const sessionCookieName = 'icecream-auth';
 
+export const stateCookieName = 'icecream-state';
+
+export const challengeCookeiName = 'icecream-challenge';
+
+export const verifierCookeiName = 'icecream-verifier';
+
+export const callbackCoolieName = 'icecream-callback';
+
 export const sessionCookieOptions: Required<
 	Omit<
 		ResponseCookie,

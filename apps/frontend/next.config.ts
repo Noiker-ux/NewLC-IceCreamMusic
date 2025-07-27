@@ -4,10 +4,18 @@ const nextConfig: NextConfig = {
 	output: 'standalone',
 	reactStrictMode: true,
 	cleanDistDir: true,
-	allowedDevOrigins: ['localhost', 'www.baconcs.duckdns.org'],
+	allowedDevOrigins: [
+		'localhost:3000',
+		'www.baconcs.duckdns.org',
+		'https://3rs27bxx-3000.inc1.devtunnels.ms',
+	],
 	experimental: {
 		serverActions: {
-			allowedOrigins: ['www.icecreammusic.net'],
+			allowedOrigins: [
+				'localhost:3000',
+				'www.icecreammusic.net',
+				'3rs27bxx-3000.inc1.devtunnels.ms',
+			],
 		},
 		viewTransition: true,
 	},

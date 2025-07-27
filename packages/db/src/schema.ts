@@ -108,9 +108,9 @@ export const accounts = schema.table(
 
     providerAccountId: varchar("provider_ccount_id", { length: 256 }).notNull(),
 
-    refresh_token: varchar("refresh_token", { length: 256 }),
+    refresh_token: varchar("refresh_token", { length: 1024 }),
 
-    access_token: varchar("access_token", { length: 256 }),
+    access_token: varchar("access_token", { length: 1024 }),
 
     expires_at: timestamp("expires_at", { mode: "date" }),
 

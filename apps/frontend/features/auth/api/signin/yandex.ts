@@ -1,10 +1,16 @@
 'use server';
+import {
+	callbackCoolieName,
+	sessionCookieOptions,
+	stateCookieName,
+	verifierCookeiName,
+} from '@/shared/lib/config/auth';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { createS256CodeChallenge } from 'arctic/dist/oauth2';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-export async function yandexSignIn(callbackUrl: string) {
+export async function yandexSignIn(callbackPath: string) {
 	const state = generateState();
 
 	const codeVerifier = await generateCodeVerifier();
@@ -14,28 +20,22 @@ export async function yandexSignIn(callbackUrl: string) {
 		process.env.NEXT_PUBLIC_DOMAIN!,
 	);
 
-	console.log(redirectUrl.href);
+	const callbackUrl = new URL(callbackPath, redirectUrl);
 
 	const cookiesStore = await cookies();
 
-	cookiesStore.set('icecream-yandex-state', state, {
-		secure: true,
-		httpOnly: true,
-		sameSite: 'lax',
+	cookiesStore.set(stateCookieName, state, {
+		...sessionCookieOptions,
 		maxAge: 60 * 10,
 	});
 
-	cookiesStore.set('icecream-yandex-verifier', codeVerifier, {
-		secure: true,
-		httpOnly: true,
-		sameSite: 'lax',
+	cookiesStore.set(verifierCookeiName, codeVerifier, {
+		...sessionCookieOptions,
 		maxAge: 60 * 10,
 	});
 
-	cookiesStore.set('icecream-callback', callbackUrl, {
-		secure: true,
-		httpOnly: true,
-		sameSite: 'lax',
+	cookiesStore.set(callbackCoolieName, callbackUrl.href, {
+		...sessionCookieOptions,
 		maxAge: 60 * 10,
 	});
 

@@ -1,52 +1,43 @@
 'use server';
-import { getRequestHost } from '@/shared/lib/url/url';
+import {
+	callbackCoolieName,
+	sessionCookieOptions,
+	stateCookieName,
+	verifierCookeiName,
+} from '@/shared/lib/config/auth';
 import { generateCodeVerifier, generateState } from 'arctic';
 import { createS256CodeChallenge } from 'arctic/dist/oauth2';
-import { cookies, headers } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
-export async function vkSignIn(callbackUrl: string) {
+export async function vkSignIn(callbackPath: string) {
 	const state = generateState();
 
 	const codeVerifier = await generateCodeVerifier();
 
-	const scopes = ['email'];
+	const scopes = ['email', 'phone', 'vkid.personal_info'];
 
-	const requestHeaders = await headers();
+	const redirectUrl = new URL(
+		'/api/auth/signin/callback/vk',
+		process.env.NEXT_PUBLIC_DOMAIN!,
+	);
 
-	const hostDomain = getRequestHost(requestHeaders);
-
-	if (!hostDomain) {
-		return {
-			success: false as const,
-			message: 'Something went wrong',
-		};
-	}
-
-	const hostUrl = new URL(hostDomain);
-
-	hostUrl.pathname = '/api/auth/signin/vk/callback';
+	const callbackUrl = new URL(callbackPath, redirectUrl);
 
 	const cookiesStore = await cookies();
 
-	cookiesStore.set('icecream-vk-state', state, {
-		secure: true,
-		httpOnly: true,
-		sameSite: 'lax',
+	cookiesStore.set(stateCookieName, state, {
+		...sessionCookieOptions,
 		maxAge: 60 * 10,
 	});
 
-	cookiesStore.set('icecream-vk-verifier', codeVerifier, {
-		secure: true,
-		httpOnly: true,
-		sameSite: 'lax',
+	cookiesStore.set(verifierCookeiName, codeVerifier, {
+		...sessionCookieOptions,
 		maxAge: 60 * 10,
 	});
 
-	cookiesStore.set('icecream-callback', callbackUrl, {
-		secure: true,
-		httpOnly: true,
-		sameSite: 'lax',
+	cookiesStore.set(callbackCoolieName, callbackUrl.href, {
+		...sessionCookieOptions,
 		maxAge: 60 * 10,
 	});
 
@@ -60,7 +51,7 @@ export async function vkSignIn(callbackUrl: string) {
 
 	url.searchParams.set('scope', scopes.join(' '));
 
-	url.searchParams.set('redirect_uri', hostUrl.href);
+	url.searchParams.set('redirect_uri', redirectUrl.href);
 
 	url.searchParams.set('state', state);
 
@@ -68,5 +59,5 @@ export async function vkSignIn(callbackUrl: string) {
 
 	url.searchParams.set('code_challenge_method', 'S256');
 
-	return NextResponse.redirect(url.toString());
+	return redirect(url.href);
 }
