@@ -13,7 +13,5 @@
   "scripts": {
     "prepare": "ts-patch install"
   },
-  "dependencies": {
-    "@hookform/resolvers": "^5.2.0"
-  }
+  "dependencies": {}
 }

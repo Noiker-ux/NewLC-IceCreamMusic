@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@a2seven/yoo-checkout": "^1.1.4",
+		"@hookform/resolvers": "^5.2.0",
 		"@headlessui/react": "^2.2.2",
 		"@heroicons/react": "^2.2.0",
 		"@heroui/avatar": "^2.2.15",
