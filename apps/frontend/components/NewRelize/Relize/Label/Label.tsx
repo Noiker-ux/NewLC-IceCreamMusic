@@ -10,7 +10,7 @@ export default function Label() {
 	const { control, formState, setValue, getValues } = useFormContext();
 
 	const [labelChange, setLabelChange] = useState(
-		() => getValues('label') !== 'ICECREAMMUSIC',
+		() => getValues('labelName') !== 'ICECREAMMUSIC',
 	);
 
 	return (
@@ -27,10 +27,10 @@ export default function Label() {
 				name={'labelChange'}
 				size='sm'
 				onValueChange={(value) => {
-					if (!value) setValue('label', 'ICECREAMMUSIC');
+					if (!value) setValue('labelName', 'ICECREAMMUSIC');
 					setLabelChange(value);
 				}}
-				isSelected={labelChange}>
+				isSelected={!labelChange}>
 				<div className='flex gap-2 relative z-20'>
 					Изменить лейбл{' '}
 					<Tooltip
@@ -63,7 +63,7 @@ export default function Label() {
 			)}
 			<div className='pt-3'>
 				<Controller
-					name='label'
+					name='labelName'
 					control={control}
 					defaultValue={'ICECREAMMUSIC'}
 					rules={{ required: 'Полей "Лейбл" является обязательным' }}

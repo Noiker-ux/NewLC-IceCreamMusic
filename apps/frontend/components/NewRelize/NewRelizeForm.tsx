@@ -31,12 +31,11 @@ export default function NewRelizeForm() {
 	const {} = methods;
 
 	const onSubmit: SubmitHandler<TReleaseInsertForm> = (data) => {
-		console.log(data);
-		// action({
-		// 	...data,
-		// 	preview:
-		// 		data.preview.type.split('/')[data.preview.type.split('/').length - 1],
-		// });
+		action({
+			...data,
+			preview:
+				data.preview.name.split('.')[data.preview.name.split('.').length - 1],
+		});
 	};
 
 	return (

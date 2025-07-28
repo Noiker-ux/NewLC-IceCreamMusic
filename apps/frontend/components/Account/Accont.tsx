@@ -11,7 +11,7 @@ export default function Account() {
 
 	return (
 		<>
-			{AccountData.data && (
+			{AccountData.success && (
 				<>
 					<PersonalDataProps PersonalDataProps={AccountData.data} />
 					<SocialData />

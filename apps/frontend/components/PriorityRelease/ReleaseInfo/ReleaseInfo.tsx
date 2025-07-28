@@ -286,7 +286,7 @@ export default function ReleaseInfo() {
 				type='text'
 				radius='sm'
 				description='Выпуская релиз под нашим лейблом вы получаете плюшки, и на всех площадках вы будете указаны как член лейбла ICECREAMMUSIC'
-				{...register('label', { required: 'Поле обязательное для ввода' })}
+				{...register('labelName', { required: 'Поле обязательное для ввода' })}
 				isInvalid={!!formState.errors.label}
 				errorMessage={formState.errors.label?.message?.toString()}
 			/>

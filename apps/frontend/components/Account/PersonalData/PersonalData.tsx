@@ -3,29 +3,45 @@ import { Input } from '@heroui/input';
 import { Button } from '@heroui/button';
 import { CameraIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import { use } from 'react';
+import { use, useCallback, useEffect, useRef, useState } from 'react';
 import { actionGetPersonalData, TActionResult } from '../actionGetPersonalData';
 import { Icon } from '@iconify/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TGetMeResponse } from 'sdk/lib/user/user.controller';
+import { actionUpdatePersonalData } from './actionUpdatePersonalData';
+import { mergeRefs } from '@/utils/mergeRefs';
 
 export default function PersonalDataProps({
 	PersonalDataProps,
 }: {
-	PersonalDataProps: TActionResult<TGetMeResponse['data']>;
+	PersonalDataProps: TGetMeResponse['data'];
 }) {
 	const methods = useForm<any>({});
-	if (!PersonalDataProps.success) {
-		return <>Упс :(</>;
-	}
 
-	const { name, avatar, email } = PersonalDataProps.data;
+	const { id, name, avatar, email } = PersonalDataProps;
+	const [avatarFile, setAvatarFile] = useState(avatar);
 
 	const FSName = name.split(' ');
 
 	const onSubmit: SubmitHandler<any> = async (data) => {
-		console.log(data);
+		actionUpdatePersonalData(data);
 	};
+
+	const refAvatar = useRef<HTMLInputElement>(null);
+
+	const handleClickAvatar = () => {
+		if (refAvatar.current) {
+			refAvatar.current.click();
+		}
+	};
+
+	const handleFileChange = useCallback(
+		(newFiles: File[]) => {
+			methods.setValue('avatar', newFiles.at(0));
+			setAvatarFile(URL.createObjectURL(newFiles.at(0) ?? new File([], '')));
+		},
+		[methods],
+	);
 
 	return (
 		<div className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8'>
@@ -43,12 +59,12 @@ export default function PersonalDataProps({
 			<form className='md:col-span-2' onSubmit={methods.handleSubmit(onSubmit)}>
 				<div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
 					<div className='col-span-full flex items-center gap-x-8'>
-						{avatar ? (
+						{avatarFile ? (
 							<Image
 								width={96}
 								height={96}
 								alt='Превью аватара'
-								src={avatar}
+								src={avatarFile}
 								className='size-24 flex-none rounded-lg bg-gray-800 object-cover'
 							/>
 						) : (
@@ -58,7 +74,21 @@ export default function PersonalDataProps({
 						)}
 
 						<div>
-							<Button color='default' radius='sm' size='md'>
+							<Button
+								color='default'
+								radius='sm'
+								size='md'
+								onPress={handleClickAvatar}>
+								<input
+									type='file'
+									className='hidden'
+									accept='image/*'
+									onChange={(e) =>
+										e.target.files &&
+										handleFileChange(Array.from(e.target.files))
+									}
+									ref={refAvatar}
+								/>
 								<CameraIcon className='w-4' />
 								Сменить аватар
 							</Button>
@@ -74,8 +104,8 @@ export default function PersonalDataProps({
 						placeholder='Введите имя'
 						type='text'
 						radius='sm'
-						defaultValue={FSName[0]}
 						{...methods.register('firstName')}
+						defaultValue={FSName[0]}
 					/>
 					<Input
 						className='sm:col-span-3'
@@ -100,6 +130,7 @@ export default function PersonalDataProps({
 				</div>
 
 				<Button
+					type='submit'
 					className='mt-8 flex bg-indigo-700 text-white shadow-lg hover:bg-indigo-800'
 					radius='sm'
 					size='md'>

@@ -1,17 +1,17 @@
 'use server';
 
+import { sessionCookieName } from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';
-import { sessionCookieName } from '@/shared/lib/config/auth';
 import { functional } from 'sdk';
-import { TGetMeResponse, TUserData } from 'sdk/lib/user/user.controller';
+import { TGetMeResponse } from 'sdk/lib/user/user.controller';
 
 export type TActionResult<T> =
 	| { success: true; data: T }
 	| { success: false; error: string };
 
 export async function actionGetPersonalData(): Promise<
-	TActionResult<TUserData>
+	TActionResult<TGetMeResponse['data']>
 > {
 	const cookieStore = await cookies();
 	const token = cookieStore.get(sessionCookieName)?.value;
@@ -27,9 +27,14 @@ export async function actionGetPersonalData(): Promise<
 		next: { tags: ['PersonalData'] },
 		headers,
 	});
-	const PersonalData = await functional.v1.users.me;
+	const PersonalData = await functional.v1.users.me.getMyInfo(connection);
+
+	const birthDate = PersonalData.data.birthDate
+		? new Date(PersonalData.data.birthDate)
+		: null;
+
 	return {
 		success: true as const,
-		data: { ...(await PersonalData.getMyInfo(connection)).data },
+		data: { ...PersonalData.data, birthDate },
 	};
 }
