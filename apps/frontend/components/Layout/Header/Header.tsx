@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 export default function Header() {
 	const userNavigation = [
-		{ name: 'Мой профиль', href: '/account/profile' },
+		{ name: 'Мой профиль', href: '/dashboard/account/profile' },
 		{ name: 'Выход', href: '#' },
 	];
 

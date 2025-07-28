@@ -9,7 +9,7 @@ export type TMenu = {
 export const navigation: TMenu[] = [
 	{
 		name: 'Новости',
-		href: '/main/news/',
+		href: '/dashboard/main/news/',
 		icon: 'heroicons:newspaper',
 	},
 	{
@@ -18,12 +18,12 @@ export const navigation: TMenu[] = [
 		subMenu: [
 			{
 				name: 'Мои релизы',
-				href: '/relizes/my-relizes',
+				href: '/dashboard/relizes/my-relizes',
 				icon: 'heroicons:wallet',
 			},
 			{
 				name: 'Новый релиз',
-				href: '/relizes/new-relize',
+				href: '/dashboard/relizes/new-relize',
 				icon: 'heroicons:folder',
 			},
 		],
@@ -34,36 +34,41 @@ export const navigation: TMenu[] = [
 		subMenu: [
 			{
 				name: 'Промо ссылки',
-				href: '/marketing/promo-links/',
+				href: '/dashboard/marketing/promo-links/',
 				icon: 'heroicons:link',
 			},
 			{
 				name: 'Приоритетный релиз',
-				href: '/marketing/priority-release/',
+				href: '/dashboard/marketing/priority-release/',
 				icon: 'heroicons:arrow-right-start-on-rectangle',
 			},
 			{
 				name: 'Масспостинг',
-				href: '/marketing/massposting',
+				href: '/dashboard/marketing/massposting',
 				icon: 'heroicons:chart-bar-square',
 			},
 			{
 				name: 'Продвижение',
-				href: '/marketing/promotion',
+				href: '/dashboard/marketing/promotion',
 				icon: 'heroicons:arrow-trending-up',
 			},
 		],
 	},
-	{ name: 'Студии', href: '/studios/', icon: 'heroicons:map' },
-	{ name: 'Аналитика', href: '#', icon: 'heroicons:chart-pie', comming: true },
+	{ name: 'Студии', href: '/dashboard/studios/', icon: 'heroicons:map' },
+	{
+		name: 'Аналитика',
+		href: '/dashboard#',
+		icon: 'heroicons:chart-pie',
+		comming: true,
+	},
 	{
 		name: 'FAQ',
-		href: '/main/faq/',
+		href: '/dashboard/main/faq/',
 		icon: 'heroicons:question-mark-circle',
 	},
 	{
 		name: 'Маркет битов',
-		href: '#',
+		href: '/dashboard#',
 		icon: 'heroicons:building-storefront',
 		comming: true,
 	},
@@ -73,12 +78,12 @@ export const navigation: TMenu[] = [
 		subMenu: [
 			{
 				name: 'Профиль',
-				href: '/account/profile/',
+				href: '/dashboard/account/profile/',
 				icon: 'heroicons:user',
 			},
 			{
 				name: 'Верификация',
-				href: '/account/verification',
+				href: '/dashboard/account/verification',
 				icon: 'heroicons:check-circle',
 			},
 		],
@@ -86,12 +91,12 @@ export const navigation: TMenu[] = [
 
 	{
 		name: 'Поддержка',
-		href: '#',
+		href: '/dashboard#',
 		icon: 'heroicons:chat-bubble-left-right',
 	},
 	{
 		name: 'Тарифы',
-		href: '/plans/',
+		href: '/dashboard/plans/',
 		icon: 'heroicons:star',
 	},
 ];

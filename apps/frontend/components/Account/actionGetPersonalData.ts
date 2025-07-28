@@ -1,0 +1,35 @@
+'use server';
+
+import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { cookies } from 'next/headers';
+import { sessionCookieName } from '@/shared/lib/config/auth';
+import { functional } from 'sdk';
+import { TGetMeResponse, TUserData } from 'sdk/lib/user/user.controller';
+
+export type TActionResult<T> =
+	| { success: true; data: T }
+	| { success: false; error: string };
+
+export async function actionGetPersonalData(): Promise<
+	TActionResult<TUserData>
+> {
+	const cookieStore = await cookies();
+	const token = cookieStore.get(sessionCookieName)?.value;
+	if (!token) {
+		return {
+			success: false as const,
+			error: 'Пользователь не авторизован',
+		};
+	}
+	const headers = new Headers();
+	headers.set('Authorization', `${token}`);
+	const connection = createSDKConnection({
+		next: { tags: ['PersonalData'] },
+		headers,
+	});
+	const PersonalData = await functional.v1.users.me;
+	return {
+		success: true as const,
+		data: { ...(await PersonalData.getMyInfo(connection)).data },
+	};
+}
