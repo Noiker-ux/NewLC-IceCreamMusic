@@ -6,6 +6,9 @@ export async function action(ark: unknown) {
 	ark.area = JSON.stringify(ark.area);
 	ark.confirmed = false; // спросить что это такое
 	ark.status = 'moderating';
+	ark.tracks.forEach((track: any) => {
+		track.roles = JSON.stringify(track.roles);
+	});
 
 	console.log(ark);
 }
