@@ -1,11 +1,11 @@
 'use client';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
 import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Notification from '../Notification/Notification';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
-import Image from 'next/image';
 
+import ShowUser from './ShowUser';
 export default function Header() {
 	const userNavigation = [
 		{ name: 'Мой профиль', href: '/dashboard/account/profile' },
@@ -45,24 +45,7 @@ export default function Header() {
 						<Menu as='div' className='relative'>
 							<MenuButton className='-m-1.5 flex items-center p-1.5'>
 								<span className='sr-only'>Open user menu</span>
-								<Image
-									width={32}
-									height={32}
-									alt=''
-									src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-									className='size-8 rounded-full bg-zinc-900'
-								/>
-								<span className='hidden lg:flex lg:items-center'>
-									<span
-										aria-hidden='true'
-										className='ml-4 text-sm/6 font-semibold '>
-										Tom Cook
-									</span>
-									<ChevronDownIcon
-										aria-hidden='true'
-										className='ml-2 size-5 text-gray-400'
-									/>
-								</span>
+								<ShowUser />
 							</MenuButton>
 							<MenuItems
 								transition
