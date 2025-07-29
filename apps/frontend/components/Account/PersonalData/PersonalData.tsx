@@ -25,8 +25,11 @@ export default function PersonalDataProps({
 		},
 	});
 
-	const onSubmit: SubmitHandler<any> = async (data) => {
-		actionUpdatePersonalData(data);
+	const onSubmit: SubmitHandler<TProfileFormSchema> = async (data) => {
+		actionUpdatePersonalData({
+			...data,
+			avatar: data.avatar?.type.split('/').at(-1),
+		});
 	};
 
 	const refAvatar = useRef<HTMLInputElement>(null);
