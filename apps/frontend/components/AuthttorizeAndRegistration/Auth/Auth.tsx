@@ -10,8 +10,8 @@ import {
 } from '@/schema/signin.schema';
 import { actionAuthtorize } from './authtorizeAction';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { yandexSignIn } from '@/features/auth/api/signin/yandex';
-import { vkSignIn } from '@/features/auth/api/signin/vk';
+import { yandexSignIn } from '@/features/signin/api/yandex';
+import { vkSignIn } from '@/features/signin/api/vk';
 
 export default function Authorization() {
 	const methods = useForm({

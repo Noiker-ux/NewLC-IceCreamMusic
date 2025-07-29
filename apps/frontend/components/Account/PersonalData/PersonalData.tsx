@@ -1,27 +1,29 @@
 'use client';
-import { Input } from '@heroui/input';
-import { Button } from '@heroui/button';
+import { profileFormSchema, TProfileFormSchema } from '@/schema/profile.schema';
 import { CameraIcon, UserGroupIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
-import { use, useCallback, useEffect, useRef, useState } from 'react';
-import { actionGetPersonalData, TActionResult } from '../actionGetPersonalData';
+import { Button } from '@heroui/button';
+import { Input } from '@heroui/input';
 import { Icon } from '@iconify/react';
+import Image from 'next/image';
+import { useCallback, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TGetMeResponse } from 'sdk/lib/user/user.controller';
 import { actionUpdatePersonalData } from './actionUpdatePersonalData';
-import { mergeRefs } from '@/utils/mergeRefs';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function PersonalDataProps({
 	PersonalDataProps,
 }: {
 	PersonalDataProps: TGetMeResponse['data'];
 }) {
-	const methods = useForm<any>({});
+	const { avatar, birthDate, id, ...userData } = PersonalDataProps;
 
-	const { id, name, avatar, email } = PersonalDataProps;
-	const [avatarFile, setAvatarFile] = useState(avatar);
-
-	const FSName = name.split(' ');
+	const methods = useForm<TProfileFormSchema>({
+		resolver: zodResolver(profileFormSchema),
+		defaultValues: {
+			...userData,
+		},
+	});
 
 	const onSubmit: SubmitHandler<any> = async (data) => {
 		actionUpdatePersonalData(data);
@@ -35,10 +37,17 @@ export default function PersonalDataProps({
 		}
 	};
 
+	const avatarExists = !!avatar;
+
+	const formAvatar = methods.watch('avatar');
+
+	const avatarUrl = avatar?.includes('https://')
+		? avatar
+		: `${process.env.NEXT_PUBLIC_S3_URL}/avatars/${id}.${avatar}`;
+
 	const handleFileChange = useCallback(
 		(newFiles: File[]) => {
 			methods.setValue('avatar', newFiles.at(0));
-			setAvatarFile(URL.createObjectURL(newFiles.at(0) ?? new File([], '')));
 		},
 		[methods],
 	);
@@ -59,15 +68,25 @@ export default function PersonalDataProps({
 			<form className='md:col-span-2' onSubmit={methods.handleSubmit(onSubmit)}>
 				<div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
 					<div className='col-span-full flex items-center gap-x-8'>
-						{avatarFile ? (
+						{!formAvatar && avatarExists && (
 							<Image
 								width={96}
 								height={96}
 								alt='Превью аватара'
-								src={avatarFile}
+								src={avatarUrl}
 								className='size-24 flex-none rounded-lg bg-gray-800 object-cover'
 							/>
-						) : (
+						)}
+						{formAvatar && (
+							<Image
+								width={96}
+								height={96}
+								alt='Превью аватара'
+								src={URL.createObjectURL(formAvatar)}
+								className='size-24 flex-none rounded-lg bg-gray-800 object-cover'
+							/>
+						)}
+						{!formAvatar && !avatarExists && (
 							<div className='w-12'>
 								<Icon icon='line-md:account' width='64' height='64' />
 							</div>
@@ -104,10 +123,9 @@ export default function PersonalDataProps({
 						placeholder='Введите имя'
 						type='text'
 						radius='sm'
-						{...methods.register('firstName')}
-						defaultValue={FSName[0]}
+						{...methods.register('name')}
 					/>
-					<Input
+					{/* <Input
 						className='sm:col-span-3'
 						label='Фамилия'
 						labelPlacement={'outside'}
@@ -122,11 +140,10 @@ export default function PersonalDataProps({
 						label='E-mail'
 						labelPlacement={'outside'}
 						placeholder='Введите email / Логин'
-						defaultValue={email}
 						type='email'
 						radius='sm'
-						{...methods.register('email')}
-					/>
+						{...methods.register('')}
+					/> */}
 				</div>
 
 				<Button

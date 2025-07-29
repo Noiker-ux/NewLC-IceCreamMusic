@@ -1,6 +1,6 @@
 'use client';
 
-import { yandexSignIn } from '@/features/auth/api/signin/yandex';
+import { yandexSignIn } from '@/features/signin/api/yandex';
 import { Button } from '@heroui/button';
 import Image from 'next/image';
 

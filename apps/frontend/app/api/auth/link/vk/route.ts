@@ -1,7 +1,5 @@
 import {
 	callbackCoolieName,
-	sessionCookieName,
-	sessionCookieOptions,
 	stateCookieName,
 	verifierCookeiName,
 } from '@/shared/lib/config/auth';
@@ -12,30 +10,65 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { functional } from 'sdk';
 
-const connection = createSDKConnection({});
-
 export async function GET(request: NextRequest) {
 	const requestUrl = buildHostUrl(
 		request.nextUrl.pathname + request.nextUrl.search,
 	);
 
-	const badRedirectUrl = new URL(requestUrl);
+	const cookiesStore = await cookies();
 
-	badRedirectUrl.search = '';
+	const sessionToken = cookiesStore.get('session-token')?.value;
 
-	badRedirectUrl.pathname = '/auth/signin';
+	if (!sessionToken) {
+		return NextResponse.json(
+			{
+				message: 'Invalid session token',
+			},
+			{ status: 400, headers: request.headers },
+		);
+	}
 
-	const badRedirect = NextResponse.redirect(badRedirectUrl, {
-		headers: request.headers,
+	const authHeaders = new Headers();
+
+	authHeaders.set('Authorization', `${sessionToken}`);
+
+	const authConnection = createSDKConnection({
+		headers: authHeaders,
+		next: {
+			tags: ['authorization'],
+			revalidate: 5,
+		},
 	});
+
+	const { user } = await functional.v1.auth
+		.checkSessionToken(authConnection)
+		.catch(() => ({ user: null }));
+
+	if (!user) {
+		return NextResponse.json(
+			{
+				message: 'Invalid auth flow result',
+			},
+			{ status: 400, headers: request.headers },
+		);
+	}
+
+	const callbackUrl = cookiesStore.get(callbackCoolieName)?.value;
+
+	if (!callbackUrl) {
+		return NextResponse.json(
+			{
+				message: 'Invalid callback url',
+			},
+			{ status: 400, headers: request.headers },
+		);
+	}
 
 	const deviceId = requestUrl.searchParams.get('device_id');
 
 	const code = requestUrl.searchParams.get('code');
 
 	const state = requestUrl.searchParams.get('state');
-
-	const cookiesStore = await cookies();
 
 	const cookieState = cookiesStore.get(stateCookieName)?.value;
 
@@ -49,10 +82,13 @@ export async function GET(request: NextRequest) {
 		!codeVerifier ||
 		state !== cookieState
 	) {
-		return badRedirect;
+		return NextResponse.json(
+			{
+				message: 'Invalid oauth result query',
+			},
+			{ status: 400, headers: request.headers },
+		);
 	}
-
-	requestUrl.search = '';
 
 	const tokensObject = {
 		grant_type: 'authorization_code',
@@ -81,14 +117,23 @@ export async function GET(request: NextRequest) {
 	const tokensResult = tokensSchema.safeParse(tokensData);
 
 	if (!tokensResult.success) {
-		console.error(new Date().toISOString() + ' ' + tokensResult.error.message);
-		return badRedirect;
+		return NextResponse.json(
+			{
+				message: 'Invalid tokens oauth response',
+			},
+			{ status: 400, headers: request.headers },
+		);
 	}
 
 	const validTokens = tokensResult.data;
 
 	if (validTokens.state !== cookieState) {
-		return badRedirect;
+		return NextResponse.json(
+			{
+				message: 'Invalid tokens oauth state',
+			},
+			{ status: 400, headers: request.headers },
+		);
 	}
 
 	const accountObject = {
@@ -113,7 +158,12 @@ export async function GET(request: NextRequest) {
 	const accountValidationResult = accountSchema.safeParse(userAccount);
 
 	if (!accountValidationResult.success) {
-		return badRedirect;
+		return NextResponse.json(
+			{
+				message: 'Invalid oauth account response',
+			},
+			{ status: 400, headers: request.headers },
+		);
 	}
 
 	const validAccount = accountValidationResult.data.user;
@@ -122,8 +172,12 @@ export async function GET(request: NextRequest) {
 		new Date().getTime() + validTokens.expires_in * 1000,
 	);
 
-	const session = await functional.v1.auth.oauth
-		.OAuthSignin(connection, {
+	const linkConnection = createSDKConnection({
+		headers: authHeaders,
+	});
+
+	const linkResult = await functional.v1.auth.link
+		.linkAccount(linkConnection, {
 			providerAccountId: validAccount.user_id,
 			provider: 'vk',
 			email: validAccount.email,
@@ -136,32 +190,22 @@ export async function GET(request: NextRequest) {
 			avatar: validAccount.avatar,
 			verified: true,
 		})
-		.catch((e) => console.error(new Date().toISOString() + ' ' + e.message));
+		.catch(() => ({ success: false as const }));
 
-	if (!session) {
-		return badRedirect;
+	if (!linkResult.success) {
+		return NextResponse.json(
+			{
+				message: 'Invalid link account result',
+			},
+			{ status: 400, headers: request.headers },
+		);
 	}
 
 	cookiesStore.delete(verifierCookeiName);
 
 	cookiesStore.delete(stateCookieName);
 
-	const callbackUrl = cookiesStore.get(callbackCoolieName)?.value;
-
 	cookiesStore.delete(callbackCoolieName);
 
-	cookiesStore.set(sessionCookieName, session.session_token, {
-		...sessionCookieOptions,
-		maxAge: 60 * 60 * 24 * 30,
-	});
-
-	if (callbackUrl) {
-		return NextResponse.redirect(callbackUrl, { headers: request.headers });
-	}
-
-	const goodRedirectUrl = new URL(badRedirectUrl);
-
-	goodRedirectUrl.pathname = '/dashboard';
-
-	return NextResponse.redirect(goodRedirectUrl, { headers: request.headers });
+	return NextResponse.redirect(callbackUrl, { headers: request.headers });
 }

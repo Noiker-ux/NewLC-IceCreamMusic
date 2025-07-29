@@ -28,15 +28,17 @@ export const middleware = async function (request: NextRequest) {
 
 		const connecttion = createSDKConnection({
 			headers: authHeaders,
+			next: {
+				tags: ['authorization'],
+				revalidate: 5,
+			},
 		});
 
 		const checkTokenResult = await functional.v1.auth
 			.checkSessionToken(connecttion)
-			.catch((e) => {
-				return {
-					user: null,
-				};
-			});
+			.catch(() => ({
+				user: null,
+			}));
 
 		user = checkTokenResult.user;
 	}
