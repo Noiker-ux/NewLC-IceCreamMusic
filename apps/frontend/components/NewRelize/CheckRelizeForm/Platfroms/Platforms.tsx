@@ -1,7 +1,7 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Tooltip } from '@heroui/tooltip';
 import { useDisclosure } from '@heroui/use-disclosure';
-import ModalPlatfroms from '../ModalPlatforms/ModalPlatforms';
+import ModalPlatfroms from './ModalPlatforms/ModalPlatforms';
 
 export default function Platforms({ platforms }: { platforms: string[] }) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();

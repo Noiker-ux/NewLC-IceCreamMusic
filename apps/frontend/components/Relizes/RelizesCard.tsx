@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
+
 import {
 	TrashIcon,
 	PencilSquareIcon,
@@ -9,11 +10,20 @@ import {
 	SquaresPlusIcon,
 	LinkIcon,
 } from '@heroicons/react/24/outline';
+
 import { IoIosArrowDown } from 'react-icons/io';
 import { Button, Link, Tooltip } from '@heroui/react';
 import MusicList from './MusicList';
 import { cn } from '@/utils/cn';
-export default function RelizecCard() {
+import { TGetReleaseListResponse } from 'sdk/lib/release/release.controller';
+import Platforms from '../NewRelize/CheckRelizeForm/Platfroms/Platforms';
+import Areas from '../NewRelize/CheckRelizeForm/Areas/Areas';
+
+export default function RelizecCard({
+	release,
+}: {
+	release: TGetReleaseListResponse['data'][number];
+}) {
 	const [showMusicList, setShowMusicList] = useState<boolean>(false);
 
 	return (
@@ -29,19 +39,19 @@ export default function RelizecCard() {
 					/>
 					<div className='flex flex-col justify-around'>
 						<div>
-							<p className='text-lg'>Название релиза</p>
-							<p className='text-sm'>Подзаголовок релиза</p>
+							<p className='text-lg'>{release.title}</p>
+							<p className='text-sm'>{release.subtitle}</p>
 						</div>
 						<div className='flex gap-5'>
 							<div>
 								<p className={'text-xs font-extralight text-gray-300'}>UPC</p>
-								<p className='text-sm '>5063635506441</p>
+								<p className='text-sm '>{release.upc}</p>
 							</div>
 							<div>
 								<p className={'text-xs font-extralight text-gray-300'}>
 									Название лейбла
 								</p>
-								<p className='text-sm'>ICECREAMMUSIC</p>
+								<p className='text-sm'>{release.labelName}</p>
 							</div>
 						</div>
 					</div>
@@ -49,29 +59,29 @@ export default function RelizecCard() {
 				<div className='flex gap-10 mt-4 w-full'>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>
-							Дата создания
+							Дата предзаказа
 						</p>
-						<p className='text-sm '>2025-04-09</p>
+						<p className='text-sm '>{release.preorderDate.toISOString()}</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Дата релиза</p>
-						<p className='text-sm '>2025-04-11</p>
+						<p className='text-sm '>{release.releaseDate.toISOString()}</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Дата старта</p>
-						<p className='text-sm '>2025-04-11</p>
+						<p className='text-sm '>{release.startDate.toISOString()}</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Территории</p>
-						<p className='text-sm '>Все страны</p>
+						<Areas areas={JSON.parse(release.area)} />
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Площадки</p>
-						<p className='text-sm '>56</p>
+						<Platforms platforms={JSON.parse(release.platforms)} />
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Жанр</p>
-						<p className='text-sm '>Alternative Rock</p>
+						<p className='text-sm '>{release.genre}</p>
 					</div>
 				</div>
 			</div>
@@ -170,7 +180,7 @@ export default function RelizecCard() {
 						)}
 					/>
 				</p>
-				{showMusicList && <MusicList />}
+				{showMusicList && <MusicList tracks={release.tracks} />}
 			</div>
 		</div>
 	);

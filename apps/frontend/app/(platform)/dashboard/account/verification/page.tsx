@@ -1,5 +1,7 @@
 import VerificationForm from '@/components/Verification/VerificationForm/VerificationForm';
 
+export const dynamic = 'force-dynamic';
+
 export default function VerificationPage() {
 	return (
 		<div className='w-full flex flex-col xl:flex-row flex-row gap-8'>

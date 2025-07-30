@@ -12,7 +12,7 @@ import {
 import { Tooltip } from '@heroui/tooltip';
 import { Modal, ModalHeader, useDisclosure } from '@heroui/modal';
 import ModalAreas from './Areas/ModalAreas/ModalAreas';
-import ModalPlatfroms from './ModalPlatforms/ModalPlatforms';
+import ModalPlatfroms from './Platfroms/ModalPlatforms/ModalPlatforms';
 import Areas from './Areas/Areas';
 import Platforms from './Platfroms/Platforms';
 import { IconArrowBarToUp } from '@tabler/icons-react';
