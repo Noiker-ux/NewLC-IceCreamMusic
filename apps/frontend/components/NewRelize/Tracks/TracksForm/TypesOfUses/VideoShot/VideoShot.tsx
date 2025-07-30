@@ -3,21 +3,21 @@ import { useFormContext } from 'react-hook-form';
 import { useCallback, useRef } from 'react';
 import { Button } from '@heroui/button';
 
-export default function Synchronized({ trackIndex }: { trackIndex: number }) {
+export default function VideoShot({ trackIndex }: { trackIndex: number }) {
 	const { setValue, watch } = useFormContext<TReleaseInsertForm>();
 	const handleFileChange = useCallback(
 		(newFiles: File[]) => {
-			setValue(`tracks.${trackIndex}.text_sync`, newFiles.at(0));
+			setValue(`tracks.${trackIndex}.video_shot`, newFiles.at(0));
 		},
 		[setValue, trackIndex],
 	);
 	const fileRef = useRef<HTMLInputElement | null>(null);
-	const textSyncWatch = watch(`tracks.${trackIndex}.text_sync`);
+	const VideoShotWatch = watch(`tracks.${trackIndex}.video_shot`);
 	return (
 		<div>
-			<p className='font-bold'>Синхронизированный текст трека</p>
+			<p className='font-bold'>Загрузка видео-шота</p>
 			<p className='max-w-xl mt-1 text-sm flex text-foreground-400'>
-				Получите дополнительный доход и ещё больше внимания на площадках.
+				Формат: .mov, .mp4, .avi
 			</p>
 			<div className='mt-4 flex gap-4 items-center'>
 				<Button
@@ -29,19 +29,19 @@ export default function Synchronized({ trackIndex }: { trackIndex: number }) {
 							fileRef!.current.click();
 						}
 					}}>
-					Загрузить файл в формате .ttml
+					Загрузить файл в форматах .mov, .mp4, .avi
 				</Button>
 				<input
 					type='file'
-					id={`tracks.${trackIndex}.text_sync`}
-					name={`tracks.${trackIndex}.text_sync`}
+					id={`tracks.${trackIndex}.video_shot`}
+					name={`tracks.${trackIndex}.video_shot`}
 					className='hidden'
 					ref={fileRef}
 					onChange={(e) =>
 						e.target.files && handleFileChange(Array.from(e.target.files))
 					}
 				/>
-				<p>{textSyncWatch?.name}</p>
+				<p>{VideoShotWatch?.name}</p>
 			</div>
 		</div>
 	);

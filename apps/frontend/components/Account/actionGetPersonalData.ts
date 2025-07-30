@@ -24,7 +24,7 @@ export async function actionGetPersonalData(): Promise<
 	const headers = new Headers();
 	headers.set('Authorization', `${token}`);
 	const connection = createSDKConnection({
-		next: { tags: ['PersonalData'] },
+		next: { tags: ['PersonalData'], revalidate: 10 },
 		headers,
 	});
 	const PersonalData = await functional.v1.users.me.getMyInfo(connection);

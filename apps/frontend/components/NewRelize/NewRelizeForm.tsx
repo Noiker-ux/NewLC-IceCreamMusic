@@ -31,11 +31,8 @@ export default function NewRelizeForm() {
 	const {} = methods;
 
 	const onSubmit: SubmitHandler<TReleaseInsertForm> = (data) => {
-		action({
-			...data,
-			preview:
-				data.preview.name.split('.')[data.preview.name.split('.').length - 1],
-		});
+		action(data);
+		console.log(data);
 	};
 
 	return (

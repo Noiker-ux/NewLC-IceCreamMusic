@@ -16,7 +16,9 @@ export default function PersonalDataProps({
 }: {
 	PersonalDataProps: TGetMeResponse['data'];
 }) {
-	const { avatar, birthDate, id, ...userData } = PersonalDataProps;
+	const { avatar, birthDate, name, id, ...userData } = PersonalDataProps;
+
+	const FSName = name?.split(' ');
 
 	const methods = useForm<TProfileFormSchema>({
 		resolver: zodResolver(profileFormSchema),
@@ -126,9 +128,10 @@ export default function PersonalDataProps({
 						placeholder='Введите имя'
 						type='text'
 						radius='sm'
-						{...methods.register('name')}
+						defaultValue={FSName[0] ?? ''}
+						{...methods.register('firstName')}
 					/>
-					{/* <Input
+					<Input
 						className='sm:col-span-3'
 						label='Фамилия'
 						labelPlacement={'outside'}
@@ -145,8 +148,8 @@ export default function PersonalDataProps({
 						placeholder='Введите email / Логин'
 						type='email'
 						radius='sm'
-						{...methods.register('')}
-					/> */}
+						{...methods.register('email')}
+					/>
 				</div>
 
 				<Button

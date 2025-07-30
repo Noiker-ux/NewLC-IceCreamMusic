@@ -3,7 +3,7 @@ import Ringhtone from './Ringhtone/Ringhtone';
 import Synchronized from './Synchronized/Synchronized';
 import TextTrack from './TextTrack/TextTrack';
 import VideoTrack from './VideoTrack/VideoTrack';
-
+import VideoShot from './VideoShot/VideoShot';
 export default function TypesOfUses({ trackIndex }: { trackIndex: number }) {
 	return (
 		<div>
@@ -17,6 +17,7 @@ export default function TypesOfUses({ trackIndex }: { trackIndex: number }) {
 				<Synchronized trackIndex={trackIndex} />
 				<Ringhtone trackIndex={trackIndex} />
 				<VideoTrack trackIndex={trackIndex} />
+				<VideoShot trackIndex={trackIndex} />
 			</div>
 		</div>
 	);
