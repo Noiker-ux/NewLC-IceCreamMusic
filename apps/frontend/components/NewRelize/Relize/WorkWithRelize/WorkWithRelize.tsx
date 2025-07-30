@@ -189,7 +189,7 @@ export default function WorkWithRelize() {
 							isInvalid={!!formState.errors.type}
 							value={field.value}
 							errorMessage={formState.errors.type?.message?.toString()}>
-							<Radio className='w-min ' value='Single'>
+							<Radio className='w-min ' value='single'>
 								<div className='flex items-center gap-1 relative z-20'>
 									<p className='text-md'> Single</p>
 									<Tooltip
@@ -206,7 +206,7 @@ export default function WorkWithRelize() {
 									</Tooltip>
 								</div>
 							</Radio>
-							<Radio className='w-min ml-5' value='EP'>
+							<Radio className='w-min ml-5' value='ep'>
 								<div className='flex items-center gap-1 relative z-20'>
 									<p className='text-md'> EP</p>
 									<Tooltip
@@ -223,7 +223,7 @@ export default function WorkWithRelize() {
 									</Tooltip>
 								</div>
 							</Radio>
-							<Radio className='w-min ml-5' value='Album'>
+							<Radio className='w-min ml-5' value='album'>
 								<div className='flex items-center gap-1 relative z-20'>
 									<p className='text-md'> Album</p>
 									<Tooltip
