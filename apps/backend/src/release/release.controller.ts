@@ -46,7 +46,10 @@ export type TGetSpecificReleaseResponse = {
 };
 
 export type TReleaseInsert = Primitive<
-  Omit<InferInsertModel<typeof schema.release>, 'id' | 'authorId'>
+  Omit<
+    InferInsertModel<typeof schema.release>,
+    'id' | 'authorId' | 'confirmed' | 'status' | 'rejectReason'
+  >
 >;
 
 export type TTrackInsert = Primitive<

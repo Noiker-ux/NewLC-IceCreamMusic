@@ -257,6 +257,15 @@ export class AuthController {
             expires_at: new Date(expiresAt),
           });
         }
+
+        if (account.provider === 'vk') {
+          await tx
+            .update(schema.users)
+            .set({
+              vk: account.providerAccountId,
+            })
+            .where(eq(schema.users.id, account.userId));
+        }
       })
       .then(() => true)
       .catch(() => false);
