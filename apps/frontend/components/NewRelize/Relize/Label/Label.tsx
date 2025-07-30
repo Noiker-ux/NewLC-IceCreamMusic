@@ -7,11 +7,13 @@ import { Tooltip } from '@heroui/tooltip';
 import { useState } from 'react';
 
 export default function Label() {
-	const { control, formState, setValue, getValues } = useFormContext();
+	const { control, formState, setValue, getValues, watch } = useFormContext();
 
-	const [labelChange, setLabelChange] = useState(
+	const [labelChange, setLabelChange] = useState<boolean>(
 		() => getValues('labelName') !== 'ICECREAMMUSIC',
 	);
+
+	const labelName = watch('labelName');
 
 	return (
 		<div className='bg-zinc-900 h-min rounded-xl p-5'>
@@ -28,11 +30,11 @@ export default function Label() {
 				size='sm'
 				onValueChange={(value) => {
 					if (!value) setValue('labelName', 'ICECREAMMUSIC');
-					setLabelChange(value);
+					setLabelChange((val) => !val);
 				}}
-				isSelected={!labelChange}>
+				isSelected={labelChange}>
 				<div className='flex gap-2 relative z-20'>
-					Изменить лейбл{' '}
+					Изменить лейбл {JSON.stringify(labelName)}
 					<Tooltip
 						size='md'
 						content={

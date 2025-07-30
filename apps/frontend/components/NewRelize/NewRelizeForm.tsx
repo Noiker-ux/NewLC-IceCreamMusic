@@ -22,6 +22,7 @@ export default function NewRelizeForm() {
 	const methods = useForm<TReleaseInsertForm>({
 		mode: 'onSubmit',
 		defaultValues: {
+			labelName: 'ICECREAMMUSIC',
 			area: {
 				data: ['all'],
 			},
@@ -31,7 +32,18 @@ export default function NewRelizeForm() {
 	const {} = methods;
 
 	const onSubmit: SubmitHandler<TReleaseInsertForm> = (data) => {
-		action(data);
+		action({
+			...data,
+			preview: data.preview.name.split('.')[1],
+			tracks: data.tracks.map((track) => ({
+				...track,
+				track: track.track.name.split('.')[1],
+				video: track.video?.name.split('.')[1],
+				video_shot: track.video_shot?.name.split('.')[1],
+				text_sync: track.text_sync?.name.split('.')[1],
+				ringtone: track.ringtone?.name.split('.')[1],
+			})),
+		});
 		console.log(data);
 	};
 
