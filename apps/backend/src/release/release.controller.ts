@@ -265,7 +265,7 @@ export class ReleaseController {
 
         const trackRolesResult = trackRolesSchema.safeParse(currentTrack.roles);
 
-        if (trackRolesResult.success)
+        if (!trackRolesResult.success)
           throw new BadRequestException(
             `Не верный формат ролей в треке ${0} (${currentTrack.title})`,
           );

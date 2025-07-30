@@ -29,17 +29,13 @@ export async function action(releaseData: TrueOmit<TReleaseInsertForm, 'preview'
 	const NewRelize = await functional.v1.releases.createRelease(connection, {
 		release:{
 			...release,
-			roles: JSON.stringify(release.roles),
-			area: JSON.stringify(release.area),
-			platforms: JSON.stringify(release.platforms),
 			releaseDate: new Date(release.releaseDate).toISOString(),
 			startDate: new Date(release.startDate).toISOString(),
 			preorderDate: new Date(release.preorderDate).toISOString(),
 			yandexSoonNewRelease: release.yandexSoonNewRelease ? new Date(release.yandexSoonNewRelease).toISOString() : undefined,
 		},
 		tracks: tracks.map(track=>({...track,
-			instant_gratification: track.instant_gratification ? new Date(track.instant_gratification).toISOString() : undefined, 
-			roles: JSON.stringify(track.roles)
+			instant_gratification: track.instant_gratification ? new Date(track.instant_gratification).toISOString() : undefined,
 		})),
 	});
 
