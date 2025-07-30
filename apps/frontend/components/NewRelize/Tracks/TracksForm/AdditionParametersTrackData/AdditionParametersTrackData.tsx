@@ -116,7 +116,6 @@ export default function AdditionParametersTrackData({
 				<Checkbox
 					size='md'
 					color='default'
-					value='Instant Gratification'
 					className='relative'
 					isSelected={showDateInstantGratification}
 					onValueChange={setShowDateInstantGratification}>
@@ -159,7 +158,6 @@ export default function AdditionParametersTrackData({
 				<Checkbox
 					size='md'
 					color='default'
-					value='Focus track'
 					{...register(`tracks.${trackIndex}.focus`)}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Focus track</p>

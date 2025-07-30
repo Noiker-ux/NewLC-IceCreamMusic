@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
-
 import {
 	TrashIcon,
 	PencilSquareIcon,
@@ -10,7 +9,6 @@ import {
 	SquaresPlusIcon,
 	LinkIcon,
 } from '@heroicons/react/24/outline';
-
 import { IoIosArrowDown } from 'react-icons/io';
 import { Button, Link, Tooltip } from '@heroui/react';
 import MusicList from './MusicList';
