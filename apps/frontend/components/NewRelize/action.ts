@@ -13,7 +13,7 @@ export async function action(releaseData: TrueOmit<TReleaseInsertForm, 'preview'
 	const token = cookieStore.get(sessionCookieName)?.value;
 	if (!token) {
 		return {
-			success: false,
+			success: false as const,
 			error: 'Пользователь не авторизован',
 		};
 	}
@@ -39,5 +39,5 @@ export async function action(releaseData: TrueOmit<TReleaseInsertForm, 'preview'
 		})),
 	});
 
-	return NewRelize;
+	return { success: true as const, data: NewRelize };
 }

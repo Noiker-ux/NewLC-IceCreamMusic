@@ -16,23 +16,13 @@ export class ReleaseService {
   ) {}
 
   async createPutUrl(bucketName: string, fileName: string) {
-    const s3PublicUrl = new URL(this.config.getOrThrow('NEXT_PUBLIC_S3_URL'));
-
-    const privateUrl = await this.s3Client.presignedPutObject(
+    const s3UploadUrl = await this.s3Client.presignedPutObject(
       bucketName,
       fileName,
       60 * 60,
     );
 
-    const publicUrl = new URL(privateUrl);
-
-    publicUrl.hostname = s3PublicUrl.hostname;
-
-    publicUrl.port = '';
-
-    publicUrl.protocol = s3PublicUrl.protocol;
-
-    return publicUrl.toString();
+    return s3UploadUrl;
   }
 
   async deleteReleaseAssets(releaseId: string) {

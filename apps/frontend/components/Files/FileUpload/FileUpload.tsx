@@ -5,7 +5,7 @@ import { IconUpload } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { motion } from 'motion/react';
 import Image from 'next/image';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import { fileSchema } from '@/schema/shared.schema';
@@ -43,24 +43,25 @@ export const FileUpload = ({
 }) => {
 	const previewInputRef = useRef<HTMLInputElement>(null);
 
-	const { formState, watch, setValue } = useFormContext();
+	const { formState, setValue, getValues } = useFormContext();
 
-	const data = watch(name);
-
-	const file = useMemo(() => {
-		const result = fileSchema.safeParse(data);
+	const [file, setFile] = useState<File | undefined>(() => {
+		const result = fileSchema.safeParse(getValues(name));
 		if (!result.success) {
 			return undefined;
 		}
 		return result.data;
-	}, [data]);
+	});
 
-	const previewUrl = useMemo(() => {
-		if (file) return URL.createObjectURL(file);
+	const fileUrl = useMemo(() => {
+		if (!file) return;
+		return URL.createObjectURL(file);
 	}, [file]);
 
 	const handleFileChange = useCallback(
 		(newFiles: File[]) => {
+			const newFile = newFiles.at(0);
+			setFile(newFile);
 			setValue(name, newFiles.at(0));
 		},
 		[name, setValue],
@@ -85,9 +86,9 @@ export const FileUpload = ({
 				whileHover='animate'
 				className=' group/file block rounded-lg  w-full relative '>
 				<>{formState.errors[name] && formState.errors[name]?.message}</>
-				{showImage && previewUrl && (
+				{showImage && fileUrl && (
 					<Image
-						src={file ? URL.createObjectURL(file) : ''}
+						src={fileUrl}
 						alt={'Файл'}
 						width={50}
 						height={50}
@@ -108,7 +109,7 @@ export const FileUpload = ({
 				<div className='flex flex-col items-center justify-center'>
 					<div className={clsx('relative w-full   mx-auto')}>
 						{/* Серая подложка */}
-						{!file && !alternative && (
+						{!fileUrl && !alternative && (
 							<motion.div
 								layoutId='file-upload'
 								variants={mainVariant}
@@ -135,7 +136,7 @@ export const FileUpload = ({
 							</motion.div>
 						)}
 						{/* Область голубая */}
-						{!file && !alternative && (
+						{!fileUrl && !alternative && (
 							<motion.div
 								variants={secondaryVariant}
 								onClick={handleClick}

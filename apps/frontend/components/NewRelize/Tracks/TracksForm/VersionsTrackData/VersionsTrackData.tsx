@@ -24,7 +24,6 @@ export default function VersionsTrackData({
 			<div className='flex flex-col gap-5 mt-3'>
 				<Checkbox
 					color='default'
-					value='Explicit Content'
 					{...register(`tracks.${trackIndex}.explicit`)}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Explicit Content</p>
@@ -39,10 +38,7 @@ export default function VersionsTrackData({
 						</Tooltip>
 					</div>
 				</Checkbox>
-				<Checkbox
-					color='default'
-					value='Live'
-					{...register(`tracks.${trackIndex}.live`)}>
+				<Checkbox color='default' {...register(`tracks.${trackIndex}.live`)}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Live</p>
 						<Tooltip
@@ -56,10 +52,7 @@ export default function VersionsTrackData({
 						</Tooltip>
 					</div>
 				</Checkbox>
-				<Checkbox
-					color='default'
-					value='Cover'
-					{...register(`tracks.${trackIndex}.cover`)}>
+				<Checkbox color='default' {...register(`tracks.${trackIndex}.cover`)}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Cover</p>
 						<Tooltip
@@ -73,10 +66,7 @@ export default function VersionsTrackData({
 						</Tooltip>
 					</div>
 				</Checkbox>
-				<Checkbox
-					color='default'
-					value='Remix'
-					{...register(`tracks.${trackIndex}.remix`)}>
+				<Checkbox color='default' {...register(`tracks.${trackIndex}.remix`)}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Remix</p>
 						<Tooltip
@@ -92,7 +82,6 @@ export default function VersionsTrackData({
 				</Checkbox>
 				<Checkbox
 					color='default'
-					value='Instrumental'
 					{...register(`tracks.${trackIndex}.instrumental`)}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Instrumental</p>
