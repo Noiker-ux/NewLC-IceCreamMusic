@@ -1,12 +1,15 @@
 'use client';
 
-import { recoverPassword } from '@/actions/auth';
 import { useState } from 'react';
 import { Input } from '@heroui/input';
 import { Button } from '@heroui/button';
+import { requestRecoveryToken } from './action';
+import { useRouter } from 'next/navigation';
 
 export default function RecoverPage() {
 	const [email, setEmail] = useState('');
+
+	const router = useRouter();
 
 	return (
 		<div
@@ -25,8 +28,12 @@ export default function RecoverPage() {
 					onChange={(e) => setEmail(e.target.value)}
 				/>
 				<Button
-					onClick={() => {
-						recoverPassword(email);
+					onPress={async () => {
+						const result = await requestRecoveryToken(email);
+
+						if (result.success) {
+							router.push('/auth/signin');
+						}
 					}}>
 					Отправить
 				</Button>

@@ -5,13 +5,11 @@
   "exports": {
     ".": {
       "require": "./lib/index.js",
-      "types": "./lib/index.d.ts",
-      "default": "./lib/index.js"
+      "types": "./lib/index.d.ts"
     },
     "./schema": {
       "require": "./src/schema.ts",
-      "types": "./lib/schema.d.ts",
-      "default": "./lib/schema.js"
+      "types": "./lib/schema.d.ts"
     }
   },
   "type": "commonjs",

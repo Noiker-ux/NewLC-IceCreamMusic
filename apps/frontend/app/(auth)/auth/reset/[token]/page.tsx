@@ -1,30 +1,22 @@
 import { ResetPasswordForm } from '@/components/AuthttorizeAndRegistration/ResetPassword/ResetPassword';
-import { db } from 'db';
-import { unsealData } from 'iron-session';
-import { redirect } from 'next/navigation';
+import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { functional } from 'sdk';
 
-const wrongUrl = '/reset/wrong';
+const connection = createSDKConnection({});
 
 export default async function ResetPasswordPage({
-	params: { token },
+	params,
 }: {
-	params: { token: string };
+	params: Promise<{ token: string }>;
 }) {
-	const tokenData = await unsealData<Record<'token', string>>(token, {
-		password: process.env.MAGIC_LINK_SECRET!,
-		ttl: 60 * 10,
-	}).catch(() => null);
+	const { token } = await params;
 
-	if (!tokenData) {
-		redirect(wrongUrl);
-	}
+	const validationResult = await functional.v1.auth.token
+		.verifyEmailToken(connection, token, 'recover')
+		.catch((e) => `${e.message}`);
 
-	const user = await db.query.users.findFirst({
-		where: (us, { eq }) => eq(us.resetPasswordToken, tokenData.token),
-	});
-
-	if (!user) {
-		redirect(wrongUrl);
+	if (typeof validationResult === 'string') {
+		return <p>wrong token {validationResult}</p>;
 	}
 
 	return (
@@ -34,7 +26,7 @@ export default async function ResetPasswordPage({
 			}>
 			<div
 				className={'flex justify-center items-center flex-col mx-auto w-[90%]'}>
-				<ResetPasswordForm token={tokenData.token} />
+				<ResetPasswordForm token={token} />
 			</div>
 		</div>
 	);
