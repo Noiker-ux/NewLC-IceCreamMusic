@@ -1,7 +1,5 @@
-'use client';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
-import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useState, use } from 'react';
+
 import Notification from '../Notification/Notification';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
 
@@ -12,25 +10,12 @@ export default function Header() {
 		{ name: 'Выход', href: '#' },
 	];
 
-	const [sidebarOpen, setSidebarOpen] = useState(false);
-
 	return (
 		<>
-			<SideBarMobile
-				sidebarOpen={sidebarOpen}
-				setSidebarOpen={setSidebarOpen}
-			/>
 			<div
 				style={{ boxShadow: `1px 1px 30px 30px #0a0a0a` }}
 				className='sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4   bg-[var(--background)] px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8'>
-				<button
-					type='button'
-					onClick={() => setSidebarOpen(true)}
-					className='-m-2.5 p-2.5 text-gray-700 lg:hidden'>
-					<span className='sr-only'>Open sidebar</span>
-					<Bars3Icon aria-hidden='true' className='size-6' />
-				</button>
-
+				<SideBarMobile />
 				{/* Separator */}
 				<div aria-hidden='true' className='h-6 w-px bg-gray-900/10 lg:hidden' />
 
@@ -40,7 +25,7 @@ export default function Header() {
 						<p>Сервис работает</p>
 					</div>
 					<div className='flex items-center gap-x-4 lg:gap-x-6'>
-						<Notification />
+						{/* <Notification /> */}
 						{/* Profile dropdown */}
 						<Menu as='div' className='relative'>
 							<MenuButton className='-m-1.5 flex items-center p-1.5'>

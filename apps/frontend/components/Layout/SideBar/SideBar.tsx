@@ -1,5 +1,3 @@
-'use client';
-
 import { PropsWithChildren } from 'react';
 import Header from '../Header/Header';
 import { navigation } from './SideBar.links';

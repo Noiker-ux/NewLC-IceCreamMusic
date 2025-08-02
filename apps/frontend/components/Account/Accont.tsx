@@ -15,8 +15,8 @@ export default function Account() {
 				<>
 					<PersonalDataProps PersonalDataProps={AccountData.data} />
 					<SocialData />
-					<ChangePassword />
-					<DeleteAccount />
+					{/* <ChangePassword /> */}
+					{/* <DeleteAccount /> */}
 				</>
 			)}
 		</>

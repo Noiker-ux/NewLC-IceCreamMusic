@@ -1,10 +1,11 @@
+import VerificationExpectation from '@/components/Verification/VerificationExpectation/VerificationExpectation';
 import VerificationForm from '@/components/Verification/VerificationForm/VerificationForm';
 
 export const dynamic = 'force-dynamic';
 
 export default function VerificationPage() {
 	return (
-		<div className='w-full flex flex-col xl:flex-row flex-row gap-8'>
+		<div className='w-full flex  xl:flex-row flex-row gap-8'>
 			<div className='bg-zinc-900 w-full p-8 rounded-xl xl:w-3/4  '>
 				<VerificationForm />
 			</div>

@@ -8,15 +8,34 @@ import { ChangeEvent, useState } from 'react';
 import { getLocalTimeZone, today } from '@internationalized/date';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TVerification } from 'sdk/lib/verification/verification.controller';
-import { action } from './action';
+import { actionPostVerify } from './actionPostVerify';
+import { Toaster, toast } from 'sonner';
 
 export default function VerificationForm() {
 	const methods = useForm<TVerification>({});
 
 	const onSubmit: SubmitHandler<TVerification> = async (data) => {
-		action({
-			...data,
-		});
+		toast.promise(
+			actionPostVerify({
+				...data,
+			}),
+			{
+				loading: 'Загрузка...',
+				success: (responce) => {
+					return {
+						message: `${responce.message}`,
+						className: '!bg-green-300 !border-green-600 !text-green-800',
+						duration: 500,
+					};
+				},
+				error: (responce) => {
+					return {
+						message: `${responce.message}`,
+						className: '!bg-red-300 !border-red-600 !text-red-800',
+					};
+				},
+			},
+		);
 	};
 
 	const [phone, setPhone] = useState('');
@@ -34,6 +53,7 @@ export default function VerificationForm() {
 		<form
 			className='flex flex-col gap-5'
 			onSubmit={methods.handleSubmit(onSubmit)}>
+			<Toaster className='' />
 			<div className='w-full'>
 				<p className='font-semibold text-xl'>Основная информация</p>
 				<p className='mt-1 text-xs'>

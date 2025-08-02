@@ -4,14 +4,14 @@ import { functional } from 'sdk';
 import { TVerification } from 'sdk/lib/verification/verification.controller';
 import { cookies } from 'next/headers';
 import { sessionCookieName } from '@/shared/lib/config/auth';
-import { _success } from 'zod/v4/core';
 
-export async function action(data: TVerification) {
+export async function actionPostVerify(data: TVerification) {
 	const cookieStore = await cookies();
 	const token = cookieStore.get(sessionCookieName)?.value;
 	if (!token) {
 		return {
-			success: false,
+			success: false as const,
+			message: 'Вы не авторизованы',
 		};
 	}
 
@@ -31,8 +31,14 @@ export async function action(data: TVerification) {
 		})
 		.catch((e) => {
 			return {
-				success: false,
-				error: e.message,
+				success: false as const,
+				message: e.message,
 			};
 		});
+	return {
+		success: true as const,
+		message: `
+		Данные успешно отправлены на проверку!
+		`,
+	};
 }
