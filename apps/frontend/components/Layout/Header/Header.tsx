@@ -4,6 +4,7 @@ import Notification from '../Notification/Notification';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
 
 import ShowUser from './ShowUser';
+import SubscribeLVL from './SubscribeLVL';
 export default function Header() {
 	const userNavigation = [
 		{ name: 'Мой профиль', href: '/dashboard/account/profile' },
@@ -27,6 +28,7 @@ export default function Header() {
 					<div className='flex items-center gap-x-4 lg:gap-x-6'>
 						{/* <Notification /> */}
 						{/* Profile dropdown */}
+						<SubscribeLVL />
 						<Menu as='div' className='relative'>
 							<MenuButton className='-m-1.5 flex items-center p-1.5'>
 								<span className='sr-only'>Open user menu</span>

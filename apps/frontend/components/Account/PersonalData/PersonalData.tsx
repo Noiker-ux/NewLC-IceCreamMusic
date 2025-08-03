@@ -10,16 +10,14 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { TGetMeResponse } from 'sdk/lib/user/user.controller';
 import { actionUpdatePersonalData } from './actionUpdatePersonalData';
 import { zodResolver } from '@hookform/resolvers/zod';
-
+import { useRouter } from 'next/navigation';
 export default function PersonalDataProps({
 	PersonalDataProps,
 }: {
 	PersonalDataProps: TGetMeResponse['data'];
 }) {
 	const { avatar, birthDate, name, id, ...userData } = PersonalDataProps;
-
-	const FSName = name?.split(' ');
-
+	const router = useRouter();
 	const methods = useForm<TProfileFormSchema>({
 		resolver: zodResolver(profileFormSchema),
 		defaultValues: {
@@ -28,10 +26,12 @@ export default function PersonalDataProps({
 	});
 
 	const onSubmit: SubmitHandler<TProfileFormSchema> = async (data) => {
+		console.log(data);
 		actionUpdatePersonalData({
 			...data,
 			avatar: data.avatar?.type.split('/').at(-1),
 		});
+		router.refresh();
 	};
 
 	const refAvatar = useRef<HTMLInputElement>(null);
@@ -128,27 +128,8 @@ export default function PersonalDataProps({
 						placeholder='Введите имя'
 						type='text'
 						radius='sm'
-						defaultValue={FSName[0] ?? ''}
-						{...methods.register('firstName')}
-					/>
-					<Input
-						className='sm:col-span-3'
-						label='Фамилия'
-						labelPlacement={'outside'}
-						defaultValue={FSName[1] ?? ''}
-						placeholder='Введите имя'
-						type='text'
-						radius='sm'
-						{...methods.register('secondName')}
-					/>
-					<Input
-						className='col-span-full'
-						label='E-mail'
-						labelPlacement={'outside'}
-						placeholder='Введите email / Логин'
-						type='email'
-						radius='sm'
-						{...methods.register('email')}
+						defaultValue={name}
+						{...methods.register('name')}
 					/>
 				</div>
 

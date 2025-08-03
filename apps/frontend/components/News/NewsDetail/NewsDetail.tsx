@@ -1,5 +1,5 @@
 import DateFormatter from '@/utils/dateFormatter';
-import { TNewsDetail } from './NewsDetail.props';
+
 import { unstable_ViewTransition as ViewTransition } from 'react';
 import { Chip } from '@heroui/chip';
 import { Primitive } from 'sdk';

@@ -53,7 +53,7 @@ export default function VerificationForm() {
 		<form
 			className='flex flex-col gap-5'
 			onSubmit={methods.handleSubmit(onSubmit)}>
-			<Toaster className='' />
+			<Toaster />
 			<div className='w-full'>
 				<p className='font-semibold text-xl'>Основная информация</p>
 				<p className='mt-1 text-xs'>

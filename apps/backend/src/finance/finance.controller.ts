@@ -27,6 +27,7 @@ import { SessionService } from '../auth/session.service';
 import { checkout, currency } from '../shared/checkout';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { FinanceService } from './finance.service';
+import { TSelectUserSchema } from '../../../../packages/shared/lib/schema/user.schema';
 
 export type TCreateOrderResponse = {
   redirect_url: string;
@@ -68,6 +69,16 @@ export type TCreatePayoutTicketBody = {
 
 export type TUpdatePayoutTicketStatusBody = {
   data: Pick<Primitive<TPayoutTicketData>, 'confirmed'>;
+};
+
+export type TReceiptItems = Payment['receipt']['items'];
+
+export type TGetSubscriptionEstimateResponse = {
+  data: TReceiptItems;
+};
+
+export type TGetReleaseEstimateResponse = {
+  data: TReceiptItems;
 };
 
 @ApiTags('finance')
@@ -167,7 +178,7 @@ export class FinanceController {
       `Basic ${btoa(`${process.env.YOOKASSA_SHOP_ID}:${process.env.YOOKASSA_SECRET_KEY}`)}`,
     );
 
-    headers.append('Idempotence-Key', '');
+    headers.append('Idempotence-Key', `${Date.now()}`);
 
     const payment = await checkout
       .createPayment({
@@ -397,5 +408,50 @@ export class FinanceController {
       .where(eq(schema.payouts.id, ticketId));
 
     return { success: true };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @TypedRoute.Get('/subscription/:level')
+  getSubscriptionEstimate(
+    @TypedParam('level')
+    level: Primitive<NonNullable<TSelectUserSchema['subscriptionLevel']>>,
+  ): TGetSubscriptionEstimateResponse {
+    const result = this.financeService.calculateSubscriptionEstimate(level);
+
+    return {
+      data: result,
+    };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @TypedRoute.Get('/release/:releaseId')
+  async getReleaseEstimate(
+    @Session() sessionToken: string,
+    @TypedParam('releaseId') releaseId: string,
+  ): Promise<TGetReleaseEstimateResponse> {
+    const { user } = await this.sessionService.validateSession(sessionToken);
+
+    if (!user) {
+      throw new UnauthorizedException('Не авторизован');
+    }
+
+    const release = await this.db.query.release.findFirst({
+      where: eq(schema.release.id, releaseId),
+    });
+
+    if (!release || release.authorId !== user.id) {
+      throw new NotFoundException('Релиз не найден');
+    }
+
+    const result = await this.financeService.calculateReleaseEstimate(
+      releaseId,
+      user.subscriptionLevel ?? 'none',
+    );
+
+    return {
+      data: result,
+    };
   }
 }

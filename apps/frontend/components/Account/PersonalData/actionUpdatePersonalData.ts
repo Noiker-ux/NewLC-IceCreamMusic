@@ -11,19 +11,24 @@ export async function actionUpdatePersonalData(data: Partial<Omit<TProfileFormSc
 	const token = cookieStore.get(sessionCookieName)?.value;
 	if (!token) {
 		return {
-			success: false,
+			success: false as const,
 			error: 'Пользователь не авторизован',
 		};
 	}
 	const headers = new Headers();
+
 	headers.set('Authorization', `${token}`);
+	
 	const connection = createSDKConnection({
-		next: { tags: ['PersonalData'] },
 		headers,
 	});
-	const PersonalData = await functional.v1.users.me;
 
-	return PersonalData.updateMyInfo(connection, {
+	const PersonalData = functional.v1.users.me.updateMyInfo(connection, {
 		data,
 	});
+
+	return {
+		success: true as const,
+		data: PersonalData,
+	};
 }

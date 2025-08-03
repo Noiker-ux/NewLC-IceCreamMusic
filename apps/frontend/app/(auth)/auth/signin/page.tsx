@@ -14,7 +14,7 @@ export default function Auth() {
 			<Authorization />
 			<p className={'mt-5'}>
 				Или{' '}
-				<Link className={'text-white'} href='/signup'>
+				<Link className={'text-white'} href='/auth/signup'>
 					зарегистрируйте
 				</Link>{' '}
 				новый, если у Вас нет аккаунта

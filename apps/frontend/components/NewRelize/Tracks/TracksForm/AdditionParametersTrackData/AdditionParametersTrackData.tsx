@@ -9,13 +9,13 @@ import { TimeInput } from '@heroui/date-input';
 import { Checkbox, DatePicker } from '@heroui/react';
 import { Tooltip } from '@heroui/tooltip';
 import {
-	parseZonedDateTime,
 	parseAbsoluteToLocal,
+	parseZonedDateTime,
 } from '@internationalized/date';
-import { useEffect, useState } from 'react';
+import { I18nProvider } from '@react-aria/i18n';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaClock } from 'react-icons/fa';
-import { I18nProvider } from '@react-aria/i18n';
 
 export type TAdditionParametersTrackData = {
 	trackIndex: number;
@@ -32,12 +32,7 @@ export default function AdditionParametersTrackData({
 	);
 
 	const [showDateInstantGratification, setShowDateInstantGratification] =
-		useState<boolean>(instantgratificationW ? true : false);
-
-	useEffect(() => {
-		if (!showDateInstantGratification)
-			setValue(`tracks.${trackIndex}.instant_gratification`, null);
-	}, [setValue, showDateInstantGratification, trackIndex]);
+		useState<boolean>(() => !!instantgratificationW);
 
 	return (
 		<div>
@@ -118,7 +113,11 @@ export default function AdditionParametersTrackData({
 					color='default'
 					className='relative'
 					isSelected={showDateInstantGratification}
-					onValueChange={setShowDateInstantGratification}>
+					onValueChange={(v) => {
+						if (!v)
+							setValue(`tracks.${trackIndex}.instant_gratification`, undefined);
+						setShowDateInstantGratification(v);
+					}}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Instant Gratification</p>
 						<Tooltip
@@ -144,14 +143,16 @@ export default function AdditionParametersTrackData({
 							onChange={(value) => {
 								setValue(
 									`tracks.${trackIndex}.instant_gratification`,
-									value ? value.toDate() : new Date(),
+									value ? value.toDate() : undefined,
 								);
 							}}
-							value={parseAbsoluteToLocal(
-								dateISOFormatter(
-									instantgratificationW ? instantgratificationW : new Date(),
-								),
-							)}
+							value={
+								instantgratificationW
+									? parseAbsoluteToLocal(
+											dateISOFormatter(instantgratificationW),
+										)
+									: undefined
+							}
 						/>
 					</I18nProvider>
 				)}
