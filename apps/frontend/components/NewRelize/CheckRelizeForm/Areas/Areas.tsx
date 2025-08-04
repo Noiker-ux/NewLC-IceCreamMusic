@@ -3,15 +3,10 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Tooltip } from '@heroui/tooltip';
 import ModalAreas from './ModalAreas/ModalAreas';
 import { useDisclosure } from '@heroui/use-disclosure';
+import { TReleaseArea } from 'shared/schema/release.schema';
+import { Primitive } from 'sdk';
 
-export default function Areas({
-	areas,
-}: {
-	areas: {
-		data: string[];
-		negate: boolean;
-	};
-}) {
+export default function Areas({ areas }: { areas: Primitive<TReleaseArea> }) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const getAras = () => {

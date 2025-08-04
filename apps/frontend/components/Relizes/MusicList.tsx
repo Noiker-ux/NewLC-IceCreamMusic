@@ -12,14 +12,16 @@ import {
 	ArrowDownTrayIcon,
 } from '@heroicons/react/24/outline';
 import { TTrack } from 'shared/schema/release.schema';
-export default function MusicList({ tracks }: { tracks: TTrack[] }) {
+import { Primitive } from 'sdk';
+import React from 'react';
+export default function MusicList({ tracks }: { tracks: Primitive<TTrack>[] }) {
 	return (
 		<div className='mt-3'>
 			<div className='grid grid-cols-[50px,50px,1fr,1fr,1fr,1fr,1fr,200px] border-t-1 border-b-1  border-zinc-800 justify-between py-2 px-5'>
 				<p>№</p>
 				<p></p>
 				<p className='text-center'>Название</p>
-				<p className='text-center'>Исполнитель</p>
+				<p className='text-center'>Подзаголовок</p>
 				<p className='text-center'>Длительность</p>
 				<p className='text-center'>Доля прав</p>
 				<p className='text-center'>Сервисы</p>
@@ -28,13 +30,13 @@ export default function MusicList({ tracks }: { tracks: TTrack[] }) {
 
 			<div className='grid gap-y-2 items-center grid-cols-[50px,50px,1fr,1fr,1fr,1fr,1fr,200px] py-2 px-5'>
 				{tracks.map((track) => (
-					<>
-						<p>1</p>
+					<React.Fragment key={track.id}>
+						<p>{track.index + 1}</p>
 						<Button isIconOnly variant='light'>
 							<CiPlay1 />
 						</Button>
 						<p className='text-center'>{track.title}</p>
-						<p className='text-center'>Роки</p>
+						<p className='text-center'>{track.subtitle}</p>
 						<p className='text-center'>02:36</p>
 						<p className='text-center'>{track.author_rights}%</p>
 						<div className='flex justify-center items-center'>
@@ -85,7 +87,7 @@ export default function MusicList({ tracks }: { tracks: TTrack[] }) {
 								<ArrowDownTrayIcon width={20} />
 							</Button>
 						</div>
-					</>
+					</React.Fragment>
 				))}
 			</div>
 		</div>

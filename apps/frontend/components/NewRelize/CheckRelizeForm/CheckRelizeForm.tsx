@@ -2,25 +2,16 @@
 import { TReleaseInsertForm } from '@/schema/release.schema';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
+import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { useFormContext } from 'react-hook-form';
-import {
-	ArrowLongUpIcon,
-	ArrowTopRightOnSquareIcon,
-	ChevronUpIcon,
-} from '@heroicons/react/24/outline';
-import { Tooltip } from '@heroui/tooltip';
-import { Modal, ModalHeader, useDisclosure } from '@heroui/modal';
-import ModalAreas from './Areas/ModalAreas/ModalAreas';
-import ModalPlatfroms from './Platfroms/ModalPlatforms/ModalPlatforms';
 import Areas from './Areas/Areas';
 import Platforms from './Platfroms/Platforms';
-import { IconArrowBarToUp } from '@tabler/icons-react';
 
 export default function CheckRelizeForm() {
-	const { formState, getValues } = useFormContext<TReleaseInsertForm>();
+	const { formState, watch } = useFormContext<TReleaseInsertForm>();
 
-	const values = getValues();
+	const values = watch();
 
 	return (
 		<div>
@@ -88,7 +79,7 @@ export default function CheckRelizeForm() {
 								</div>
 								<div>
 									<p className='text-xs font-extralight text-gray-300'>Лейбл</p>
-									<p className='text-sm'>{values.label}</p>
+									<p className='text-sm'>{values.labelName}</p>
 								</div>
 								{values.upc && (
 									<div>

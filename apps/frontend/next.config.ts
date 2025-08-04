@@ -5,14 +5,14 @@ const nextConfig: NextConfig = {
 	reactStrictMode: true,
 	cleanDistDir: true,
 	allowedDevOrigins: [
-		'localhost:3000',
+		'localhost',
 		'www.baconcs.duckdns.org',
 		'https://3rs27bxx-3000.inc1.devtunnels.ms',
 	],
 	experimental: {
 		serverActions: {
 			allowedOrigins: [
-				'localhost:3000',
+				'localhost',
 				'www.icecreammusic.net',
 				'3rs27bxx-3000.inc1.devtunnels.ms',
 			],

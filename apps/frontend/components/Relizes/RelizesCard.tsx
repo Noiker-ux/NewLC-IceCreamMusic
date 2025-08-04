@@ -18,11 +18,13 @@ import { cn } from '@/utils/cn';
 import { TGetReleaseListResponse } from 'sdk/lib/release/release.controller';
 import Platforms from '../NewRelize/CheckRelizeForm/Platfroms/Platforms';
 import Areas from '../NewRelize/CheckRelizeForm/Areas/Areas';
+import { Primitive } from 'sdk';
+import DateFormatter from '@/utils/dateFormatter';
 
 export default function RelizecCard({
 	release,
 }: {
-	release: TGetReleaseListResponse['data'][number];
+	release: Primitive<TGetReleaseListResponse['data'][number]>;
 }) {
 	const [showMusicList, setShowMusicList] = useState<boolean>(false);
 
@@ -31,7 +33,7 @@ export default function RelizecCard({
 			<div className='col-span-3'>
 				<div className='flex gap-5'>
 					<Image
-						src='/assets/XaQw7AVPHNY.jpg'
+						src={`${process.env.NEXT_PUBLIC_S3_URL}/previews/${release.id}.${release.preview}`}
 						alt='Превью'
 						width={110}
 						height={110}
@@ -61,23 +63,31 @@ export default function RelizecCard({
 						<p className='text-xs font-extralight text-gray-300'>
 							Дата предзаказа
 						</p>
-						<p className='text-sm '>{release.preorderDate.toISOString()}</p>
+						<p className='text-sm '>
+							{DateFormatter(new Date(release.preorderDate))}
+						</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Дата релиза</p>
-						<p className='text-sm '>{release.releaseDate.toISOString()}</p>
+						<p className='text-sm '>
+							{DateFormatter(new Date(release.releaseDate))}
+						</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Дата старта</p>
-						<p className='text-sm '>{release.startDate.toISOString()}</p>
+						<p className='text-sm '>
+							{DateFormatter(new Date(release.startDate))}
+						</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Территории</p>
-						<Areas areas={JSON.parse(release.area)} />
+						<Areas areas={JSON.parse(JSON.stringify(release.area))} />
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Площадки</p>
-						<Platforms platforms={JSON.parse(release.platforms)} />
+						<Platforms
+							platforms={JSON.parse(JSON.stringify(release.platforms))}
+						/>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Жанр</p>

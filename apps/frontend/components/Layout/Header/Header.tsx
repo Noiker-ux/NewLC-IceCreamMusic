@@ -1,20 +1,28 @@
+<<<<<<< HEAD
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
 import Notification from '../Notification/Notification';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
+=======
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+>>>>>>> origin/vk-auth
 import { actionGetPersonalData } from '@/components/Account/actionGetPersonalData';
-import { use } from 'react';
+import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
 
 import ShowUser from './ShowUser';
 import { useDisclosure } from '@heroui/modal';
 import ModalPayout from '../ModalPayout/ModalPayout';
 
-export default function Header() {
+export default async function Header() {
 	const userNavigation = [
 		{ name: 'Мой профиль', href: '/dashboard/account/profile' },
 		{ name: 'Выход', href: '#' },
 	];
+<<<<<<< HEAD
 	const AccountData = use(actionGetPersonalData());
 
+=======
+	const AccountData = await actionGetPersonalData();
+>>>>>>> origin/vk-auth
 	return (
 		<>
 			<div
@@ -32,7 +40,6 @@ export default function Header() {
 					<div className='flex items-center gap-x-4 lg:gap-x-6'>
 						{/* <Notification /> */}
 						{/* Profile dropdown */}
-						{AccountData.success ? AccountData.data.subscriptionLevel : ''}
 						{AccountData.success && (
 							<span className='uppercase'>
 								{AccountData.data.subscriptionLevel}

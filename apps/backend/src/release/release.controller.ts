@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
-import { and, eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
+import { and, asc, eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import {
   releaseAreaSchema,
   releaseRolesSchema,
@@ -125,7 +125,7 @@ export class ReleaseController {
 
     const releases = await this.db.query.release.findMany({
       where: eq(schema.release.authorId, user.id),
-      with: { tracks: true, promoLinks: true },
+      with: { tracks: { orderBy: asc(schema.track.index) }, promoLinks: true },
       limit: params.size,
       offset: (params.page - 1) * params.size,
     });
@@ -145,7 +145,7 @@ export class ReleaseController {
     const release = await this.db.query.release.findFirst({
       where: eq(schema.release.id, releaseId),
       with: {
-        tracks: true,
+        tracks: { orderBy: asc(schema.track.index) },
         promoLinks: true,
       },
     });
@@ -166,7 +166,7 @@ export class ReleaseController {
   ): Promise<TGetReleaseListResponse> {
     const releases = await this.db.query.release.findMany({
       where: eq(schema.release.authorId, userId),
-      with: { tracks: true, promoLinks: true },
+      with: { tracks: { orderBy: asc(schema.track.index) }, promoLinks: true },
       limit: params.size,
       offset: (params.page - 1) * params.size,
     });

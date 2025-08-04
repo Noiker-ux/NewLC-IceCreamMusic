@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ConsoleLogger } from '@nestjs/common';
 import { NestiaSwaggerComposer } from '@nestia/sdk';
 import { SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 const swaggerCDN = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.7.2';
 
@@ -18,7 +19,11 @@ async function bootstrap() {
 
   app.setGlobalPrefix('v1');
 
-  if (JSON.parse(process.env.SHOW_API_DOCS ?? 'false')) {
+  const config = app.get(ConfigService);
+
+  const showDocsValue = config.getOrThrow<string>('SHOW_API_DOCS');
+
+  if (showDocsValue === 'true') {
     const document = await NestiaSwaggerComposer.document(app, {
       openapi: '3.1',
       servers: [
