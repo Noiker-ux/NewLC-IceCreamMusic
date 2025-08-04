@@ -13,13 +13,38 @@ import { PropsWithChildren } from 'react';
 import { BanknotesIcon } from '@heroicons/react/24/outline';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { TPayoutTicketData } from 'sdk/lib/finance/finance.controller';
+import { Toaster, toast } from 'sonner';
+import { actionPostPayout } from './actionPostPayout';
 
 export default function ModalPayout({ children }: PropsWithChildren) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const methods = useForm<TPayoutTicketData>({});
 
 	const onSubmit: SubmitHandler<TPayoutTicketData> = (data) => {
-		console.log(data);
+		toast.promise(
+			actionPostPayout({
+				amount: data.amount,
+				accountNumber: data.accountNumber,
+				recieverName: data.recieverName,
+			}),
+			{
+				loading: 'Загрузка...',
+				success: (responce) => {
+					return {
+						message: `${responce.message}`,
+						className: '!bg-green-300 !border-green-600 !text-green-800',
+						duration: 500,
+					};
+				},
+				error: (responce) => {
+					return {
+						message: `${responce.message}`,
+						className: '!bg-red-300 !border-red-600 !text-red-800',
+					};
+				},
+			},
+		);
+		onOpenChange();
 	};
 	return (
 		<>
@@ -29,6 +54,7 @@ export default function ModalPayout({ children }: PropsWithChildren) {
 				startContent={<BanknotesIcon />}>
 				{children} ₽
 			</Button>
+			<Toaster />
 			<Modal size='lg' isOpen={isOpen} onOpenChange={onOpenChange}>
 				<ModalContent>
 					{(onClose) => (
