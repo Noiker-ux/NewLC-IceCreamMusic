@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."payouts" ADD COLUMN "accountNumber" text;

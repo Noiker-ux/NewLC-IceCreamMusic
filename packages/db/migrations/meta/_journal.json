@@ -330,6 +330,13 @@
       "when": 1754308150836,
       "tag": "0046_hard_luminals",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1754349778382,
+      "tag": "0047_harsh_mongu",
+      "breakpoints": true
     }
   ]
 }

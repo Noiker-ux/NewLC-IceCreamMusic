@@ -5,20 +5,19 @@ import {
   doublePrecision,
   jsonb,
   pgSchema,
+  primaryKey,
+  real,
+  smallint,
   text,
   timestamp,
   uuid,
-  smallint,
-  varchar,
-  primaryKey,
-  integer,
+  varchar
 } from "drizzle-orm/pg-core";
 import {
   subscriptionLevelValues,
   verificationStatusValues,
   verificationTokenTypeValues,
 } from "./types";
-import { real } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
 
@@ -436,6 +435,8 @@ export const payouts = schema.table("payouts", {
   createdAt: timestamp("createdAt").defaultNow(),
 
   confirmed: boolean("confirmed").default(false),
+
+  accountNumber: text("accountNumber"),
 
   recieverName: text("recieverName"),
 

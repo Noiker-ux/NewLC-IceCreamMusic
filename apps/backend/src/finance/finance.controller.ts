@@ -20,6 +20,7 @@ import {
   subscriptionMetadataSchema,
 } from 'shared/schema/order.schema';
 import { Primitive } from 'typia';
+import { TSelectUserSchema } from '../../../../packages/shared/lib/schema/user.schema';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
@@ -27,7 +28,6 @@ import { SessionService } from '../auth/session.service';
 import { checkout, currency } from '../shared/checkout';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { FinanceService } from './finance.service';
-import { TSelectUserSchema } from '../../../../packages/shared/lib/schema/user.schema';
 
 export type TCreateOrderResponse = {
   redirect_url: string;
@@ -63,7 +63,10 @@ export type TGetPayoutTicketResponse = {
 
 export type TCreatePayoutTicketBody = {
   data: Primitive<
-    Pick<InferInsertModel<typeof schema.payouts>, 'recieverName' | 'amount'>
+    Pick<
+      InferInsertModel<typeof schema.payouts>,
+      'recieverName' | 'amount' | 'accountNumber'
+    >
   >;
 };
 
