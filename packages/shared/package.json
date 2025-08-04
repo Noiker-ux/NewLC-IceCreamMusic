@@ -6,18 +6,15 @@
   "exports": {
     "./schema/*": {
       "types": "./lib/schema/*.d.ts",
-      "default": "./lib/schema/*.js",
-      "require": "./lib/schema/*.js"
+      "default": "./lib/schema/*.js"
     },
     "./config/*": {
       "types": "./lib/config/*.d.ts",
-      "default": "./lib/config/*.js",
-      "require": "./lib/config/*.js"
+      "default": "./lib/config/*.js"
     },
     "./helpers/*": {
       "types": "./lib/helpers/*.d.ts",
-      "default": "./lib/helpers/*.js",
-      "require": "./lib/helpers/*.js"
+      "default": "./lib/helpers/*.js"
     }
   },
   "scripts": {

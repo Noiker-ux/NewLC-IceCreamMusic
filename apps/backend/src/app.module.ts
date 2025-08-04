@@ -51,11 +51,12 @@ import { ScheduleModule } from '@nestjs/schedule';
         const s3Endpoint = config.getOrThrow<string>('S3_HOST');
         const s3AccessKey = config.getOrThrow<string>('S3_ACCESS_KEY');
         const s3SecretKey = config.getOrThrow<string>('S3_SECRET_KEY');
+        const s3UseSSLValue = config.getOrThrow<string>('S3_USE_SSL');
+        const s3UseSSL = s3UseSSLValue === 'true';
 
         return {
           endPoint: s3Endpoint,
-          // port: 9000,
-          useSSL: true,
+          useSSL: s3UseSSL,
           accessKey: s3AccessKey,
           secretKey: s3SecretKey,
         };

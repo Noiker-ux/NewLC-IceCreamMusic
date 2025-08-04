@@ -1,10 +1,22 @@
-'use client';
-
-import { yandexSignIn } from '@/features/signin/api/yandex';
-import { Button } from '@heroui/button';
+import { sessionCookieName } from '@/shared/lib/config/auth';
+import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { cookies } from 'next/headers';
 import Image from 'next/image';
+import { functional } from 'sdk';
 
-export default function Home() {
+export default async function Home() {
+	const cookiesStore = await cookies();
+	const sessionToken = await cookiesStore.get(sessionCookieName)?.value;
+	const authHeaders = new Headers();
+	if (sessionToken) authHeaders.set('Authorization', sessionToken);
+
+	const connection = createSDKConnection({
+		headers: authHeaders,
+		next: { tags: ['personal_data'], revalidate: 5 },
+	});
+
+	const userData = await functional.v1.users.me.getMyInfo(connection);
+
 	return (
 		<div>
 			<div className='w-full overflow-hidden relative h-[calc(100vh-104px)]'>
@@ -25,19 +37,20 @@ export default function Home() {
 					className=' absolute bg-top l-0 top-0 h-full w-full object-cover'
 				/>
 			</div>
-			<Button
+			{/* <Button
 				onPress={() =>
 					yandexSignIn('https://www.baconcs.duckdns.org')
 						.then(JSON.stringify)
 						.then(alert)
 				}>
 				qwe
-			</Button>
-			<div
+			</Button> */}
+			<div>{JSON.stringify(userData)}</div>
+			{/* <div
 				dangerouslySetInnerHTML={{
 					__html: `<div class="flourish-embed flourish-chart" data-src="visualisation/23297172"><script src="https://public.flourish.studio/resources/embed.js"></script><noscript><img src="https://public.flourish.studio/visualisation/23297172/thumbnail" width="100%" alt="chart visualization" /></noscript></div>`,
 				}}
-				suppressHydrationWarning></div>
+				suppressHydrationWarning></div> */}
 			{/* <div>
 				Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure, ab magni
 				soluta eum, aliquid expedita rem fugit facilis harum, nobis voluptatibus

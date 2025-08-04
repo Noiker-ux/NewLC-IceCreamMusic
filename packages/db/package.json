@@ -4,11 +4,11 @@
   "private": true,
   "exports": {
     ".": {
-      "require": "./lib/index.js",
+      "default": "./lib/index.js",
       "types": "./lib/index.d.ts"
     },
     "./schema": {
-      "require": "./src/schema.ts",
+      "default": "./src/schema.ts",
       "types": "./lib/schema.d.ts"
     }
   },

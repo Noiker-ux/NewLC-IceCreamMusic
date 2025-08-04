@@ -237,6 +237,8 @@ export const verification = schema.table("verification", {
 
   status: verificationStatuses("status").notNull().default("moderating"),
   rejectReason: text("rejectReason"),
+
+  contract: text("contract").notNull().default(''),
 });
 
 export const verificationRelations = relations(verification, ({ one }) => ({
