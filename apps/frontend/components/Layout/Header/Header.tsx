@@ -1,11 +1,12 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
-
 import Notification from '../Notification/Notification';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
 import { actionGetPersonalData } from '@/components/Account/actionGetPersonalData';
 import { use } from 'react';
 
 import ShowUser from './ShowUser';
+import { useDisclosure } from '@heroui/modal';
+import ModalPayout from '../ModalPayout/ModalPayout';
 
 export default function Header() {
 	const userNavigation = [
@@ -13,6 +14,7 @@ export default function Header() {
 		{ name: 'Выход', href: '#' },
 	];
 	const AccountData = use(actionGetPersonalData());
+
 	return (
 		<>
 			<div
@@ -36,7 +38,10 @@ export default function Header() {
 								{AccountData.data.subscriptionLevel}
 							</span>
 						)}
-						{AccountData.success && <span>{AccountData.data.balance}</span>}
+						{AccountData.success && (
+							<ModalPayout>{AccountData.data.balance.toFixed(2)}</ModalPayout>
+						)}
+
 						{AccountData.success &&
 							(AccountData.data.isVerifiedAuthor ? (
 								<span className='text-green-600 fw-600'>Верифицирован </span>
