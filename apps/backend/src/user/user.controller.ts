@@ -33,6 +33,10 @@ export type TUserData = Pick<
   | 'vk'
   | 'whatsapp'
   | 'balance'
+  | 'isSubscribed'
+  | 'subscriptionLevel'
+  | 'isVerifiedAuthor'
+  | 'emailVerified'
 >;
 
 export type TGetMeResponse = {
@@ -48,7 +52,18 @@ export type TGetUsersResponse = {
 };
 
 export type TUpdateMeBody = {
-  data: Primitive<Partial<Omit<TUserData, 'id'>>>;
+  data: Primitive<
+    Partial<
+      Omit<
+        TUserData,
+        | 'id'
+        | 'emailVerified'
+        | 'isVerifiedAuthor'
+        | 'subscriptionLevel'
+        | 'isSubscribed'
+      >
+    >
+  >;
 };
 
 export type TUpdateBalanceBody = {
@@ -88,6 +103,10 @@ export class UserController {
         vk: true,
         whatsapp: true,
         balance: true,
+        emailVerified: true,
+        isSubscribed: true,
+        subscriptionLevel: true,
+        isVerifiedAuthor: true,
       },
     });
 
@@ -115,6 +134,10 @@ export class UserController {
         vk: true,
         whatsapp: true,
         balance: true,
+        emailVerified: true,
+        isSubscribed: true,
+        subscriptionLevel: true,
+        isVerifiedAuthor: true,
       },
     });
 

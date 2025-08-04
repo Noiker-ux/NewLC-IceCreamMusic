@@ -6,19 +6,21 @@ import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';
 import { functional } from 'sdk';
 
-export async function actionUpdatePersonalData(data: Partial<Omit<TProfileFormSchema, 'avatar'> & { avatar: string }>) {
+export async function actionUpdatePersonalData(
+	data: Partial<Omit<TProfileFormSchema, 'avatar'> & { avatar: string }>,
+) {
 	const cookieStore = await cookies();
 	const token = cookieStore.get(sessionCookieName)?.value;
 	if (!token) {
 		return {
 			success: false as const,
-			error: 'Пользователь не авторизован',
+			message: 'Пользователь не авторизован',
 		};
 	}
 	const headers = new Headers();
 
 	headers.set('Authorization', `${token}`);
-	
+
 	const connection = createSDKConnection({
 		headers,
 	});
@@ -29,6 +31,7 @@ export async function actionUpdatePersonalData(data: Partial<Omit<TProfileFormSc
 
 	return {
 		success: true as const,
+		message: 'Данные успешно обновлены',
 		data: PersonalData,
 	};
 }

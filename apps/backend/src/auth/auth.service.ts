@@ -50,6 +50,17 @@ export class AuthService {
         with: { user: true },
       });
 
+      if (!verificationToken) {
+        return undefined;
+      }
+
+      if (verificationToken.type === 'confirm') {
+        await tx
+          .update(schema.users)
+          .set({ emailVerified: new Date() })
+          .where(eq(schema.users.id, verificationToken.userId));
+      }
+
       await tx
         .delete(schema.verificationTokens)
         .where(eq(schema.verificationTokens.token, token));

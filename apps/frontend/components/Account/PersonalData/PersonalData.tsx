@@ -11,6 +11,7 @@ import { TGetMeResponse } from 'sdk/lib/user/user.controller';
 import { actionUpdatePersonalData } from './actionUpdatePersonalData';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import { toast, Toaster } from 'sonner';
 export default function PersonalDataProps({
 	PersonalDataProps,
 }: {
@@ -26,12 +27,29 @@ export default function PersonalDataProps({
 	});
 
 	const onSubmit: SubmitHandler<TProfileFormSchema> = async (data) => {
-		console.log(data);
-		actionUpdatePersonalData({
-			...data,
-			avatar: data.avatar?.type.split('/').at(-1),
-		});
-		router.refresh();
+		toast.promise(
+			actionUpdatePersonalData({
+				...data,
+				avatar: data.avatar?.type.split('/').at(-1),
+			}),
+			{
+				loading: 'Загрузка...',
+				success: (responce) => {
+					router.refresh();
+					return {
+						message: `${responce.message}`,
+						className: '!bg-green-300 !border-green-600 !text-green-800',
+						duration: 500,
+					};
+				},
+				error: (responce) => {
+					return {
+						message: `${responce.message}`,
+						className: '!bg-red-300 !border-red-600 !text-red-800',
+					};
+				},
+			},
+		);
 	};
 
 	const refAvatar = useRef<HTMLInputElement>(null);
@@ -60,6 +78,7 @@ export default function PersonalDataProps({
 	return (
 		<div className='grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8'>
 			<div>
+				<Toaster />
 				<h2 className='text-base/7 font-semibold text-white flex gap-3 items-center'>
 					<UserGroupIcon className='w-9' />
 					Персональные данные

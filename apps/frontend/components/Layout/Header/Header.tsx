@@ -2,15 +2,17 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
 
 import Notification from '../Notification/Notification';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
+import { actionGetPersonalData } from '@/components/Account/actionGetPersonalData';
+import { use } from 'react';
 
 import ShowUser from './ShowUser';
-import SubscribeLVL from './SubscribeLVL';
+
 export default function Header() {
 	const userNavigation = [
 		{ name: 'Мой профиль', href: '/dashboard/account/profile' },
 		{ name: 'Выход', href: '#' },
 	];
-
+	const AccountData = use(actionGetPersonalData());
 	return (
 		<>
 			<div
@@ -28,7 +30,20 @@ export default function Header() {
 					<div className='flex items-center gap-x-4 lg:gap-x-6'>
 						{/* <Notification /> */}
 						{/* Profile dropdown */}
-						<SubscribeLVL />
+						{AccountData.success ? AccountData.data.subscriptionLevel : ''}
+						{AccountData.success && (
+							<span className='uppercase'>
+								{AccountData.data.subscriptionLevel}
+							</span>
+						)}
+						{AccountData.success && <span>{AccountData.data.balance}</span>}
+						{AccountData.success &&
+							(AccountData.data.isVerifiedAuthor ? (
+								<span className='text-green-600 fw-600'>Верифицирован </span>
+							) : (
+								<span className='text-red-700 fw-600'>Не верифицирован </span>
+							))}
+
 						<Menu as='div' className='relative'>
 							<MenuButton className='-m-1.5 flex items-center p-1.5'>
 								<span className='sr-only'>Open user menu</span>

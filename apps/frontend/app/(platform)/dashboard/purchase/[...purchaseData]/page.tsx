@@ -4,17 +4,12 @@ import { Payment } from '@a2seven/yoo-checkout';
 import { cookies } from 'next/headers';
 import { functional } from 'sdk';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
-import z from 'zod';
-const paramsSchema = z.tuple([z.enum(['subscription', 'release']), z.string()]);
-
-const subscriptionLevels = Object.keys(premiumPlans);
-
-type TPurchaseParams = keyof typeof premiumPlans;
+import { paramsSchema, subscriptionLevels, TPremiumPlans } from './action';
 
 export default async function PurchasePage({
 	params,
 }: {
-	params: Promise<{ purchaseData: TPurchaseParams }>;
+	params: Promise<{ purchaseData: TPremiumPlans }>;
 }) {
 	const paramsResult = paramsSchema.safeParse((await params).purchaseData);
 

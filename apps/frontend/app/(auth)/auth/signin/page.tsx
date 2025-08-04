@@ -21,7 +21,7 @@ export default function Auth() {
 			</p>
 
 			<p className={'mt-5'}>
-				<Link className={'text-white'} href='/recover'>
+				<Link className={'text-white'} href='/auth/recover'>
 					Не помню пароль
 				</Link>
 			</p>
