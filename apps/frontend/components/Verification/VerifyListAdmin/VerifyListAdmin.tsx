@@ -4,15 +4,16 @@ import { actionGetVerifyList } from './actionGetVerifyList';
 import { useState } from 'react';
 import { TVerification } from 'sdk/lib/verification/verification.controller';
 import VerifyItem from './VerifyItem/VerifyItem';
+import { Primitive } from 'sdk';
+
+const listVerifyStatus = [
+	{ status: 'moderating', label: 'На модерации' },
+	{ status: 'approved', label: 'Подтвержден' },
+	{ status: 'rejected', label: 'Отклонен' },
+];
 
 export default function VerifyListAdmin() {
-	const listVerifyStatus = [
-		{ status: 'moderating', label: 'На модерации' },
-		{ status: 'approved', label: 'Подтвержден' },
-		{ status: 'rejected', label: 'Отклонен' },
-	];
-
-	const [result, setResult] = useState<null | TVerification[]>();
+	const [result, setResult] = useState<null | Primitive<TVerification>[]>();
 
 	const handleChangeStatus = async (
 		e: React.ChangeEvent<HTMLSelectElement>,

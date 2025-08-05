@@ -6,16 +6,8 @@ import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';
 import { functional } from 'sdk';
 import { TMakeOrderResponse } from 'sdk/lib/finance/finance.controller';
-import { premiumPlans } from 'shared/helpers/premiumPlans';
 import z from 'zod';
-
-export const purchaseTypeSchema = z.enum(['subscription', 'release']);
-
-export const paramsSchema = z.tuple([purchaseTypeSchema, z.string()]);
-
-export const subscriptionLevels = Object.keys(premiumPlans);
-
-export type TPremiumPlans = keyof typeof premiumPlans;
+import { purchaseTypeSchema, subscriptionLevels, TPremiumPlans } from './constants';
 
 export async function makeOrder(
 	orderType: z.infer<typeof purchaseTypeSchema>,

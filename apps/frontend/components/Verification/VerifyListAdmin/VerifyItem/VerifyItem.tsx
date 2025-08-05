@@ -6,10 +6,11 @@ import { XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { actionPatchStatus } from './actionPatchStatus';
 import { Toaster, toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { Primitive } from 'sdk';
 export default function VerifyItem({
 	verifyToken,
 }: {
-	verifyToken: TVerification;
+	verifyToken: Primitive<TVerification>;
 }) {
 	const router = useRouter();
 	const handleApproved = () => {

@@ -4,7 +4,7 @@ import { Payment } from '@a2seven/yoo-checkout';
 import { cookies } from 'next/headers';
 import { functional } from 'sdk';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
-import { paramsSchema, subscriptionLevels, TPremiumPlans } from './action';
+import { paramsSchema, subscriptionLevels, TPremiumPlans } from './constants';
 
 export default async function PurchasePage({
 	params,

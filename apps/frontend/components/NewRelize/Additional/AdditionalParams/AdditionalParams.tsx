@@ -1,4 +1,4 @@
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { Checkbox } from '@heroui/checkbox';
 import { useFormContext } from 'react-hook-form';
 export default function AdditionalParams() {

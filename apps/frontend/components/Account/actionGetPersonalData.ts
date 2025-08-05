@@ -33,8 +33,12 @@ export async function actionGetPersonalData(): Promise<
 		? new Date(PersonalData.data.birthDate)
 		: null;
 
+	const emailVerified = PersonalData.data.emailVerified
+		? new Date(PersonalData.data.emailVerified)
+		: null;
+
 	return {
 		success: true as const,
-		data: { ...PersonalData.data, birthDate },
+		data: { ...PersonalData.data, birthDate, emailVerified },
 	};
 }

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { DatePicker } from '@heroui/date-picker';
 import { I18nProvider } from '@react-aria/i18n';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { Controller, useFormContext } from 'react-hook-form';
 import dateISOFormatter from '@/utils/dateISOFormatter';
 import { parseAbsoluteToLocal } from '@internationalized/date';
