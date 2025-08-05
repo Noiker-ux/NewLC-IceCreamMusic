@@ -21,29 +21,24 @@ export default function ModalPayout({ children }: PropsWithChildren) {
 	const methods = useForm<TPayoutTicketData>({});
 
 	const onSubmit: SubmitHandler<TPayoutTicketData> = (data) => {
-		toast.promise(
-			actionPostPayout({
-				amount: data.amount,
-				accountNumber: data.accountNumber,
-				recieverName: data.recieverName,
-			}),
-			{
-				loading: 'Загрузка...',
-				success: (responce) => {
-					return {
-						message: `${responce.message}`,
-						className: '!bg-green-300 !border-green-600 !text-green-800',
-						duration: 500,
-					};
-				},
-				error: (responce) => {
-					return {
-						message: `${responce.message}`,
-						className: '!bg-red-300 !border-red-600 !text-red-800',
-					};
-				},
+		console.log(data);
+		toast.promise(actionPostPayout(data), {
+			loading: 'Загрузка...',
+			success: (responce) => {
+				return {
+					message: `${responce.message}`,
+					className: '!bg-green-300 !border-green-600 !text-green-800',
+					duration: 500,
+				};
 			},
-		);
+			error: (responce) => {
+				return {
+					message: `${responce.message}`,
+					className: '!bg-red-300 !border-red-600 !text-red-800',
+				};
+			},
+		});
+		methods.reset();
 		onOpenChange();
 	};
 	return (
@@ -92,7 +87,9 @@ export default function ModalPayout({ children }: PropsWithChildren) {
 										labelPlacement='outside'
 										{...methods.register('amount')}
 									/>
-									<Button className='bg-indigo-700 w-fit mx-auto mt-3'>
+									<Button
+										type='submit'
+										className='bg-indigo-700 w-fit mx-auto mt-3'>
 										Отправить
 									</Button>
 								</form>

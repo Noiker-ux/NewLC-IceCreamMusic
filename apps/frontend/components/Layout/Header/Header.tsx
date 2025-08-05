@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
-import Notification from '../Notification/Notification';
-import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
-=======
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
->>>>>>> origin/vk-auth
 import { actionGetPersonalData } from '@/components/Account/actionGetPersonalData';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
 
@@ -17,12 +11,7 @@ export default async function Header() {
 		{ name: 'Мой профиль', href: '/dashboard/account/profile' },
 		{ name: 'Выход', href: '#' },
 	];
-<<<<<<< HEAD
-	const AccountData = use(actionGetPersonalData());
-
-=======
 	const AccountData = await actionGetPersonalData();
->>>>>>> origin/vk-auth
 	return (
 		<>
 			<div

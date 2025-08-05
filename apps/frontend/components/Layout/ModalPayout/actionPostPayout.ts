@@ -23,7 +23,11 @@ export async function actionPostPayout(data: TPayoutTicketData) {
 
 	functional.v1.finance.payouts
 		.createPayoutTicket(connection, {
-			data: { ...data },
+			data: {
+				accountNumber: data.accountNumber,
+				amount: data.amount,
+				recieverName: data.recieverName,
+			},
 		})
 		.catch((error) => {
 			return {
