@@ -389,6 +389,7 @@ export class FinanceController {
       userId: user.id,
       amount: body.data.amount,
       recieverName: body.data.recieverName,
+      accountNumber: body.data.accountNumber,
       confirmed: false,
     });
 
