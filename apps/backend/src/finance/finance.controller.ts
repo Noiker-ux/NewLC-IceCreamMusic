@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
-import { and, eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
+import { and, eq, InferInsertModel, InferSelectModel, sql } from 'drizzle-orm';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
 import {
   releaseMetadataSchema,
@@ -403,12 +403,26 @@ export class FinanceController {
     @TypedParam('ticketId') ticketId: string,
     @TypedBody() body: TUpdatePayoutTicketStatusBody,
   ): Promise<TSuccessionResponse> {
-    await this.db
-      .update(schema.payouts)
-      .set({
-        confirmed: body.data.confirmed,
-      })
-      .where(eq(schema.payouts.id, ticketId));
+    await this.db.transaction(async (tx) => {
+      const ticket = await tx.query.payouts.findFirst({
+        where: eq(schema.payouts.id, ticketId),
+      });
+
+      if (!ticket) throw new BadRequestException('Тикет не найден');
+
+      await tx
+        .update(schema.payouts)
+        .set({
+          confirmed: body.data.confirmed,
+        })
+        .where(eq(schema.payouts.id, ticket.id));
+
+      if (body.data.confirmed) {
+        await tx.update(schema.users).set({
+          balance: sql`${schema.users.balance} - ${ticket.amount ?? 0}`,
+        });
+      }
+    });
 
     return { success: true };
   }

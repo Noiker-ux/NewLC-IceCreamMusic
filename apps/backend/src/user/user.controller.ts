@@ -37,6 +37,7 @@ export type TUserData = Pick<
   | 'subscriptionLevel'
   | 'isVerifiedAuthor'
   | 'emailVerified'
+  | 'isAdmin'
 >;
 
 export type TGetMeResponse = {
@@ -107,6 +108,7 @@ export class UserController {
         isSubscribed: true,
         subscriptionLevel: true,
         isVerifiedAuthor: true,
+        isAdmin: true,
       },
     });
 
@@ -138,6 +140,7 @@ export class UserController {
         isSubscribed: true,
         subscriptionLevel: true,
         isVerifiedAuthor: true,
+        isAdmin: true,
       },
     });
 
