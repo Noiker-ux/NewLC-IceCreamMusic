@@ -114,6 +114,23 @@ export class ReleaseController {
     private readonly releaseService: ReleaseService,
   ) {}
 
+  @AdminGuard()
+  @TypedRoute.Get()
+  async getReleases(
+    @TypedQuery() params: TPageQuery,
+  ): Promise<TGetReleaseListResponse> {
+    const releases = await this.db.query.release.findMany({
+      with: {
+        tracks: { orderBy: asc(schema.track.index) },
+        promoLinks: true,
+      },
+      limit: params.size,
+      offset: (params.page - 1) * params.size,
+    });
+
+    return { data: releases };
+  }
+
   @TypedRoute.Get('my')
   async getMyReleases(
     @Session() sessionToken: string,
