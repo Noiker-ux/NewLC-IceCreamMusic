@@ -42,7 +42,7 @@ FROM base AS main
 
 WORKDIR /app
 
-COPY --from=build /app/apps/frontend/.next/standalone ./
+COPY --from=build /app/apps/frontend/.next/standalone/apps/frontend ./
 
 EXPOSE 3000
 
