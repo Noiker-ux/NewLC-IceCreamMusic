@@ -4,9 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build && npm run copy_static",
-		"copy_public": "cpy public .next/standalone/apps/frontend",
-		"copy_static": "cpy .next/static .next/standalone/apps/frontend",
+		"build": "next build && cpy .next/static .next/standalone/apps/frontend && cpy public .next/standalone/apps/frontend",
 		"start": "node .next/standalone/apps/frontend/server.js",
 		"lint": "next lint",
 		"dev:email": "email dev"
