@@ -100,3 +100,32 @@ export const navigation: TMenu[] = [
 		icon: 'heroicons:star',
 	},
 ];
+
+export const navigationAdmin: TMenu[] = [
+	{
+		name: 'Новости',
+		href: '/dashboard/admin/news/',
+		icon: 'heroicons:newspaper',
+	},
+	{
+		name: 'Релизы',
+		icon: 'heroicons:musical-note',
+		href: '/dashboard/admin/relizes/',
+	},
+	{
+		name: 'FAQ',
+		icon: 'heroicons:sparkles',
+		href: '/dashboard/admin/faq/',
+	},
+
+	{
+		name: 'Верификация',
+		href: '/dashboard/admin/verify',
+		icon: 'heroicons:chart-pie',
+	},
+	{
+		name: 'Заявки на выплаты',
+		href: '/dashboard/admin/payments/',
+		icon: 'heroicons:question-mark-circle',
+	},
+];

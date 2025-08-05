@@ -21,20 +21,13 @@ export async function actionPostPayout(data: TPayoutTicketData) {
 		headers,
 	});
 
-	functional.v1.finance.payouts
-		.createPayoutTicket(connection, {
-			data: {
-				accountNumber: data.accountNumber,
-				amount: data.amount,
-				recieverName: data.recieverName,
-			},
-		})
-		.catch((error) => {
-			return {
-				success: false as const,
-				message: error.message,
-			};
-		});
+	functional.v1.finance.payouts.createPayoutTicket(connection, {
+		data: {
+			accountNumber: data.accountNumber,
+			amount: Number(data.amount),
+			recieverName: data.recieverName,
+		},
+	});
 
 	return {
 		success: true as const,

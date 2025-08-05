@@ -16,7 +16,10 @@ import { TPayoutTicketData } from 'sdk/lib/finance/finance.controller';
 import { Toaster, toast } from 'sonner';
 import { actionPostPayout } from './actionPostPayout';
 
-export default function ModalPayout({ children }: PropsWithChildren) {
+export default function ModalPayout({
+	maxBalance,
+	children,
+}: { maxBalance: number } & PropsWithChildren) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const methods = useForm<TPayoutTicketData>({});
 
@@ -84,6 +87,9 @@ export default function ModalPayout({ children }: PropsWithChildren) {
 									<Input
 										label='Сумма'
 										placeholder='Введите сумму'
+										type='number'
+										max={maxBalance}
+										min={2000}
 										labelPlacement='outside'
 										{...methods.register('amount')}
 									/>

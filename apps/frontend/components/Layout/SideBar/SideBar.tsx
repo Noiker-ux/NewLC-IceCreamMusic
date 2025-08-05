@@ -1,11 +1,14 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, use } from 'react';
 import Header from '../Header/Header';
-import { navigation } from './SideBar.links';
+import { navigation, navigationAdmin } from './SideBar.links';
 import SideBarBody from './SideBarBody/SideBarBody';
 import SideBarFooter from './SideBarFooter/SideBarFooter';
 import SideBarHeader from './SideBarHeader/SideBarHeader';
+import { actionGetPersonalData } from '@/components/Account/actionGetPersonalData';
 
 export default function Example({ children }: PropsWithChildren) {
+	const me = use(actionGetPersonalData());
+
 	return (
 		<div>
 			{/* Static sidebar for desktop */}
@@ -18,7 +21,11 @@ export default function Example({ children }: PropsWithChildren) {
 							role='list'
 							className=' flex no-scrollbar flex-1 flex-col gap-y-7'>
 							<li>
-								<SideBarBody menu={navigation} />
+								{me.success && (
+									<SideBarBody
+										menu={me.data.isAdmin ? navigationAdmin : navigation}
+									/>
+								)}
 							</li>
 							<SideBarFooter />
 						</ul>

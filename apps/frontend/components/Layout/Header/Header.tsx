@@ -35,7 +35,9 @@ export default async function Header() {
 							</span>
 						)}
 						{AccountData.success && (
-							<ModalPayout>{AccountData.data.balance.toFixed(2)}</ModalPayout>
+							<ModalPayout maxBalance={AccountData.data.balance}>
+								{AccountData.data.balance.toFixed(2)}
+							</ModalPayout>
 						)}
 
 						{AccountData.success &&
