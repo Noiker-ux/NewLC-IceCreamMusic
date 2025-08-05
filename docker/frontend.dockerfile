@@ -42,9 +42,9 @@ FROM base AS main
 
 WORKDIR /app
 
-COPY --from=build /app/apps/frontend/.next/standalone/apps/frontend ./
+COPY --from=build /app/apps/frontend/.next/standalone ./
 
 EXPOSE 3000
 
-CMD [ "node", "server.js" ]
+CMD [ "node", "./apps/frontend/server.js" ]
 
