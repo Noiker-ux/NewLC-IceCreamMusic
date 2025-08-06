@@ -64,8 +64,8 @@ services:
     depends_on:
       - postgres
       - minio
-    volumes:
-      - ./apps/frontend/public:./app/public
+    # volumes:
+    #   - ./apps/frontend/public:./app/public
     # ports:
     #   - "3000:3000"
   migration_tool:
