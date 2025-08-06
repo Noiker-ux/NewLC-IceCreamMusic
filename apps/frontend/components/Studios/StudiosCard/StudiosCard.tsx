@@ -8,12 +8,13 @@ export default function StudiosCard({
 	preview,
 	rating,
 	place,
+	id,
 }: TStudiosCard) {
 	return (
 		<div
 			className='w-full rounded-xl bg-zinc-900 relative h-fit cursor-pointer hover:scale-95 transition-all
         '>
-			<ViewTransition name='studioTransit'>
+			<ViewTransition name={`studioTransit-${id}`}>
 				<Image
 					src={preview}
 					alt={''}

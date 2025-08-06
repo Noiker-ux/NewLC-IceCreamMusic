@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
 		'localhost',
 		'localhost:3000',
 		'www.baconcs.duckdns.org',
+		'www.icecreammusic.net',
 		'3rs27bxx-3000.inc1.devtunnels.ms',
 	],
 	experimental: {
@@ -15,6 +16,7 @@ const nextConfig: NextConfig = {
 			allowedOrigins: [
 				'localhost',
 				'localhost:3000',
+				'www.baconcs.duckdns.org',
 				'www.icecreammusic.net',
 				'3rs27bxx-3000.inc1.devtunnels.ms',
 			],
@@ -31,6 +33,11 @@ const nextConfig: NextConfig = {
 					destination: '/dashboard/main/news',
 					permanent: true,
 				},
+				{
+					source: '/dashboard/marketing/promo-links',
+					destination: '/dashboard/main/news',
+					permanent: true,
+				}
 			];
 	},
 };

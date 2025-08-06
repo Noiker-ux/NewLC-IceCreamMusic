@@ -1,26 +1,25 @@
 'use client';
-import { useState } from 'react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 import {
-	TrashIcon,
-	PencilSquareIcon,
 	ClipboardDocumentCheckIcon,
 	InboxStackIcon,
-	SquaresPlusIcon,
 	LinkIcon,
+	SquaresPlusIcon,
+	TrashIcon,
 } from '@heroicons/react/24/outline';
 
-import { IoIosArrowDown } from 'react-icons/io';
-import { Button, Link, Tooltip } from '@heroui/react';
-import MusicList from './MusicList';
 import { cn } from '@/utils/cn';
-import { TGetReleaseListResponse } from 'sdk/lib/release/release.controller';
-import Platforms from '../NewRelize/CheckRelizeForm/Platfroms/Platforms';
-import Areas from '../NewRelize/CheckRelizeForm/Areas/Areas';
-import { Primitive } from 'sdk';
 import DateFormatter from '@/utils/dateFormatter';
-import { useRouter, usePathname } from 'next/navigation';
+import { Button, Link, Tooltip } from '@heroui/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { IoIosArrowDown } from 'react-icons/io';
+import { Primitive } from 'sdk';
+import { TGetReleaseListResponse } from 'sdk/lib/release/release.controller';
+import Areas from '../NewRelize/CheckRelizeForm/Areas/Areas';
+import Platforms from '../NewRelize/CheckRelizeForm/Platfroms/Platforms';
+import MusicList from './MusicList';
 
 export default function RelizecCard({
 	release,
@@ -108,6 +107,13 @@ export default function RelizecCard({
 							)}
 						</p>
 					</div>
+					<div>
+						<p className='text-xs font-extralight text-gray-300'>Оплачен</p>
+						<p className='text-sm '>
+							{release.confirmed && <span className='text-green-400'>Да</span>}
+							{!release.confirmed && <span className='text-red-500'>Нет</span>}
+						</p>
+					</div>
 				</div>
 			</div>
 			<div className='flex gap-3 justify-end'>
@@ -127,10 +133,7 @@ export default function RelizecCard({
 							<p>Просмотр статуса отгрузки на площадки</p>
 						</div>
 					}>
-					<Button
-						as={Link}
-						href='https://github.com/heroui-inc/heroui'
-						isIconOnly>
+					<Button as={Link} href='#' isIconOnly>
 						<ClipboardDocumentCheckIcon width={20} />
 					</Button>
 				</Tooltip>
@@ -140,10 +143,7 @@ export default function RelizecCard({
 							<p>Просмотр информации о релизе</p>
 						</div>
 					}>
-					<Button
-						as={Link}
-						href='https://github.com/heroui-inc/heroui'
-						isIconOnly>
+					<Button as={Link} href='#' isIconOnly>
 						<InboxStackIcon width={20} />
 					</Button>
 				</Tooltip>

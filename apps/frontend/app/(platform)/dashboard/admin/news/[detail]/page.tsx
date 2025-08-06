@@ -1,7 +1,7 @@
 import NewsDetail from '@/components/News/NewsDetail/NewsDetail';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
-import { functional, Primitive } from 'sdk';
-import { TGetNewsByIdResponse } from 'sdk/lib/news/news.controller';
+import { functional } from 'sdk';
+import { checkUserAdmin } from '../../checkUserAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +16,8 @@ export default async function NewsDetailPageAdmin({
 }: {
 	params: Promise<{ detail: string }>;
 }) {
+	await checkUserAdmin();
+
 	const newsDetail = await functional.v1.news.getNewsById(
 		connection,
 		(await params).detail,

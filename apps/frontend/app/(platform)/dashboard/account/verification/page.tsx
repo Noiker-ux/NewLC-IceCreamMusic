@@ -1,10 +1,15 @@
-import VerificationExpectation from '@/components/Verification/VerificationExpectation/VerificationExpectation';
 import VerificationForm from '@/components/Verification/VerificationForm/VerificationForm';
 import Link from 'next/link';
+import { checkUserVerified } from './checkUserVerified';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export default function VerificationPage() {
+export default async function VerificationPage() {
+	const verificationResult = await checkUserVerified();
+
+	if (verificationResult.success) redirect('/dashboard/main/news');
+
 	return (
 		<div className='w-full flex  xl:flex-row flex-row gap-8'>
 			<div className='bg-zinc-900 w-full p-8 rounded-xl xl:w-3/4  '>
