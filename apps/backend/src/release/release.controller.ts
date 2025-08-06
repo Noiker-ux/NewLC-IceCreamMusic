@@ -115,11 +115,13 @@ export class ReleaseController {
   ) {}
 
   @AdminGuard()
-  @TypedRoute.Get()
+  @TypedRoute.Get('/status/:statusType')
   async getReleases(
+    @TypedParam('statusType') statusType: TRelease['status'],
     @TypedQuery() params: TPageQuery,
   ): Promise<TGetReleaseListResponse> {
     const releases = await this.db.query.release.findMany({
+      where: eq(schema.release.status, statusType),
       with: {
         tracks: { orderBy: asc(schema.track.index) },
         promoLinks: true,
