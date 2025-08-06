@@ -46,11 +46,14 @@ export async function POST(req: Request) {
 
 		const result = await functional.v1.finance
 			.confirmOrder(connection, payment.id)
-			.catch(() => ({ success: false as const }));
+			.catch((e: unknown) => {
+				console.log(JSON.stringify(e, null, 2));
+				return { success: false as const }
+			});
 
 		if (result.success) return goodResponse;
 	}
 
-	console.log('qwe');
+	console.log('unnkown issue');
 	return badResponse;
 }
