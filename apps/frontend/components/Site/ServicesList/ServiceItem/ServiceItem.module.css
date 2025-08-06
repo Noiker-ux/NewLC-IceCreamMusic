@@ -1,0 +1,106 @@
+.card {
+	border-radius: 20px;
+	padding: 2rem 1rem 6rem 1rem;
+	color: var(--text-color);
+	border: 1px solid var(--border-color);
+	background-color: var(--card-BG-color);
+	max-width: 380px;
+	position: relative;
+}
+.card__header {
+	display: flex;
+	justify-content: space-between;
+}
+.counter {
+	display: flex;
+	align-items: center;
+	background-color: var(--light-green);
+	font-weight: bold;
+	border-radius: 25px;
+	padding: 3px 15px 3px 25px;
+	position: relative;
+	font-size: 0.85rem;
+}
+.counter::before {
+	content: '';
+	position: absolute;
+	width: 5px;
+	left: 12px;
+	top: calc(50% - 2.5px);
+	height: 5px;
+	border-radius: 50%;
+	background-color: var(--green-color);
+}
+.card__body {
+	margin-top: 8px;
+}
+
+.title {
+	font-size: 1.5rem;
+}
+.description {
+	color: var(--gray-color);
+	font-weight: 400;
+	font-size: 0.915rem;
+	margin-top: 10px;
+	line-height: 1.2rem;
+}
+.price__wrapper {
+	margin-top: 30px;
+}
+.price {
+	font-size: 2rem;
+	font-weight: bold;
+}
+.benefits {
+	margin-top: 30px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+.benefis__item {
+	list-style: none;
+	display: flex;
+}
+.benefis__item::before {
+	background-size: contain;
+	content: '';
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+	margin-right: 8px;
+	background-image: url('./gal.png');
+}
+.timeframe {
+	color: rgb(84, 82, 82);
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+.green {
+	background-color: rgb(22 163 74/1);
+}
+.orange {
+	background-color: rgb(234 88 12/1);
+}
+.purple {
+	background-color: rgb(79 70 229/1);
+}
+.button {
+	left: 1.5rem;
+	bottom: 2rem;
+	font-weight: bold;
+	font-size: 0.9rem;
+	width: calc(100% - 3rem);
+	color: #fff;
+	position: absolute;
+	display: block;
+	text-align: center;
+	padding: 10px 8px;
+	border-radius: 5px;
+	transition: all 0.4s ease;
+}
+
+.button:hover {
+	transition: all 0.4s ease;
+	transform: scale(1.05);
+}

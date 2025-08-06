@@ -44,10 +44,10 @@ export default async function AdminRelizesPage({
 	if (!usersResult.success) return <>Not found</>;
 
 	return (
-		<>
+		<div className='max-w-7xl'>
 			{usersResult.data.map((r) => {
 				return <RelizecCard key={r.id} release={r} />;
 			})}
-		</>
+		</div>
 	);
 }

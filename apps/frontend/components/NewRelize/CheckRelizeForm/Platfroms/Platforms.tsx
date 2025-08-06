@@ -1,3 +1,4 @@
+'use client';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Tooltip } from '@heroui/tooltip';
 import { useDisclosure } from '@heroui/use-disclosure';

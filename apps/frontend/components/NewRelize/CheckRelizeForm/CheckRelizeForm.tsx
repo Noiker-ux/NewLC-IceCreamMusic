@@ -14,7 +14,7 @@ export default function CheckRelizeForm() {
 	const values = watch();
 
 	return (
-		<div>
+		<div className='mb-5'>
 			<div
 				className={cn(
 					'w-full   p-5 bg-red-500 rounded-xl',
@@ -32,7 +32,7 @@ export default function CheckRelizeForm() {
 					</>
 				)}
 			</div>
-			<div className='bg-zinc-900 p-5 rounded-lg mt-5 max-w-7xl '>
+			{/* <div className='bg-zinc-900 p-5 rounded-lg mt-5 max-w-7xl '>
 				<div className='flex  gap-5   '>
 					<Image
 						src={'/assets/XaQw7AVPHNY.jpg'}
@@ -166,7 +166,7 @@ export default function CheckRelizeForm() {
 					<p className='mt-3 cursor-pointer'>Список треков</p>
 					<ChevronUpIcon width={20} />
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 }

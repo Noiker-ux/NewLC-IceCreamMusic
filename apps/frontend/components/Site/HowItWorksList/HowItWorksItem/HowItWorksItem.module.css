@@ -1,0 +1,23 @@
+.item {
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+}
+
+.icon {
+	filter: invert();
+	mix-blend-mode: exclusion;
+}
+
+.title {
+	font-size: 1.25rem;
+	font-weight: 500;
+}
+
+.description {
+	line-height: 1.37rem;
+	color: var(--gray-color);
+}

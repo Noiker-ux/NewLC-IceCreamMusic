@@ -1,0 +1,22 @@
+.wrapper {
+	display: flex;
+	gap: 30px;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 50px;
+}
+.description {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+@media screen and (max-width: 880px) {
+	.wrapper {
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+}

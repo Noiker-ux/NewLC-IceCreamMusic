@@ -1,0 +1,41 @@
+.card {
+	border-radius: 20px;
+	padding: 2rem 1rem;
+	color: var(--text-color);
+	border: 1px solid var(--border-color);
+	background-color: var(--card-BG-color);
+	box-shadow: 0 10px 20px -12px #1e293b;
+}
+.header {
+	display: flex;
+	gap: 10px;
+}
+
+.avatar {
+	border-radius: 50%;
+	border: 1px solid #ababab7f;
+	padding: 7px 11px;
+}
+
+.name {
+	font-weight: 500;
+	font-size: 0.9rem;
+}
+
+.role,
+.desc {
+	color: rgb(156 163 175);
+	font-size: 0.8rem;
+}
+
+.user {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.desc {
+	font-size: 0.85rem;
+	line-height: 1.325rem;
+	margin-top: 10px;
+}

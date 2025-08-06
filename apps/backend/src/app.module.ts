@@ -57,6 +57,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         return {
           endPoint: s3Endpoint,
           useSSL: s3UseSSL,
+          port: 9000,
           accessKey: s3AccessKey,
           secretKey: s3SecretKey,
         };

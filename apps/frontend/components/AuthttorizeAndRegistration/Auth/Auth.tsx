@@ -12,6 +12,7 @@ import { actionAuthtorize } from './authtorizeAction';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { yandexSignIn } from '@/features/signin/api/yandex';
 import { vkSignIn } from '@/features/signin/api/vk';
+import { FaVk, FaYandex } from 'react-icons/fa6';
 
 export default function Authorization() {
 	const methods = useForm({
@@ -46,20 +47,23 @@ export default function Authorization() {
 			/>
 			<Checkbox {...methods.register('rememberMe')}>Запомнить пароль</Checkbox>
 			<Button type='submit'>Войти</Button>
-			<hr />
-			<Button
-				onPress={() => {
-					yandexSignIn('/dashboard');
-				}}>
-				yandex
-			</Button>
-			<hr />
-			<Button
-				onPress={() => {
-					vkSignIn('/dashboard');
-				}}>
-				vk
-			</Button>
+			<div className='flex justify-center gap-3'>
+				<Button
+					isIconOnly
+					className='bg-[#cc4b34]'
+					onPress={() => {
+						yandexSignIn('/dashboard');
+					}}
+					startContent={<FaYandex className='w-10' />}></Button>
+
+				<Button
+					isIconOnly
+					className='bg-[#1890FF]'
+					onPress={() => {
+						vkSignIn('/dashboard');
+					}}
+					startContent={<FaVk className='w-10' />}></Button>
+			</div>
 		</form>
 	);
 }

@@ -108,9 +108,14 @@ export const navigationAdmin: TMenu[] = [
 		icon: 'heroicons:newspaper',
 	},
 	{
+		name: 'Пользователи',
+		icon: 'heroicons:user',
+		href: '/dashboard/admin/users/',
+	},
+	{
 		name: 'Релизы',
 		icon: 'heroicons:musical-note',
-		href: '/dashboard/admin/relizes/',
+		href: '/dashboard/admin/releases/',
 	},
 	{
 		name: 'FAQ',

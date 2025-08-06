@@ -1,0 +1,17 @@
+.StatisticList {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+	width: 100%;
+}
+
+@media screen and (max-width: 700px) {
+	.StatisticList {
+		flex-direction: column;
+	}
+}

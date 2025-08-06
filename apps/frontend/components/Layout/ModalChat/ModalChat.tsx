@@ -42,7 +42,7 @@ export default function ChatModal({
 								color='default'
 								onPress={onClose}
 								as={Link}
-								href={'https://t.me/Ckeabrona'}>
+								href={'https://t.me/ICECREAMMUSICSUPPORTBOT'}>
 								Написать в телеграмм
 							</Button>
 						</ModalFooter>

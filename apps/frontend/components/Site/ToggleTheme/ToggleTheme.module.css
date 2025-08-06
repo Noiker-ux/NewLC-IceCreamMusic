@@ -1,0 +1,8 @@
+.switch {
+	border: none;
+	background-color: transparent;
+	cursor: pointer;
+}
+.dark {
+	filter: invert();
+}

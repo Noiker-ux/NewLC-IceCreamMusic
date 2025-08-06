@@ -14,10 +14,12 @@ export default function RecoverPage() {
 	return (
 		<div
 			className={
-				'text-white m-auto border-y-1 border-[#424242] w-full px-24 text-center relative'
+				'text-white m-auto border-y-1 border-[#424242] w-full px-24 py-5 text-center relative'
 			}>
 			<div
-				className={'flex justify-center items-center flex-col my-auto w-[90%]'}>
+				className={
+					'flex justify-center items-center flex-col gap-5 my-auto w-[90%]'
+				}>
 				<div className='mb10'>
 					Введите адрес эл. почты, привязанный к Вашей учетной записи.
 				</div>
