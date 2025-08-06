@@ -1,4 +1,4 @@
-// import CanvasThree from '@/components/CanvasThree/CanvasThree';
+import CanvasThree from '@/components/CanvasThree/CanvasThree';
 
 export default async function AuthLayout({
 	children,
@@ -7,8 +7,10 @@ export default async function AuthLayout({
 }) {
 	return (
 		<main className=' bg-black'>
-			{/* <div className='w-full h-screen relative'><CanvasThree /></div> */}
-			<div className='fixed flex right-0 w-1/2 h-screen text-white border-l-1 border-[#424242] backdrop-filter backdrop-blur-md -z-10'>
+			<div className='w-full h-screen fixed z-10'>
+				<CanvasThree />
+			</div>
+			<div className='fixed flex right-0 w-1/2 h-screen text-white border-l-1 border-[#424242] backdrop-filter backdrop-blur-md z-20'>
 				{children}
 			</div>
 		</main>
