@@ -5,7 +5,7 @@ export type PriceList = Record<keyof typeof premiumPlans | "none", number>;
 export const standardLabelName = "ICECREAMMUSIC";
 
 export const paidReleaseCost: PriceList = {
-  none: 250,
+  none: 350,
   standard: 190,
   professional: 150,
   enterprise: 0,
