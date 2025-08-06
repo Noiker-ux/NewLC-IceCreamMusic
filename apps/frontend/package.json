@@ -47,6 +47,7 @@
 		"@react-stately/data": "^3.13.1",
 		"@react-three/drei": "^10.0.7",
 		"@react-three/fiber": "^9.1.2",
+		"@react-three/rapier": "^2.1.0",
 		"@tabler/icons-react": "^3.31.0",
 		"@types/nodemailer": "^6.4.17",
 		"@types/three": "^0.176.0",

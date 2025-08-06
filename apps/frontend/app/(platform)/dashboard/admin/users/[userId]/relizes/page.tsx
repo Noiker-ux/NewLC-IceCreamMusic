@@ -30,7 +30,7 @@ export default async function AdminRelizesPage({
 	const usersResult = await functional.v1.releases.user
 		.getUserReleases(connection, userId, {
 			page: 1,
-			size: 10,
+			size: 1000,
 		})
 		.then((r) => ({
 			success: true as const,

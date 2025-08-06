@@ -26,7 +26,7 @@ export async function actionGetVerifyList(
 
 	const result = await functional.v1.verification
 		.getVerificationTickets(connection, status, {
-			size: 10,
+			size: 1000,
 			page: 1,
 		})
 		.then((r) => ({

@@ -26,7 +26,7 @@ export default async function UsersPage() {
 	const result = await functional.v1.users
 		.getUsers(connection, {
 			page: 1,
-			size: 10,
+			size: 1000,
 		})
 		.then((r) => ({ success: true as const, data: r.data }))
 		.catch((e) => ({ success: false as const, error: e.message }));

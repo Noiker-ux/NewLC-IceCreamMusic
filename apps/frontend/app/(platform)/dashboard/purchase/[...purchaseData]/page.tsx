@@ -5,6 +5,8 @@ import { cookies } from 'next/headers';
 import { functional } from 'sdk';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
 import { paramsSchema, subscriptionLevels, TPremiumPlans } from './constants';
+import { Button } from '@heroui/button';
+import { PayButton } from './PayButton';
 
 export default async function PurchasePage({
 	params,
@@ -61,5 +63,44 @@ export default async function PurchasePage({
 		receipt = subscriptionLevelReceipt.data;
 	}
 
-	return <>purchase page {JSON.stringify(receipt)}</>;
+	return (
+		<>
+			<div>
+				<table>
+					<thead>
+						<tr>
+							<th>Услуга</th>
+							<th>Стоимость</th>
+						</tr>
+					</thead>
+					<tbody>
+						{receipt.map((receiptItem) => (
+							<tr key={receiptItem.description}>
+								<td>{receiptItem.description}</td>
+								<td>{receiptItem.amount.value}</td>
+							</tr>
+						))}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Итого</th>
+							<th>
+								{receipt
+									.reduce((summ, receiptItem) => {
+										return summ + Number(receiptItem.amount.value);
+									}, 0)
+									.toFixed(2)}
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<div>
+				<PayButton
+					orderType={paramsResult.data[0]}
+					orderData={paramsResult.data[1]}
+				/>
+			</div>
+		</>
+	);
 }

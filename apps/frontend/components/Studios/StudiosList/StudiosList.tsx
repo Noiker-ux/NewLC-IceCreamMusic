@@ -10,7 +10,7 @@ const connection = createSDKConnection({
 export default async function StudiosList() {
 	const studioData = await functional.v1.studios.getStudios(connection, {
 		page: 1,
-		size: 20,
+		size: 1000,
 	});
 
 	return (

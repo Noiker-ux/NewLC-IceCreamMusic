@@ -8,8 +8,8 @@
       "types": "./lib/index.d.ts"
     },
     "./schema": {
-      "default": "./src/schema.ts",
-      "types": "./lib/schema.d.ts"
+      "default": "./lib/schema.js",
+      "types": "./lib/schema.d.js"
     }
   },
   "type": "commonjs",

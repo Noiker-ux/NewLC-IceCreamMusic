@@ -4,8 +4,9 @@ import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { functional } from 'sdk';
+import { TRelease } from 'shared/schema/release.schema';
 
-export default async function actionGetRelizes() {
+export default async function actionGetRelizes(status: TRelease['status'] = 'moderating') {
 	const cookiesStore = await cookies();
 
 	const sessionToken = await cookiesStore.get(sessionCookieName)?.value;
@@ -21,7 +22,7 @@ export default async function actionGetRelizes() {
 		next: { tags: ['admin-releases'], revalidate: 5 },
 	});
 
-	const releasesData = await functional.v1.releases.getReleases(connection, {
+	const releasesData = await functional.v1.releases.status.getReleases(connection, status, {
 		page: 1,
 		size: 500,
 	});

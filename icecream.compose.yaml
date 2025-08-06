@@ -53,6 +53,9 @@ services:
       NEXT_PUBLIC_S3_URL: ${NEXT_PUBLIC_S3_URL:?error}
       #FRONTEND
       NEXT_PUBLIC_DOMAIN: ${NEXT_PUBLIC_DOMAIN:?error}
+      #YOOKASSA
+      YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID:?error}
+      YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY:?error}
     env_file:
       - .env
     restart: unless-stopped

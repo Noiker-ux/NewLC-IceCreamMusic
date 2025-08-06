@@ -27,7 +27,7 @@ export async function actionGetPayouts(): Promise<
 	const responce = await functional.v1.finance.payouts
 		.getPayoutTickets(connection, {
 			page: 1,
-			size: 10,
+			size: 1000,
 		})
 		.catch(() => {
 			return null;

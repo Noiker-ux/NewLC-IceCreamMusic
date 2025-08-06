@@ -38,6 +38,7 @@ export async function makeOrder(
 				error: 'Неверный уровень подписки',
 			};
 		}
+
 		const result = await functional.v1.finance.createOrder(orderConnection, {
 			type: 'subscription',
 			subscriptionLevel: orderData as TPremiumPlans,

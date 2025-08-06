@@ -6,13 +6,15 @@ const nextConfig: NextConfig = {
 	cleanDistDir: true,
 	allowedDevOrigins: [
 		'localhost',
+		'localhost:3000',
 		'www.baconcs.duckdns.org',
-		'https://3rs27bxx-3000.inc1.devtunnels.ms',
+		'3rs27bxx-3000.inc1.devtunnels.ms',
 	],
 	experimental: {
 		serverActions: {
 			allowedOrigins: [
 				'localhost',
+				'localhost:3000',
 				'www.icecreammusic.net',
 				'3rs27bxx-3000.inc1.devtunnels.ms',
 			],
@@ -21,6 +23,15 @@ const nextConfig: NextConfig = {
 	},
 	images: {
 		unoptimized: true,
+	},
+	async redirects() {
+			return [
+				{
+					source: '/dashboard',
+					destination: '/dashboard/main/news',
+					permanent: true,
+				},
+			];
 	},
 };
 
