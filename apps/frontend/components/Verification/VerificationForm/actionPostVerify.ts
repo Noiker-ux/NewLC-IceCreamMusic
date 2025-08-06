@@ -1,17 +1,21 @@
 'use server';
-import { createSDKConnection } from '@/shared/lib/config/sdk';
-import { functional } from 'sdk';
-import { TVerification } from 'sdk/lib/verification/verification.controller';
-import { cookies } from 'next/headers';
+import { TActionResult } from '@/components/Account/actionGetPersonalData';
+import { TVerificationFormSchema } from '@/schema/verification.schema';
 import { sessionCookieName } from '@/shared/lib/config/auth';
+import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { cookies } from 'next/headers';
+import { functional } from 'sdk';
+import { TRegisterVerificationTicketResponse } from 'sdk/lib/verification/verification.controller';
 
-export async function actionPostVerify(data: TVerification) {
+export async function actionPostVerify(
+	data: TVerificationFormSchema & { contract: string },
+): Promise<TActionResult<TRegisterVerificationTicketResponse['data']>> {
 	const cookieStore = await cookies();
 	const token = cookieStore.get(sessionCookieName)?.value;
 	if (!token) {
 		return {
 			success: false as const,
-			message: 'Вы не авторизованы',
+			error: 'Вы не авторизованы',
 		};
 	}
 
@@ -21,7 +25,7 @@ export async function actionPostVerify(data: TVerification) {
 		headers,
 	});
 
-	functional.v1.verification
+	const result = await functional.v1.verification
 		.registerVerifiactionTicket(connection, {
 			data: {
 				...data,
@@ -29,16 +33,13 @@ export async function actionPostVerify(data: TVerification) {
 				getDate: new Date(data.getDate).toISOString(),
 			},
 		})
+		.then((r) => ({ success: true as const, data: r.data }))
 		.catch((e) => {
 			return {
 				success: false as const,
-				message: e.message,
+				error: `${e.message}`,
 			};
 		});
-	return {
-		success: true as const,
-		message: `
-		Данные успешно отправлены на проверку!
-		`,
-	};
+
+	return result;
 }

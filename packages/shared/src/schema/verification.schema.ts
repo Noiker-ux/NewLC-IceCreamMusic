@@ -1,6 +1,7 @@
 import { verification } from "db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { fileSchema } from './shared.schema';
 
 export const verificationInsertSchema = createInsertSchema(verification).omit({
   id: true,
@@ -8,7 +9,9 @@ export const verificationInsertSchema = createInsertSchema(verification).omit({
   status: true,
 });
 
-export const verificationFormSchema = verificationInsertSchema.transform(
+export const verificationFormSchema = verificationInsertSchema.extend({
+  contract: fileSchema,
+}).transform(
   ({ getDate, birthDate, ...data }) => ({
     birthDate: birthDate.toISOString(),
     getDate: getDate.toISOString(),

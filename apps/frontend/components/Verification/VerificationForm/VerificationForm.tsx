@@ -1,29 +1,38 @@
 'use client';
-import { Input } from '@heroui/input';
-import { DatePicker } from '@heroui/date-picker';
-import { BsFillTelephoneFill } from 'react-icons/bs';
-import { Checkbox } from '@heroui/checkbox';
 import { Button } from '@heroui/button';
-import { ChangeEvent, useState } from 'react';
+import { Checkbox } from '@heroui/checkbox';
+import { DatePicker } from '@heroui/date-picker';
+import { Input } from '@heroui/input';
 import { getLocalTimeZone, today } from '@internationalized/date';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { TVerification } from 'sdk/lib/verification/verification.controller';
-import { actionPostVerify } from './actionPostVerify';
+import { BsFillTelephoneFill } from 'react-icons/bs';
+import { TVerificationFormSchema } from 'shared/schema/verification.schema';
 import { Toaster, toast } from 'sonner';
+import { actionPostVerify } from './actionPostVerify';
 
 export default function VerificationForm() {
-	const methods = useForm<TVerification>({});
+	const methods = useForm<TVerificationFormSchema>({});
 
-	const onSubmit: SubmitHandler<TVerification> = async (data) => {
-		toast.promise(
-			actionPostVerify({
+	const onSubmit: SubmitHandler<TVerificationFormSchema> = useCallback(
+		async (data) => {
+			const verificationPromise = actionPostVerify({
 				...data,
-			}),
-			{
+				contract: data.contract.name.split('.').slice(-1)[0],
+			});
+
+			toast.promise(verificationPromise, {
 				loading: 'Загрузка...',
 				success: (responce) => {
+					if (!responce.success) {
+						return {
+							message: `${responce.error}`,
+							className: '!bg-green-300 !border-green-600 !text-green-800',
+							duration: 500,
+						};
+					}
 					return {
-						message: `${responce.message}`,
+						message: `Данные успешно отправлены на проверку`,
 						className: '!bg-green-300 !border-green-600 !text-green-800',
 						duration: 500,
 					};
@@ -34,9 +43,46 @@ export default function VerificationForm() {
 						className: '!bg-red-300 !border-red-600 !text-red-800',
 					};
 				},
-			},
-		);
-	};
+			});
+
+			const result = await verificationPromise;
+
+			if (result.success) {
+				const contractUploadToast = toast('Загружаем файл контракта');
+
+				const totalBytes = data.contract.size;
+
+				let uploaded = 0;
+
+				const progressTrackingStream = new TransformStream({
+					transform(chunk, controller) {
+						controller.enqueue(chunk);
+						uploaded += chunk.byteLength;
+
+						toast(`${Math.round(uploaded / totalBytes)}%`, {
+							id: contractUploadToast,
+						});
+					},
+					flush() {
+						toast.success(`${Math.round(uploaded / totalBytes)}%`, {
+							id: contractUploadToast,
+						});
+					},
+				});
+
+				await fetch(result.data.contract, {
+					method: 'PUT',
+					body: data.contract.stream().pipeThrough(progressTrackingStream),
+					duplex: 'half',
+					headers: {
+						'Content-Type': 'application/octet-stream',
+						'Content-Length': String(totalBytes),
+					},
+				} as RequestInit);
+			}
+		},
+		[],
+	);
 
 	const [phone, setPhone] = useState('');
 
@@ -114,7 +160,10 @@ export default function VerificationForm() {
 						{...methods.register('birthDate')}
 						onChange={(value) => {
 							if (value) {
-								methods.setValue('birthDate', value.toDate(getLocalTimeZone()));
+								methods.setValue(
+									'birthDate',
+									value.toDate(getLocalTimeZone()).toISOString(),
+								);
 							}
 						}}
 						maxValue={today(getLocalTimeZone())}
@@ -200,7 +249,10 @@ export default function VerificationForm() {
 						{...methods.register('getDate')}
 						onChange={(value) => {
 							if (value) {
-								methods.setValue('getDate', value.toDate(getLocalTimeZone()));
+								methods.setValue(
+									'getDate',
+									value.toDate(getLocalTimeZone()).toISOString(),
+								);
 							}
 						}}
 						label='Дата получения'

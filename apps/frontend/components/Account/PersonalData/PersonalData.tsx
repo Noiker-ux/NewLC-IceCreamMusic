@@ -5,7 +5,7 @@ import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { Icon } from '@iconify/react';
 import Image from 'next/image';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TGetMeResponse } from 'sdk/lib/user/user.controller';
 import { actionUpdatePersonalData } from './actionUpdatePersonalData';
@@ -26,18 +26,28 @@ export default function PersonalDataProps({
 		},
 	});
 
-	const onSubmit: SubmitHandler<TProfileFormSchema> = async (data) => {
-		toast.promise(
-			actionUpdatePersonalData({
+	const onSubmit: SubmitHandler<TProfileFormSchema> = useCallback(
+		async (data) => {
+			const resultPromise = actionUpdatePersonalData({
 				...data,
-				avatar: data.avatar?.type.split('/').at(-1),
-			}),
-			{
+				avatar: data.avatar?.name.split('.').at(-1),
+			});
+
+			toast.promise(resultPromise, {
 				loading: 'Загрузка...',
 				success: (responce) => {
+					if (!responce.success) {
+						return {
+							message: responce.error,
+							className: '!bg-red-300 !border-red-600 !text-red-800',
+							duration: 500,
+						};
+					}
+
 					router.refresh();
+
 					return {
-						message: `${responce.message}`,
+						message: 'Данные профиля успешно обновлены',
 						className: '!bg-green-300 !border-green-600 !text-green-800',
 						duration: 500,
 					};
@@ -48,9 +58,45 @@ export default function PersonalDataProps({
 						className: '!bg-red-300 !border-red-600 !text-red-800',
 					};
 				},
-			},
-		);
-	};
+			});
+			const result = await resultPromise;
+
+			if (data.avatar && result.success && result.data) {
+				const loadingToast = toast.loading('Загрузка файла аватара');
+
+				const totalBytes = data.avatar.size;
+
+				let uploaded = 0;
+
+				const progressTrackingStream = new TransformStream({
+					transform(chunk, controller) {
+						controller.enqueue(chunk);
+						uploaded += chunk.byteLength;
+
+						toast(`${Math.round(uploaded / totalBytes)}%`, {
+							id: loadingToast,
+						});
+					},
+					flush() {
+						toast.success(`${Math.round(uploaded / totalBytes)}%`, {
+							id: loadingToast,
+						});
+					},
+				});
+
+				await fetch(result.data.avatar, {
+					method: 'PUT',
+					body: data.avatar.stream().pipeThrough(progressTrackingStream),
+					duplex: 'half',
+					headers: {
+						'Content-Type': 'application/octet-stream',
+						'Content-Length': String(totalBytes),
+					},
+				} as RequestInit);
+			}
+		},
+		[router],
+	);
 
 	const refAvatar = useRef<HTMLInputElement>(null);
 
