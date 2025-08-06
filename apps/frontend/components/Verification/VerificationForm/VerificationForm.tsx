@@ -27,7 +27,7 @@ export default function VerificationForm() {
 					if (!responce.success) {
 						return {
 							message: `${responce.error}`,
-							className: '!bg-green-300 !border-green-600 !text-green-800',
+							className: '!bg-red-300 !border-red-600 !text-red-800',
 							duration: 500,
 						};
 					}
@@ -337,6 +337,21 @@ export default function VerificationForm() {
 						type='text'
 						isRequired
 						radius='sm'
+					/>
+				</div>
+			</div>
+			<div className='w-full'>
+				<p className='font-semibold text-xl'>Подписанный договор</p>
+
+				<div className='mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+					<input
+						type='file'
+						onChange={(e) => {
+							const files = e.target.files;
+							let newFile = null;
+							if (files) newFile = files[0];
+							if (newFile) methods.setValue('contract', newFile);
+						}}
 					/>
 				</div>
 			</div>

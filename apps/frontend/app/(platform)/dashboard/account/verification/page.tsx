@@ -1,5 +1,6 @@
 import VerificationExpectation from '@/components/Verification/VerificationExpectation/VerificationExpectation';
 import VerificationForm from '@/components/Verification/VerificationForm/VerificationForm';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,12 +22,10 @@ export default function VerificationPage() {
 							Проверка документов и другой информации позволяет предотвратить
 							мошенничество и незаконное использование чужих данных.
 						</li>
-						<li>Мы шифруем данные, согласно стандарту T3DS</li>
 						<li>
 							Верификация позволяет обеспечить корректность представления данных
 							об исполнителе.
 						</li>
-						<li>Мы шифруем данные, согласно стандарту T3DS</li>
 					</ul>
 				</div>
 				<div className='bg-zinc-900 rounded-xl p-8'>
@@ -36,6 +35,11 @@ export default function VerificationPage() {
 						узнать статус процесса верификации, можете написать нам в чате.
 						Среднее время верификации 24 часа
 					</p>
+					<div>
+						<Link download href='/assets/contract_example.pdf'>
+							Образец договора
+						</Link>
+					</div>
 				</div>
 			</div>
 		</div>

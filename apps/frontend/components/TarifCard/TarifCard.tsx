@@ -15,6 +15,7 @@ export default function TarifCard({ tarifItem }: TTarifItem) {
 		listAdvantage,
 		price,
 		linkDetail,
+		buyLink,
 	} = tarifItem;
 
 	return (
@@ -70,7 +71,7 @@ export default function TarifCard({ tarifItem }: TTarifItem) {
 						<Link className='btn' href={linkDetail}>
 							Подробнее
 						</Link>
-						<Link className='btn' href={'/'}>
+						<Link className='btn' href={buyLink}>
 							Оформить
 						</Link>
 					</div>
