@@ -7,6 +7,7 @@ import Areas from '../NewRelize/CheckRelizeForm/Areas/Areas';
 import Platforms from '../NewRelize/CheckRelizeForm/Platfroms/Platforms';
 import ModalTextTrack from './ModalTextTrack';
 import FileList from './FileList';
+import { TReleaseRoles } from 'shared/schema/release.schema';
 
 export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 	const { data } = use(actionGetRelizeById(relizeID));
@@ -56,8 +57,10 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 							Исполнители:{' '}
 							<span className='flex gap-3 flex-wrap'>
 								{JSON.parse(JSON.stringify(data.roles))
-									.filter((r) => r.role === 'Исполнитель')
-									.map((r) => (
+									.filter(
+										(r: TReleaseRoles[number]) => r.role === 'Исполнитель',
+									)
+									.map((r: TReleaseRoles[number]) => (
 										<span className='text-white' key={r.person}>
 											{r.person}
 										</span>
@@ -68,8 +71,8 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 							Feat:{' '}
 							<span className='flex gap-3 flex-wrap'>
 								{JSON.parse(JSON.stringify(data.roles))
-									.filter((r) => r.role === 'feat.')
-									.map((r) => (
+									.filter((r: TReleaseRoles[number]) => r.role === 'feat.')
+									.map((r: TReleaseRoles[number]) => (
 										<span className='text-white' key={r.person}>
 											{r.person}
 										</span>
@@ -190,8 +193,10 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 								Исполнитель(и):{' '}
 								<span className='flex gap-3 flex-wrap'>
 									{JSON.parse(JSON.stringify(track.roles))
-										.filter((r) => r.role === 'Исполнитель')
-										.map((r) => (
+										.filter(
+											(r: TReleaseRoles[number]) => r.role === 'Исполнитель',
+										)
+										.map((r: TReleaseRoles[number]) => (
 											<span className='text-white' key={r.person}>
 												{r.person}
 											</span>
@@ -202,8 +207,8 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 								feat(s):{' '}
 								<span className='flex gap-3 flex-wrap'>
 									{JSON.parse(JSON.stringify(track.roles))
-										.filter((r) => r.role === 'feat.')
-										.map((r) => (
+										.filter((r: TReleaseRoles[number]) => r.role === 'feat.')
+										.map((r: TReleaseRoles[number]) => (
 											<span className='text-white' key={r.person}>
 												{r.person}
 											</span>
@@ -214,8 +219,10 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 								Автор(ы) музыки:{' '}
 								<span className='flex gap-3 flex-wrap'>
 									{JSON.parse(JSON.stringify(track.roles))
-										.filter((r) => r.role === 'Автор музыки')
-										.map((r) => (
+										.filter(
+											(r: TReleaseRoles[number]) => r.role === 'Автор музыки',
+										)
+										.map((r: TReleaseRoles[number]) => (
 											<span className='text-white' key={r.person}>
 												{r.person}
 											</span>
@@ -226,8 +233,10 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 								Автор(ы) слов:{' '}
 								<span className='flex gap-3 flex-wrap'>
 									{JSON.parse(JSON.stringify(track.roles))
-										.filter((r) => r.role === 'Автор слов')
-										.map((r) => (
+										.filter(
+											(r: TReleaseRoles[number]) => r.role === 'Автор слов',
+										)
+										.map((r: TReleaseRoles[number]) => (
 											<span className='text-white' key={r.person}>
 												{r.person}
 											</span>
