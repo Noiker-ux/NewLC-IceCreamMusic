@@ -1,15 +1,15 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { actionGetPersonalData } from '@/components/Account/actionGetPersonalData';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
 
-import ShowUser from './ShowUser';
-import { useDisclosure } from '@heroui/modal';
+import Link, { LinkProps } from 'next/link';
 import ModalPayout from '../ModalPayout/ModalPayout';
+import { actionLogOut } from '../SideBar/SideBarFooter/actionLogOut';
+import ShowUser from './ShowUser';
 
 export default async function Header() {
-	const userNavigation = [
+	const userNavigation: (LinkProps & { name: string })[] = [
 		{ name: 'Мой профиль', href: '/dashboard/account/profile' },
-		{ name: 'Выход', href: '#' },
 	];
 	const AccountData = await actionGetPersonalData();
 	return (
@@ -55,15 +55,20 @@ export default async function Header() {
 							<MenuItems
 								transition
 								className='absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-zinc-800 py-2 ring-1 shadow-lg ring-gray-900/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in'>
-								{userNavigation.map((item) => (
-									<MenuItem key={item.name}>
-										<a
-											href={item.href}
-											className='block px-3 py-1 text-sm/6  data-focus:bg-gray-50 data-focus:outline-hidden'>
-											{item.name}
-										</a>
-									</MenuItem>
-								))}
+								{userNavigation.map((item) => {
+									{
+										const { name, ...otherProps } = item;
+										return (
+											<MenuItem key={name}>
+												<Link
+													{...otherProps}
+													className='block px-3 py-1 text-sm/6  data-focus:bg-gray-50 data-focus:outline-hidden'>
+													{name}
+												</Link>
+											</MenuItem>
+										);
+									}
+								})}
 							</MenuItems>
 						</Menu>
 					</div>

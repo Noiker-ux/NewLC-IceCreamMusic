@@ -13,7 +13,7 @@ export const routes: Record<RouteType, string[]> = {
 		'/signout',
 		'/questions',
 		'/terms',
-		'/distributions',
+		'/distribution',
 		'/platforms',
 		'/',
 	],
