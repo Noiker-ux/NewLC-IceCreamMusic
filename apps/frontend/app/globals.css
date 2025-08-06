@@ -242,3 +242,51 @@ text.inner-text {
 		transform: rotate(360deg);
 	}
 }
+
+:root {
+	--primary-color: rgb(79, 70, 229);
+	--light-green: rgba(22, 163, 74, 0.1);
+	--green-color: rgb(22, 163, 74);
+}
+[data-theme='light'] {
+	--background-color: #ffffff;
+	--gray-color: rgb(160, 160, 160);
+	--card-BG-color: rgb(255, 255, 255);
+	--border-color: rgb(211, 211, 211);
+	--text-color: #000;
+	--hover-card: rgb(238, 238, 242);
+}
+[data-theme='dark'] {
+	--background-color: #141518;
+	--gray-color: rgb(160, 160, 160);
+	--card-BG-color: rgb(24 24 27);
+	--border-color: rgb(39 39 42);
+	--text-color: #fff;
+	--hover-card: rgb(24 24 27);
+}
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+}
+
+.container {
+	max-width: 1630px;
+	color: var(--white-color);
+	padding: 0 15px;
+	overflow: hidden;
+	margin: 0 auto;
+}
+.main {
+	display: flex;
+	flex-direction: column;
+	gap: 160px;
+	align-items: center;
+	padding: 6rem;
+	min-height: 100vh;
+}
+@media screen and (max-width: 1000px) {
+	.main {
+		padding: 2rem;
+	}
+}

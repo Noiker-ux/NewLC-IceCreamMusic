@@ -1,0 +1,26 @@
+.StatistiicItem {
+	padding: 2rem 5rem;
+	text-align: center;
+}
+
+.StatistiicItem:hover {
+	background-color: var(--hover-card);
+	border-radius: 10px;
+}
+.count {
+	font-size: 2.25rem;
+	line-height: 2.5rem;
+	font-weight: bold;
+	color: var(--text-color);
+}
+
+.label {
+	margin-top: 15px;
+	font-size: 1.125rem;
+	color: rgb(156 163 175);
+}
+@media screen and (max-width: 700px) {
+	.StatistiicItem {
+		padding: 2rem 4rem;
+	}
+}

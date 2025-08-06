@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { functional } from 'sdk';
 import Link from 'next/link';
 import { Button } from '@heroui/button';
+import Image from 'next/image';
 
 export default async function UsersPage() {
 	const cookiesStore = await cookies();
@@ -33,15 +34,33 @@ export default async function UsersPage() {
 	if (!result.success) return <>not found</>;
 
 	return (
-		<div className='z-[100000]'>
+		<div className='z-[100000] flex flex-col gap-5 max-w-7xl '>
 			{result.data.map((u) => {
 				return (
-					<div key={u.id}>
-						<div>{JSON.stringify(u)}</div>
-						<div>
-							<Button as={Link} href={`/dashboard/admin/users/${u.id}/relizes`}>
-								releases
-							</Button>
+					<div key={u.id} className='bg-zinc-900 p-5'>
+						<div className='flex gap-5'>
+							<Image
+								src={u.avatar ?? '/assets/noUserAvatar.png'}
+								width={100}
+								height={100}
+								alt='Превью'
+								className='rounded-full'
+							/>
+							<div>
+								<p>
+									{u.name} -{' '}
+									{u.subscriptionLevel ?? (
+										<span className='text-red-800'>Подписка не активна</span>
+									)}
+								</p>
+								<p>{u.email}</p>
+								<Button
+									as={Link}
+									className='mt-5'
+									href={`/dashboard/admin/users/${u.id}/relizes`}>
+									Релизы пользователя
+								</Button>
+							</div>
 						</div>
 					</div>
 				);

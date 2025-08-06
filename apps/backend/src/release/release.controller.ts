@@ -169,7 +169,7 @@ export class ReleaseController {
 
     if (!release) throw new BadRequestException('Релиз не найден');
 
-    if (release.authorId !== user.id || !user.isAdmin)
+    if (release.authorId !== user.id && !user.isAdmin)
       throw new ForbiddenException('Недостаточно прав для просмотра релиза');
 
     return { data: release };

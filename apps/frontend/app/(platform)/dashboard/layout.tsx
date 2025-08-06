@@ -18,7 +18,7 @@ export default function RootLayout({
 	return (
 		<main className='h-full bg-[var(--background)]'>
 			<Image
-				className='fixed bottom-0 '
+				className='fixed bottom-0 pointer-events-none '
 				src='/assets/BG/docs-left.png'
 				alt='dots1'
 				draggable='false'
@@ -26,7 +26,7 @@ export default function RootLayout({
 				height={550}
 			/>
 			<Image
-				className='fixed right-0 aspect-square w-1/3'
+				className='fixed right-0 aspect-square w-1/3 pointer-events-none'
 				src='/assets/BG/docs-right.png'
 				alt='dots2'
 				draggable='false'

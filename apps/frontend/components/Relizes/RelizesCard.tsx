@@ -20,6 +20,7 @@ import Platforms from '../NewRelize/CheckRelizeForm/Platfroms/Platforms';
 import Areas from '../NewRelize/CheckRelizeForm/Areas/Areas';
 import { Primitive } from 'sdk';
 import DateFormatter from '@/utils/dateFormatter';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function RelizecCard({
 	release,
@@ -27,6 +28,8 @@ export default function RelizecCard({
 	release: Primitive<TGetReleaseListResponse['data'][number]>;
 }) {
 	const [showMusicList, setShowMusicList] = useState<boolean>(false);
+	const router = useRouter();
+	const pathname = usePathname();
 
 	return (
 		<div className='bg-zinc-900 p-5  gap-2 rounded-xl w-full grid grid-cols-4'>
@@ -37,7 +40,7 @@ export default function RelizecCard({
 						alt='Превью'
 						width={110}
 						height={110}
-						className='rounded-lg'
+						className='rounded-lg w-[110px] h-[110px] object-cover'
 					/>
 					<div className='flex flex-col justify-around'>
 						<div>
@@ -93,6 +96,18 @@ export default function RelizecCard({
 						<p className='text-xs font-extralight text-gray-300'>Жанр</p>
 						<p className='text-sm '>{release.genre}</p>
 					</div>
+					<div>
+						<p className='text-xs font-extralight text-gray-300'>Статус</p>
+						<p className='text-sm '>
+							{release.status == 'moderating' ? (
+								<span className='text-indigo-400'>На модерации</span>
+							) : release.status == 'approved' ? (
+								<span className='text-green-500'>Завершен</span>
+							) : (
+								<span className='text-red-700'>Отклонен</span>
+							)}
+						</p>
+					</div>
 				</div>
 			</div>
 			<div className='flex gap-3 justify-end'>
@@ -102,10 +117,7 @@ export default function RelizecCard({
 							<p>Создать промо ссылку к релизу</p>
 						</div>
 					}>
-					<Button
-						as={Link}
-						href='https://github.com/heroui-inc/heroui'
-						isIconOnly>
+					<Button as={Link} href='/dashboard/marketing/promo-links' isIconOnly>
 						<LinkIcon width={20} />
 					</Button>
 				</Tooltip>
@@ -138,17 +150,18 @@ export default function RelizecCard({
 				<Tooltip
 					content={
 						<div className='p-2'>
-							<p>Просмотр релиза на площадках</p>
+							<p>Просмотр релиза</p>
 						</div>
 					}>
 					<Button
-						as={Link}
-						href='https://github.com/heroui-inc/heroui'
+						onPress={() => {
+							router.push(`${pathname.split('/').at(-1)}/${release.id}`);
+						}}
 						isIconOnly>
 						<SquaresPlusIcon width={20} />
 					</Button>
 				</Tooltip>
-				<Tooltip
+				{/* <Tooltip
 					content={
 						<div className='p-2'>
 							<p>Редактировать релиз</p>
@@ -160,7 +173,7 @@ export default function RelizecCard({
 						isIconOnly>
 						<PencilSquareIcon width={20} />
 					</Button>
-				</Tooltip>
+				</Tooltip> */}
 				<Tooltip
 					content={
 						<div className='p-2'>

@@ -1,0 +1,41 @@
+.storesWrapper {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+}
+.cardMore {
+	border-radius: 20px;
+	padding: 3rem 4rem;
+	color: var(--text-color);
+	border: 1px solid var(--border-color);
+	background-color: var(--card-BG-color);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.wrap {
+	display: flex;
+	flex-direction: column;
+	gap: 50px;
+}
+.description {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+@media screen and (max-width: 1500px) {
+	.storesWrapper {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+@media screen and (max-width: 1124px) {
+	.storesWrapper {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+@media screen and (max-width: 760px) {
+	.storesWrapper {
+		grid-template-columns: 1fr;
+	}
+}

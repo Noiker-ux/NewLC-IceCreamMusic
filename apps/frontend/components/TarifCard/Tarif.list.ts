@@ -6,7 +6,7 @@ export const TarifList: TTarifCard[] = [
 		title: 'ENTERPRISE',
 		description:
 			'Знаешь, что такое “all in clusive”? Если нет, не беда. Это черт возьми подписка в которой ВСЕ включено. “Деньги, девушки, тачки...”. А ты знаешь, где тут опечатка',
-		linkDetail: '/plans/enterprise',
+		linkDetail: '/dashboard/plans/enterprise',
 		listAdvantage: [
 			'Безлимитные релизы. Ахудеть можно.',
 			'Выгрузка от 24 часов. Без комментариев.',
@@ -31,7 +31,7 @@ export const TarifList: TTarifCard[] = [
 		title: 'PROFESSIONAL',
 		description:
 			'Самая оптимальная подписка. Мы знаем цену деньгам и вот она, в подписке PROFESSIONAL.',
-		linkDetail: '/plans/professional',
+		linkDetail: '/dashboard/plans/professional',
 		listAdvantage: [
 			'До 6 релизов в месяц. WOW. Давай полегче, восходящая звезда!',
 			'Выгрузка на площадки до 3-х дней. Speed, и если ты посмеялся, то... Да ладно, мы тоже улыбнулись',
@@ -52,7 +52,7 @@ export const TarifList: TTarifCard[] = [
 		title: 'DETROID',
 		description:
 			'Доказать всем, что ты лучший можно и без больших вложений. Не упускай возможность показать всему миру, кто ты и какой стиль должен быть у настоящих реперов.',
-		linkDetail: '/plans/detroid',
+		linkDetail: '/dashboard/plans/detroid',
 		listAdvantage: [
 			'Один релиз в месяц. Думаешь мало? Поверь, достаточный старт, чтоб разъ***ть аудиторию. И найти фанатов!',
 			'Дистрибуция за 5 дней, это необходимое время, для нашей работы',
