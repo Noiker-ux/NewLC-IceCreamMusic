@@ -74,11 +74,7 @@ export default function AddAnalytic({ userId }: { userId: string }) {
 									className='flex flex-col gap-4 mt-5'
 									// onSubmit={methods.handleSubmit(onSubmit)}
 								>
-									<DatePicker
-										label='Сумма'
-										labelPlacement='outside'
-										{...methods.register('data.periodStart')}
-									/>
+									<DatePicker label='Сумма' labelPlacement='outside' />
 									<Button
 										type='submit'
 										className='bg-indigo-700 w-fit mx-auto mt-3'>
