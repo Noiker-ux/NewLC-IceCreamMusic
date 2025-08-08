@@ -40,7 +40,7 @@ export type TCreateAnalyticsBody = {
 };
 
 export type TUpdateAnalyticsBody = {
-  data: Primitive<Partial<TInsertAnalytics>>;
+  data: Primitive<Partial<Omit<TInsertAnalytics, 'userId'>>>;
 };
 
 export type TUpdateAnalyticsRespomse = {

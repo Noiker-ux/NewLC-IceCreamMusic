@@ -297,6 +297,7 @@ export class FinanceController {
             freeReleases:
               premiumPlans[subscriptionResult.data.subscriptionLevel!]
                 .freeReleases,
+            subscriptionExpires: expireDate,
           })
           .where(eq(schema.users.id, order.userId));
       }
