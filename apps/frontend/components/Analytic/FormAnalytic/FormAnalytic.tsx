@@ -39,9 +39,12 @@ export default function FormAnalytic({
 		methods.setValue('flourishReportMarkup', analytic.flourishReportMarkup);
 		methods.setValue(
 			'periodStart',
-			parseDate(analytic.periodStart).toDateString(),
+			new Date(analytic.periodStart).toISOString(),
 		);
-		methods.setValue('periodFinish', parseDate(analytic.periodFinish));
+		methods.setValue(
+			'periodFinish',
+			new Date(analytic.periodFinish).toISOString(),
+		);
 	}
 
 	const onSubmit: SubmitHandler<TCreateAnalyticsBody['data']> = (data) => {
