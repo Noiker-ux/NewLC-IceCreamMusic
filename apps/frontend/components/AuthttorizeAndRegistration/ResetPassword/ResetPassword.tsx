@@ -25,7 +25,7 @@ export function ResetPasswordForm({ token }: TResetPasswordForm) {
 
 	return (
 		<form
-			className='w100 center col gap10'
+			className='w-full flex flex-col gap-5 center col gap10'
 			onSubmit={handleSubmit(async (data) => {
 				const result = await resetPassword(token, data.password);
 
@@ -39,11 +39,13 @@ export function ResetPasswordForm({ token }: TResetPasswordForm) {
 			<Input
 				label='Введите новый пароль'
 				type='password'
+				className='w-full'
 				{...register('password')}
 			/>
 			<Input
 				label='Повторите пароль'
 				type='password'
+				className='w-full'
 				{...register('confirm')}
 			/>
 			<Button

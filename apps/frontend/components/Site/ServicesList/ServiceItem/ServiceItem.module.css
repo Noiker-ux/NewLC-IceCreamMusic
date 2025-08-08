@@ -1,11 +1,13 @@
 .card {
 	border-radius: 20px;
-	padding: 2rem 1rem 6rem 1rem;
+	padding: 2rem 1rem 2rem 1rem;
 	color: var(--text-color);
 	border: 1px solid var(--border-color);
 	background-color: var(--card-BG-color);
 	max-width: 380px;
 	position: relative;
+	display: flex;
+	flex-direction: column;
 }
 .card__header {
 	display: flex;
@@ -33,6 +35,9 @@
 }
 .card__body {
 	margin-top: 8px;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 .title {
@@ -56,7 +61,8 @@
 	margin-top: 30px;
 	display: flex;
 	flex-direction: column;
-	gap: 15px;
+
+	margin-bottom: 30px;
 }
 .benefis__item {
 	list-style: none;
@@ -66,10 +72,11 @@
 	background-size: contain;
 	content: '';
 	display: inline-block;
-	height: 20px;
-	width: 20px;
+
+	min-width: 20px !important;
 	margin-right: 8px;
 	background-image: url('./gal.png');
+	background-repeat: no-repeat;
 }
 .timeframe {
 	color: rgb(84, 82, 82);
@@ -84,23 +91,4 @@
 }
 .purple {
 	background-color: rgb(79 70 229/1);
-}
-.button {
-	left: 1.5rem;
-	bottom: 2rem;
-	font-weight: bold;
-	font-size: 0.9rem;
-	width: calc(100% - 3rem);
-	color: #fff;
-	position: absolute;
-	display: block;
-	text-align: center;
-	padding: 10px 8px;
-	border-radius: 5px;
-	transition: all 0.4s ease;
-}
-
-.button:hover {
-	transition: all 0.4s ease;
-	transform: scale(1.05);
 }

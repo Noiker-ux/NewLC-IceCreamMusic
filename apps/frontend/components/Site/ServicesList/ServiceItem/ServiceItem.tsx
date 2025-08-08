@@ -17,6 +17,7 @@ export const ServiceItem = ({
 	color = 'green',
 	altIcon,
 	labelButton,
+	subDescription,
 }: IService) => {
 	return (
 		<div className={style.card}>
@@ -26,7 +27,9 @@ export const ServiceItem = ({
 			</div>
 			<div className={style.card__body}>
 				<h3 className={style.title}>{title}</h3>
-				<p className={style.description}>{description}</p>
+				<p
+					dangerouslySetInnerHTML={{ __html: description }}
+					className={style.description}></p>
 				<div className={style.price__wrapper}>
 					<span className={style.price}>₽{price}</span>
 					<span className={style.timeframe}>&nbsp;/&nbsp;{timeframe}</span>
@@ -38,15 +41,20 @@ export const ServiceItem = ({
 						</li>
 					))}
 				</ul>
-				<Link
-					className={cn(style.button, {
-						[style.orange]: color === 'orange',
-						[style.green]: color === 'green',
-						[style.purple]: color === 'purple',
-					})}
-					href={href}>
-					{labelButton}
-				</Link>
+				<div className='mt-auto flex flex-col gap-2'>
+					<p
+						className={style.description}
+						dangerouslySetInnerHTML={{ __html: subDescription }}></p>
+					<Link
+						className={cn('text-center rounded-md py-2 ', {
+							[style.orange]: color === 'orange',
+							[style.green]: color === 'green',
+							[style.purple]: color === 'purple',
+						})}
+						href={href}>
+						{labelButton}
+					</Link>
+				</div>
 			</div>
 		</div>
 	);
