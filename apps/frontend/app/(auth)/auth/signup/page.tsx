@@ -14,8 +14,8 @@ export default function Registraion() {
 			</p>
 			<RegistrationWidget />
 			<p className={'mt-5'}>
-				Или
-				<Link className={'text-white'} href={'/signin'}>
+				Или{' '}
+				<Link className={'text-white underline'} href={'/signin'}>
 					войдите здесь
 				</Link>
 				, если у Вас есть аккаунт

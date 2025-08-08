@@ -10,4 +10,5 @@ export default interface IService {
 	color?: 'green' | 'orange' | 'purple';
 	href: string;
 	labelButton: string;
+	subDescription: string;
 }

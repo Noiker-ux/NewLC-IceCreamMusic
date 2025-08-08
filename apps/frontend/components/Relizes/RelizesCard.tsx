@@ -127,7 +127,7 @@ export default function RelizecCard({
 						<LinkIcon width={20} />
 					</Button>
 				</Tooltip>
-				<Tooltip
+				{/* <Tooltip
 					content={
 						<div className='p-2'>
 							<p>Просмотр статуса отгрузки на площадки</p>
@@ -136,8 +136,8 @@ export default function RelizecCard({
 					<Button as={Link} href='#' isIconOnly>
 						<ClipboardDocumentCheckIcon width={20} />
 					</Button>
-				</Tooltip>
-				<Tooltip
+				</Tooltip> */}
+				{/* <Tooltip
 					content={
 						<div className='p-2'>
 							<p>Просмотр информации о релизе</p>
@@ -146,7 +146,7 @@ export default function RelizecCard({
 					<Button as={Link} href='#' isIconOnly>
 						<InboxStackIcon width={20} />
 					</Button>
-				</Tooltip>
+				</Tooltip> */}
 				<Tooltip
 					content={
 						<div className='p-2'>
@@ -174,7 +174,7 @@ export default function RelizecCard({
 						<PencilSquareIcon width={20} />
 					</Button>
 				</Tooltip> */}
-				<Tooltip
+				{/* <Tooltip
 					content={
 						<div className='p-2'>
 							<p>Удалить релиз</p>
@@ -187,7 +187,7 @@ export default function RelizecCard({
 						isIconOnly>
 						<TrashIcon width={20} />
 					</Button>
-				</Tooltip>
+				</Tooltip> */}
 			</div>
 			<div className='col-span-4'>
 				<p

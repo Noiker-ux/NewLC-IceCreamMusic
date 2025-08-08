@@ -16,7 +16,7 @@ export default async function StudiosList() {
 	return (
 		<div className='grid grid-cols-5 gap-2'>
 			{studioData.map((studia) => (
-				<Link href={`/studios/${studia.id}`} key={studia.id}>
+				<Link href={`/dashboard/studios/${studia.id}`} key={studia.id}>
 					<StudiosCard
 						id={studia.id}
 						name={studia.name}

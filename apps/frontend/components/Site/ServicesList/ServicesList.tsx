@@ -35,6 +35,7 @@ export const ServicesList = () => {
 						timeframe={Service.timeframe}
 						listBenefit={Service.listBenefit}
 						color={Service.color}
+						subDescription={Service.subDescription}
 					/>
 				))}
 			</div>

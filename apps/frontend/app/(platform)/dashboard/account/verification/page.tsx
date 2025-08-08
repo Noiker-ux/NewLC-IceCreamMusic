@@ -27,10 +27,6 @@ export default async function VerificationPage() {
 							Проверка документов и другой информации позволяет предотвратить
 							мошенничество и незаконное использование чужих данных.
 						</li>
-						<li>
-							Верификация позволяет обеспечить корректность представления данных
-							об исполнителе.
-						</li>
 					</ul>
 				</div>
 				<div className='bg-zinc-900 rounded-xl p-8'>
@@ -40,11 +36,13 @@ export default async function VerificationPage() {
 						узнать статус процесса верификации, можете написать нам в чате.
 						Среднее время верификации 24 часа
 					</p>
-					<div>
-						<Link download href='/assets/contract_example.pdf'>
-							Образец договора
-						</Link>
-					</div>
+
+					<Link
+						className='bg-indigo-700 mt-3 text-white px-4 py-2 rounded-md block text-center w-full'
+						download
+						href='/assets/contract_example.pdf'>
+						Договор
+					</Link>
 				</div>
 			</div>
 		</div>

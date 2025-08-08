@@ -25,7 +25,9 @@ export default async function ResetPasswordPage({
 				'text-white m-auto border-y-1 border-[#424242] w-full px-24 text-center relative'
 			}>
 			<div
-				className={'flex justify-center items-center flex-col mx-auto w-[90%]'}>
+				className={
+					'flex justify-center items-center flex-col mx-auto w-[90%] py-5'
+				}>
 				<ResetPasswordForm token={token} />
 			</div>
 		</div>

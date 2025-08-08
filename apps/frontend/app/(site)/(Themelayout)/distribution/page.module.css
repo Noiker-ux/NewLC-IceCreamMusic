@@ -20,6 +20,8 @@
 }
 .preview__image {
 	mix-blend-mode: exclusion;
+	width: 80px !important;
+	height: 80px !important;
 }
 
 .title {
