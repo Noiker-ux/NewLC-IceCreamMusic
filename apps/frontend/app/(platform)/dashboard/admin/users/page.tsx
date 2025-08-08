@@ -9,7 +9,8 @@ import Image from 'next/image';
 import { checkUserAdmin } from '../checkUserAdmin';
 import Balance from '@/components/Balance/Balance';
 import MoneyFormatter from '@/utils/moneyFormatter';
-import AddAnalytic from '@/components/Analytic/AddAnalytic/AddAnalytic';
+
+import { ChartBarIcon } from '@heroicons/react/24/outline';
 
 export default async function UsersPage() {
 	await checkUserAdmin();
@@ -79,7 +80,11 @@ export default async function UsersPage() {
 										Релизы пользователя
 									</Button>
 									<Balance userId={u.id} />
-									<AddAnalytic userId={u.id} />
+									{/* <Button
+										as={Link}
+										href={`/dashboard/admin/users/${u.id}/analytic`}>
+										<ChartBarIcon />
+									</Button> */}
 								</div>
 							</div>
 						</div>
