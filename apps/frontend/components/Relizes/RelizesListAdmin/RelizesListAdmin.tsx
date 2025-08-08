@@ -1,12 +1,11 @@
 'use client';
 
+import { Select, SelectItem } from '@heroui/select';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Primitive } from 'sdk';
 import { TGetReleaseListResponse } from 'sdk/lib/release/release.controller';
-import RelizesItemAdmin from './RelizesItemAdmin/RelizesItemAdmin';
-import { Select, SelectItem } from '@heroui/select';
 import { TRelease } from 'shared/schema/release.schema';
-import { useRouter } from 'next/navigation';
-import { createParser, parseAsString, useQueryState } from 'nuqs';
+import RelizesItemAdmin from './RelizesItemAdmin/RelizesItemAdmin';
 
 export type TRelizesListAdmin = {
 	releases: Primitive<TGetReleaseListResponse['data'][number]>[];
@@ -14,25 +13,12 @@ export type TRelizesListAdmin = {
 
 const statuses: TRelease['status'][] = ['approved', 'moderating', 'rejected'];
 
-const parseAsStarRating = createParser({
-	parse(queryValue: unknown) {
-		const isString = typeof queryValue === 'string';
-		const isValid =
-			isString && statuses.includes(queryValue as TRelease['status']);
-		if (!isValid) return null;
-		return queryValue;
-	},
-	serialize(value) {
-		return value;
-	},
-});
-
 export default function RelizesListAdmin({ releases }: TRelizesListAdmin) {
+	const searchParams = useSearchParams();
+
 	const router = useRouter();
-	const [status, setStatus] = useQueryState<TRelease['status']>(
-		'status',
-		parseAsStarRating.withDefault('moderating'),
-	);
+
+	const currentStatus = searchParams.get('status') as TRelease['status'];
 
 	return (
 		<div className='flex flex-col gap-5 max-w-7xl'>
@@ -40,9 +26,12 @@ export default function RelizesListAdmin({ releases }: TRelizesListAdmin) {
 				label='Выберите роль'
 				labelPlacement='outside'
 				radius='sm'
-				defaultSelectedKeys={[status]}
+				defaultSelectedKeys={[currentStatus]}
+				disabledKeys={[currentStatus]}
 				onChange={(e) => {
-					setStatus(e.target.value as TRelease['status']);
+					router.push(
+						'?status=' + encodeURIComponent(e.target.value ?? 'moderating'),
+					);
 				}}
 				placeholder='Выберите роль'>
 				{statuses.map((status) => (

@@ -36,10 +36,10 @@ export async function POST(req: Request) {
 		return badResponse;
 	}
 
-	if (data.event !== WebHookEvents['payment.succeeded']) {
+	if (data.event === WebHookEvents['payment.succeeded']) {
 		const payment = await checkout.getPayment(data.object.id).catch(() => null);
 
-		if (!payment || payment.status !== data.object.status) {
+		if (!payment || payment.status !== data.object.status && payment.status !== 'succeeded') {
 			console.log('no payment');
 			return badResponse;
 		}

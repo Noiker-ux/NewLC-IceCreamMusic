@@ -6,7 +6,17 @@ import { redirect } from 'next/navigation';
 import { functional } from 'sdk';
 import { TRelease } from 'shared/schema/release.schema';
 
+const statuses: TRelease['status'][] = ['approved', 'moderating', 'rejected'];
+
 export default async function actionGetRelizes(status: TRelease['status'] = 'moderating') {
+	let validStatus: TRelease['status'] = 'moderating';
+
+	const isStatusValid = statuses.includes(status);
+
+	if(isStatusValid){
+		validStatus = status;
+	}
+
 	const cookiesStore = await cookies();
 
 	const sessionToken = await cookiesStore.get(sessionCookieName)?.value;
@@ -22,7 +32,7 @@ export default async function actionGetRelizes(status: TRelease['status'] = 'mod
 		next: { tags: ['admin-releases'], revalidate: 5 },
 	});
 
-	const releasesData = await functional.v1.releases.status.getReleases(connection, status, {
+	const releasesData = await functional.v1.releases.status.getReleases(connection, validStatus, {
 		page: 1,
 		size: 500,
 	});
