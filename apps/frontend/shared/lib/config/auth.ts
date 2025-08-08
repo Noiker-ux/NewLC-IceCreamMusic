@@ -21,7 +21,7 @@ export const routes: Record<RouteType, string[]> = {
 
 export const defaultAuthRedirect = '/dashboard';
 
-export const defaultAdminRedirect = '/admin/releases';
+export const defaultAdminRedirect = '/dashboard/admin/releases';
 
 export type TSessionData = TAuthUserSchema;
 

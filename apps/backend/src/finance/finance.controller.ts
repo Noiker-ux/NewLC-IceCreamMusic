@@ -151,7 +151,7 @@ export class FinanceController {
         premiumPlans[body.subscriptionLevel].name
       }"`;
 
-      returnPath = '/dashboard/news';
+      returnPath = '/dashboard/main/news';
 
       orderMetadata = { subscriptionLevel: body.subscriptionLevel };
 

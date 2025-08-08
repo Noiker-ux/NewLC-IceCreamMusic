@@ -4,7 +4,7 @@ import { Checkbox } from '@heroui/checkbox';
 import { DatePicker } from '@heroui/date-picker';
 import { Input } from '@heroui/input';
 import { getLocalTimeZone, today } from '@internationalized/date';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { BsFillTelephoneFill } from 'react-icons/bs';
 import { TVerificationFormSchema } from 'shared/schema/verification.schema';
@@ -13,7 +13,8 @@ import { actionPostVerify } from './actionPostVerify';
 
 export default function VerificationForm() {
 	const methods = useForm<TVerificationFormSchema>({});
-
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const watchFile = methods.watch('contract');
 	const onSubmit: SubmitHandler<TVerificationFormSchema> = useCallback(
 		async (data) => {
 			const verificationPromise = actionPostVerify({
@@ -344,8 +345,16 @@ export default function VerificationForm() {
 				<p className='font-semibold text-xl'>Подписанный договор</p>
 
 				<div className='mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+					<Button
+						onPress={() => {
+							fileInputRef.current?.click();
+						}}>
+						{(watchFile && watchFile.name) ?? 'Прикрепить договор'}
+					</Button>
 					<input
 						type='file'
+						ref={fileInputRef}
+						className='hidden'
 						onChange={(e) => {
 							const files = e.target.files;
 							let newFile = null;

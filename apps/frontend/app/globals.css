@@ -7,17 +7,26 @@
 }
 
 :root {
-	--background: #ffffff;
-	--foreground: #171717;
+	--background: #0a0a0a;
+	--foreground: #ededed;
 	--transition: 0.75s cubic-bezier(0.2, 0.6, 0, 1);
+	--primary-color: rgb(79, 70, 229);
+	--light-green: rgba(22, 163, 74, 0.1);
+	--green-color: rgb(22, 163, 74);
+	--background-color: #141518;
+	--gray-color: rgb(160, 160, 160);
+	--card-BG-color: rgb(24 24 27);
+	--border-color: rgb(39 39 42);
+	--text-color: #fff;
+	--hover-card: rgb(24 24 27);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
 	:root {
 		--background: #0a0a0a;
 		--foreground: #ededed;
 	}
-}
+} */
 
 body {
 	color: var(--foreground);
@@ -243,12 +252,9 @@ text.inner-text {
 	}
 }
 
-:root {
-	--primary-color: rgb(79, 70, 229);
-	--light-green: rgba(22, 163, 74, 0.1);
-	--green-color: rgb(22, 163, 74);
-}
-[data-theme='light'] {
+/* :root {
+} */
+/* [data-theme='light'] {
 	--background-color: #ffffff;
 	--gray-color: rgb(160, 160, 160);
 	--card-BG-color: rgb(255, 255, 255);
@@ -257,13 +263,7 @@ text.inner-text {
 	--hover-card: rgb(238, 238, 242);
 }
 [data-theme='dark'] {
-	--background-color: #141518;
-	--gray-color: rgb(160, 160, 160);
-	--card-BG-color: rgb(24 24 27);
-	--border-color: rgb(39 39 42);
-	--text-color: #fff;
-	--hover-card: rgb(24 24 27);
-}
+} */
 *,
 *::after,
 *::before {

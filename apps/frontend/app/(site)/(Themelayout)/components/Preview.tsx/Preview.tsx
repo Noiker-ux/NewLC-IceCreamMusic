@@ -22,11 +22,11 @@ export const Preview = () => {
 						className={style.log_wrap}
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}>
-						<Link className={style.login} href={'/signin'}>
+						<Link className={style.login} href={'/auth/signin'}>
 							Вход в аккаунт
 						</Link>
 					</motion.div>
-					<Link className={style.more} href={'/signin'}>
+					<Link className={style.more} href={'/auth/signin'}>
 						Узнать больше
 					</Link>
 				</div>

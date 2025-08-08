@@ -58,7 +58,7 @@ export const Header = () => {
 						</ul>
 					</nav>
 					<div className={style.addons}>
-						<ToggleTheme />
+						{/* <ToggleTheme /> */}
 						<Link href={'/auth/signin'}>Вход в аккаунт</Link>
 					</div>
 				</div>

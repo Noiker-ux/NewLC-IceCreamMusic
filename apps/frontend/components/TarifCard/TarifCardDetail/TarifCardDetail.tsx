@@ -33,7 +33,7 @@ export default function TarifCardDetail({ idxDetail }: { idxDetail: number }) {
 				<div className='flex justify-between items-center mobile:flex-col'>
 					<p className='text-zinc-500 text-xs'>
 						* Совершая покупку вы подтверждаете, что ознакомились и принимаете{' '}
-						<Link href={'/docs/terms/'} className='underline'>
+						<Link href={'/dashboard/docs/terms/'} className='underline'>
 							условия публичной оферты
 						</Link>
 					</p>

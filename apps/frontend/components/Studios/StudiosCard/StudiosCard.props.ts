@@ -3,4 +3,5 @@ export type TStudiosCard = {
 	preview: string;
 	rating: number;
 	place: string;
+	id: string;
 };

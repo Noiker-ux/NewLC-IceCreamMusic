@@ -61,6 +61,7 @@ export default function Label() {
 			{labelChange && (
 				<p className='text-foreground-400 text-xs mt-2'>
 					Имейте ввиду, что смена лейбла приведет к увелечению цены за релиз
+					(+500р)
 				</p>
 			)}
 			<div className='pt-3'>
@@ -77,7 +78,7 @@ export default function Label() {
 							type='text'
 							radius='sm'
 							isDisabled={!labelChange}
-							description='Выпуская релиз под нашим лейблом вы получаете плюшки, и на всех площадках вы будете указаны как член лейбла ICECREAMMUSIC'
+							description='Выпуская релиз под нашим лейблом на всех площадках вы будете указаны как член лейбла ICECREAMMUSIC'
 							isInvalid={!!formState.errors.label}
 							errorMessage={formState.errors.label?.message?.toString()}
 							{...field}

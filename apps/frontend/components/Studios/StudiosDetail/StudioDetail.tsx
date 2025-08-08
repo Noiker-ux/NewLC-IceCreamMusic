@@ -65,7 +65,7 @@ export default function StudioDetail({
 					</div>
 				</Swiper>
 			</div>
-			<StudiosTeam people={studio.team} />
+			{studio.team.length > 0 && <StudiosTeam people={studio.team} />}
 		</>
 	);
 }

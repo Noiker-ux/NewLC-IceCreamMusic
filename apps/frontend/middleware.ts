@@ -30,7 +30,6 @@ export const middleware = async function (request: NextRequest) {
 			headers: authHeaders,
 			next: {
 				tags: ['authorization'],
-				revalidate: 5,
 			},
 		});
 

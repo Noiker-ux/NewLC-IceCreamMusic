@@ -7,6 +7,7 @@ import { premiumPlans } from 'shared/helpers/premiumPlans';
 import { paramsSchema, subscriptionLevels, TPremiumPlans } from './constants';
 import { Button } from '@heroui/button';
 import { PayButton } from './PayButton';
+import React from 'react';
 
 export default async function PurchasePage({
 	params,
@@ -65,37 +66,35 @@ export default async function PurchasePage({
 
 	return (
 		<>
-			<div>
-				<table>
-					<thead>
-						<tr>
-							<th>Услуга</th>
-							<th>Стоимость</th>
-						</tr>
-					</thead>
-					<tbody>
-						{receipt.map((receiptItem) => (
-							<tr key={receiptItem.description}>
-								<td>{receiptItem.description}</td>
-								<td>{receiptItem.amount.value}</td>
-							</tr>
-						))}
-					</tbody>
-					<tfoot>
-						<tr>
-							<th>Итого</th>
-							<th>
-								{receipt
-									.reduce((summ, receiptItem) => {
-										return summ + Number(receiptItem.amount.value);
-									}, 0)
-									.toFixed(2)}
-							</th>
-						</tr>
-					</tfoot>
-				</table>
+			<p className='text-3xl mb-3 font-bold'>Оплата</p>
+			<div className='grid  grid-cols-2 max-w-3xl bg-zinc-900 p-5 rounded-xl'>
+				<p className='pb-3'>Услуга</p>
+				<p className='pb-3'>Стоимость</p>
+
+				{receipt.map((receiptItem, idx) => (
+					<React.Fragment key={receiptItem.description}>
+						<p className='border-t-1 py-3 text-gray-400'>
+							{idx + 1}
+							{') '}
+							{receiptItem.description}
+						</p>
+						<p className='border-t-1 py-3 text-gray-400'>
+							{receiptItem.amount.value} ₽
+						</p>
+					</React.Fragment>
+				))}
+
+				<p className='border-t-1 font-bold pt-3'>Итого</p>
+				<p className='border-t-1 pt-3'>
+					{receipt
+						.reduce((summ, receiptItem) => {
+							return summ + Number(receiptItem.amount.value);
+						}, 0)
+						.toFixed(2)}{' '}
+					₽
+				</p>
 			</div>
-			<div>
+			<div className='mt-5'>
 				<PayButton
 					orderType={paramsResult.data[0]}
 					orderData={paramsResult.data[1]}

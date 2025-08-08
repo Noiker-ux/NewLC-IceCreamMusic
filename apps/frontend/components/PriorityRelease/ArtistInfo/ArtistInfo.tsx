@@ -19,8 +19,7 @@ export default function ArtistInfo() {
 					}
 					description={
 						<div className='mt-2 max-w-lg'>
-							Пожалуйста, укажите Nickname артиста и в скобках его ФИО.
-							Например: XXXBACKPACKXXX (Иванов Иван Иваонович)
+							Пожалуйста, укажите Nickname артиста
 						</div>
 					}
 					placeholder='Введите артиста'
