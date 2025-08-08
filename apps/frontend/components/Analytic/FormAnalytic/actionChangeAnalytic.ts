@@ -3,14 +3,18 @@ import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { functional } from 'sdk';
 import { cookies } from 'next/headers';
 import { sessionCookieName } from '@/shared/lib/config/auth';
-import { TPayoutTicketData } from 'sdk/lib/finance/finance.controller';
 import { revalidateTag } from 'next/cache';
-import { TCreateAnalyticsBody } from 'sdk/lib/analytics/analytics.controller';
+import {
+	TCreateAnalyticsBody,
+	TUpdateAnalyticsBody,
+} from 'sdk/lib/analytics/analytics.controller';
 
-export async function actionCreateAnalytic({
+export async function actionChangeAnalytic({
+	analyticsId,
 	data,
 }: {
-	data: TCreateAnalyticsBody;
+	analyticsId: string;
+	data: TUpdateAnalyticsBody;
 }) {
 	const cookieStore = await cookies();
 	const token = cookieStore.get(sessionCookieName)?.value;
@@ -27,14 +31,18 @@ export async function actionCreateAnalytic({
 		headers,
 	});
 
-	functional.v1.analytics.createAnalytics(connection, {
-		data: data.data,
+	functional.v1.analytics.updateAnalytics(connection, analyticsId, {
+		data: {
+			periodStart: data.data.periodStart,
+			periodFinish: data.data.periodFinish,
+			flourishReportMarkup: data.data.flourishReportMarkup,
+		},
 	});
 
-	revalidateTag('admin-users');
+	revalidateTag('admin-analytic');
 
 	return {
 		success: true as const,
-		message: 'Аналитика загруженна',
+		message: 'Аналитика успешно обнавлена',
 	};
 }
