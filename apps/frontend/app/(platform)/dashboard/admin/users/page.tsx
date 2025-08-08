@@ -79,7 +79,7 @@ export default async function UsersPage() {
 										Релизы пользователя
 									</Button>
 									<Balance userId={u.id} />
-									<AddAnalytic userId={u.id} />
+									<AddAnalytic userId={u.id} />\
 								</div>
 							</div>
 						</div>
