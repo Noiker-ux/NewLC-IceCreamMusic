@@ -9,8 +9,14 @@ import {
 	useDisclosure,
 	DateRangePicker,
 	Textarea,
+	DatePicker,
 } from '@heroui/react';
-import { getLocalTimeZone, parseDate, today } from '@internationalized/date';
+import {
+	getLocalTimeZone,
+	parseAbsoluteToLocal,
+	parseDate,
+	today,
+} from '@internationalized/date';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Toaster, toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -20,8 +26,10 @@ import {
 	TGetAnalyticsResponse,
 } from 'sdk/lib/analytics/analytics.controller';
 import { I18nProvider } from '@react-aria/i18n';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useRef } from 'react';
 import { Primitive } from 'sdk';
+import { actionCreateAnalytic } from './actionCreateAnalytic';
+import dateISOFormatter from '@/utils/dateISOFormatter';
 
 export default function FormAnalytic({
 	userId,
@@ -35,17 +43,38 @@ export default function FormAnalytic({
 	const methods = useForm<TCreateAnalyticsBody['data']>({});
 	const router = useRouter();
 
-	if (analytic) {
-		methods.setValue('flourishReportMarkup', analytic.flourishReportMarkup);
-		methods.setValue(
-			'periodStart',
-			parseDate(analytic.periodStart).toDateString(),
-		);
-		methods.setValue('periodFinish', parseDate(analytic.periodFinish));
-	}
+	// if (analytic) {
+	// 	methods.setValue('flourishReportMarkup', analytic.flourishReportMarkup);
+	// 	methods.setValue('periodStart', analytic.periodStart);
+	// 	methods.setValue('periodFinish', analytic.periodFinish);
+	// }
 
 	const onSubmit: SubmitHandler<TCreateAnalyticsBody['data']> = (data) => {
+		console.log(data);
 		methods.reset();
+		toast.promise(actionCreateAnalytic({ data: { ...data, userId: userId } }), {
+			loading: 'Загрузка...',
+			success: (responce) => {
+				if (!responce.success) {
+					return {
+						message: `Произошла ошибка`,
+						className: '!bg-red-300 !border-red-600 !text-red-800',
+						duration: 500,
+					};
+				}
+				return {
+					message: responce.message,
+					className: '!bg-green-300 !border-green-600 !text-green-800',
+					duration: 500,
+				};
+			},
+			error: (responce) => {
+				return {
+					message: `${responce.message}`,
+					className: '!bg-red-300 !border-red-600 !text-red-800',
+				};
+			},
+		});
 		onOpenChange();
 		router.refresh();
 	};
@@ -67,33 +96,40 @@ export default function FormAnalytic({
 								<form
 									className='flex flex-col gap-4 mt-5'
 									onSubmit={methods.handleSubmit(onSubmit)}>
-									<I18nProvider locale='ru-RU'>
-										<DateRangePicker
-											label='Период'
-											labelPlacement='outside'
-											{...methods.register('periodStart')}
-											onChange={(value) => {
-												if (value) {
-													if (value.start) {
+									<div className='flex gap-1'>
+										<I18nProvider locale='ru-RU'>
+											<DatePicker
+												label='Дата начала'
+												labelPlacement={'outside'}
+												hideTimeZone={true}
+												showMonthAndYearPickers={true}
+												{...methods.register('periodStart')}
+												onChange={(value) => {
+													if (value) {
 														methods.setValue(
 															'periodStart',
-															value.start
-																.toDate(getLocalTimeZone())
-																.toISOString(),
+															value.toDate(getLocalTimeZone()).toISOString(),
 														);
 													}
-													if (value.end) {
+												}}
+											/>{' '}
+											<DatePicker
+												label='Дата финиша'
+												labelPlacement={'outside'}
+												hideTimeZone={true}
+												showMonthAndYearPickers={true}
+												{...methods.register('periodFinish')}
+												onChange={(value) => {
+													if (value) {
 														methods.setValue(
 															'periodFinish',
-															value.end
-																.toDate(getLocalTimeZone())
-																.toISOString(),
+															value.toDate(getLocalTimeZone()).toISOString(),
 														);
 													}
-												}
-											}}
-										/>
-									</I18nProvider>
+												}}
+											/>
+										</I18nProvider>
+									</div>
 									<Textarea
 										label={'Статистика'}
 										labelPlacement='outside'

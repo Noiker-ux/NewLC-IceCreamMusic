@@ -21,11 +21,11 @@ export default function CardAnalytic({
 					{DateFormatter(new Date(analytic.periodFinish))}
 				</p>
 				<div className='flex items-center gap-2'>
-					{/* <Tooltip content={<div className='p-2'>Редактировать</div>}>
+					<Tooltip content={<div className='p-2'>Редактировать</div>}>
 						<FormAnalytic userId={analytic.userId} analytic={analytic}>
 							<PencilSquareIcon width={20} />
 						</FormAnalytic>
-					</Tooltip> */}
+					</Tooltip>
 					<Tooltip content={<div className='p-2'>Удалить</div>}>
 						<Button
 							isIconOnly
