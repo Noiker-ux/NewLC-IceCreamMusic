@@ -1,35 +1,28 @@
 'use client';
+import dateISOFormatter from '@/utils/dateISOFormatter';
 import {
-	Modal,
-	ModalContent,
-	ModalHeader,
-	ModalBody,
-	ModalFooter,
 	Button,
-	useDisclosure,
-	DateRangePicker,
-	Textarea,
 	DatePicker,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	Textarea,
+	useDisclosure,
 } from '@heroui/react';
-import {
-	getLocalTimeZone,
-	parseAbsoluteToLocal,
-	parseDate,
-	today,
-} from '@internationalized/date';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Toaster, toast } from 'sonner';
+import { parseAbsoluteToLocal } from '@internationalized/date';
+import { I18nProvider } from '@react-aria/i18n';
 import { useRouter } from 'next/navigation';
+import { PropsWithChildren } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Primitive } from 'sdk';
 import {
-	TAnalytics,
 	TCreateAnalyticsBody,
 	TGetAnalyticsResponse,
 } from 'sdk/lib/analytics/analytics.controller';
-import { I18nProvider } from '@react-aria/i18n';
-import { PropsWithChildren, useRef } from 'react';
-import { Primitive } from 'sdk';
+import { Toaster, toast } from 'sonner';
 import { actionCreateAnalytic } from './actionCreateAnalytic';
-import dateISOFormatter from '@/utils/dateISOFormatter';
 
 export default function FormAnalytic({
 	userId,
@@ -40,20 +33,12 @@ export default function FormAnalytic({
 	analytic?: Primitive<TGetAnalyticsResponse['data']>;
 } & PropsWithChildren) {
 	const { isOpen, onOpenChange } = useDisclosure();
-	const methods = useForm<TCreateAnalyticsBody['data']>({});
-	const router = useRouter();
 
-	if (analytic) {
-		methods.setValue('flourishReportMarkup', analytic.flourishReportMarkup);
-		methods.setValue(
-			'periodStart',
-			new Date(analytic.periodStart).toISOString(),
-		);
-		methods.setValue(
-			'periodFinish',
-			new Date(analytic.periodFinish).toISOString(),
-		);
-	}
+	const methods = useForm<TCreateAnalyticsBody['data']>({
+		defaultValues: analytic,
+	});
+
+	const router = useRouter();
 
 	const onSubmit: SubmitHandler<TCreateAnalyticsBody['data']> = (data) => {
 		console.log(data);
@@ -104,35 +89,59 @@ export default function FormAnalytic({
 									onSubmit={methods.handleSubmit(onSubmit)}>
 									<div className='flex gap-1'>
 										<I18nProvider locale='ru-RU'>
-											<DatePicker
-												label='Дата начала'
-												labelPlacement={'outside'}
-												hideTimeZone={true}
-												showMonthAndYearPickers={true}
-												{...methods.register('periodStart')}
-												onChange={(value) => {
-													if (value) {
-														methods.setValue(
-															'periodStart',
-															value.toDate(getLocalTimeZone()).toISOString(),
-														);
-													}
-												}}
-											/>{' '}
-											<DatePicker
-												label='Дата финиша'
-												labelPlacement={'outside'}
-												hideTimeZone={true}
-												showMonthAndYearPickers={true}
-												{...methods.register('periodFinish')}
-												onChange={(value) => {
-													if (value) {
-														methods.setValue(
-															'periodFinish',
-															value.toDate(getLocalTimeZone()).toISOString(),
-														);
-													}
-												}}
+											<Controller
+												control={methods.control}
+												name='periodStart'
+												render={({ field }) => (
+													<DatePicker
+														label='Дата начала'
+														labelPlacement={'outside'}
+														hideTimeZone={true}
+														showMonthAndYearPickers={true}
+														granularity='day'
+														value={
+															field.value &&
+															parseAbsoluteToLocal(
+																dateISOFormatter(new Date(field.value)),
+															)
+														}
+														onChange={(value) => {
+															if (value) {
+																methods.setValue(
+																	'periodStart',
+																	value.toDate().toISOString(),
+																);
+															}
+														}}
+													/>
+												)}
+											/>
+											<Controller
+												control={methods.control}
+												name='periodFinish'
+												render={({ field }) => (
+													<DatePicker
+														label='Дата финиша'
+														labelPlacement={'outside'}
+														hideTimeZone={true}
+														showMonthAndYearPickers={true}
+														granularity='day'
+														value={
+															field.value &&
+															parseAbsoluteToLocal(
+																dateISOFormatter(new Date(field.value)),
+															)
+														}
+														onChange={(value) => {
+															if (value) {
+																methods.setValue(
+																	'periodFinish',
+																	value.toDate().toISOString(),
+																);
+															}
+														}}
+													/>
+												)}
 											/>
 										</I18nProvider>
 									</div>
