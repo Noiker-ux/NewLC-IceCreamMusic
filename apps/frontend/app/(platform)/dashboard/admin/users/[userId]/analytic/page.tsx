@@ -52,7 +52,7 @@ export default async function AdminAnalyticPage({
 			<div className='max-w-7xl flex flex-col gap-5 mt-5'>
 				{analyticResult.data.map((a) => (
 					<div key={a.id}>
-						<CardAnalytic analytic={a} />
+						<CardAnalytic adminkey={true} analytic={a} />
 					</div>
 				))}
 			</div>

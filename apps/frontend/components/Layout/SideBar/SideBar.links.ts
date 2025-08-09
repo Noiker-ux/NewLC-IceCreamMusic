@@ -57,7 +57,7 @@ export const navigation: TMenu[] = [
 	{ name: 'Студии', href: '/dashboard/studios/', icon: 'heroicons:map' },
 	{
 		name: 'Аналитика',
-		href: '/dashboard#',
+		href: '/dashboard/analytic',
 		icon: 'heroicons:chart-pie',
 		comming: true,
 	},
