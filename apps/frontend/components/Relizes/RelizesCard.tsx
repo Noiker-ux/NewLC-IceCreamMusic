@@ -111,7 +111,11 @@ export default function RelizecCard({
 						<p className='text-xs font-extralight text-gray-300'>Оплачен</p>
 						<p className='text-sm '>
 							{release.confirmed && <span className='text-green-400'>Да</span>}
-							{!release.confirmed && <span className='text-red-500'>Нет</span>}
+							{!release.confirmed && (
+								<Button as={Link} href={`/purchase/release/${release.id}`}>
+									Оплатить
+								</Button>
+							)}
 						</p>
 					</div>
 				</div>
