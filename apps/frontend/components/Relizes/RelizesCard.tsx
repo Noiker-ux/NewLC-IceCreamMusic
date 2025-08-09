@@ -1,22 +1,18 @@
 'use client';
-import Image from 'next/image';
-import { useState } from 'react';
-
-import {
-	ClipboardDocumentCheckIcon,
-	InboxStackIcon,
-	LinkIcon,
-	SquaresPlusIcon,
-	TrashIcon,
-} from '@heroicons/react/24/outline';
-
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
+import { LinkIcon, SquaresPlusIcon } from '@heroicons/react/24/outline';
 import { Button, Link, Tooltip } from '@heroui/react';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { Primitive } from 'sdk';
 import { TGetReleaseListResponse } from 'sdk/lib/release/release.controller';
+import {
+	releaseAreaSchema,
+	releasePlatformsSchema,
+} from 'shared/schema/release.schema';
 import Areas from '../NewRelize/CheckRelizeForm/Areas/Areas';
 import Platforms from '../NewRelize/CheckRelizeForm/Platfroms/Platforms';
 import MusicList from './MusicList';
@@ -29,6 +25,23 @@ export default function RelizecCard({
 	const [showMusicList, setShowMusicList] = useState<boolean>(false);
 	const router = useRouter();
 	const pathname = usePathname();
+
+	let areaData = release.area;
+
+	if (typeof areaData === 'string') {
+		areaData = JSON.parse(areaData);
+	}
+
+	const releaseAreaResult = releaseAreaSchema.safeParse(areaData);
+
+	let platfromsData = release.platforms;
+
+	if (typeof platfromsData === 'string') {
+		platfromsData = JSON.parse(platfromsData);
+	}
+
+	const releasePlatformsResult =
+		releasePlatformsSchema.safeParse(platfromsData);
 
 	return (
 		<div className='bg-zinc-900 p-5  gap-2 rounded-xl w-full grid grid-cols-4'>
@@ -83,13 +96,17 @@ export default function RelizecCard({
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Территории</p>
-						<Areas areas={JSON.parse(JSON.stringify(release.area))} />
+						{releaseAreaResult.success && (
+							<Areas areas={releaseAreaResult.data} />
+						)}
+						{!releaseAreaResult.success && <>Неверный формат данных</>}
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Площадки</p>
-						<Platforms
-							platforms={JSON.parse(JSON.stringify(release.platforms))}
-						/>
+						{releasePlatformsResult.success && (
+							<Platforms platforms={releasePlatformsResult.data} />
+						)}
+						{!releasePlatformsResult.success && <>Неверный формат данных</>}
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Жанр</p>
