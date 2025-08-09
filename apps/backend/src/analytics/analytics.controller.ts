@@ -92,7 +92,7 @@ export class AnalyticsController {
 
     if (!analytics) throw new BadRequestException('Аналитика не найдена');
 
-    if (analytics.userId !== user.id || !user.isAdmin)
+    if (analytics.userId !== user.id && !user.isAdmin)
       throw new ForbiddenException('Недостаточно прав для просмотра аналитики');
 
     return { data: analytics };
