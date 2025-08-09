@@ -31,7 +31,7 @@ export async function actionCreateAnalytic({
 		data: data,
 	});
 
-	revalidateTag('admin-users');
+	revalidateTag('admin-analytic');
 
 	return {
 		success: true as const,

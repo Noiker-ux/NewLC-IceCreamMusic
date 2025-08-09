@@ -73,18 +73,19 @@ export default async function UsersPage() {
 									Баланс пользователя:{' '}
 									{MoneyFormatter(Number(u.balance.toFixed(2)))}
 								</p>
-								<div className='flex gap-5 items-center mt-5'>
+								<div className='flex gap-1 items-center mt-5'>
 									<Button
 										as={Link}
 										href={`/dashboard/admin/users/${u.id}/relizes`}>
 										Релизы пользователя
 									</Button>
 									<Balance userId={u.id} />
-									{/* <Button
+									<Button
 										as={Link}
+										isIconOnly
 										href={`/dashboard/admin/users/${u.id}/analytic`}>
-										<ChartBarIcon />
-									</Button> */}
+										<ChartBarIcon className='w-[20px]' />
+									</Button>
 								</div>
 							</div>
 						</div>

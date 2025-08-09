@@ -1,4 +1,3 @@
-'use client';
 import StudiosPreview from './StudiosPreview/StudiosPreview';
 import { cn } from '@/utils/cn';
 import { Swiper, SwiperSlide } from 'swiper/react';
