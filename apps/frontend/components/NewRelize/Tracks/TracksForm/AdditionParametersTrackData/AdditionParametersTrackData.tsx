@@ -8,10 +8,7 @@ import {
 import { TimeInput } from '@heroui/date-input';
 import { Checkbox, DatePicker } from '@heroui/react';
 import { Tooltip } from '@heroui/tooltip';
-import {
-	parseAbsoluteToLocal,
-	parseZonedDateTime,
-} from '@internationalized/date';
+import { parseAbsoluteToLocal, parseTime, Time } from '@internationalized/date';
 import { I18nProvider } from '@react-aria/i18n';
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -86,24 +83,19 @@ export default function AdditionParametersTrackData({
 					}
 					labelPlacement='outside'
 					startContent={<FaClock size={20} />}
-					defaultValue={parseZonedDateTime(
-						'2022-11-07T00:00[America/Los_Angeles]',
-					)}
 					granularity='minute'
 					hourCycle={24}
 					hideTimeZone
-					value={parseZonedDateTime(
-						`2022-11-07T${
-							previewStart.length ? previewStart : '13:00'
-						}[America/Los_Angeles]`,
-					)}
-					onChange={(e) => {
-						setValue(
-							`tracks.${trackIndex}.preview_start`,
-							`${e?.hour.toString().length === 1 ? '0' + e?.hour : e?.hour}:${
-								e?.minute.toString().length === 1 ? '0' + e?.minute : e?.minute
-							}`,
-						);
+					value={parseTime(previewStart)}
+					onChange={(newTime) => {
+						if (newTime) {
+							const hour = newTime.hour.toString().padStart(2, '0');
+							const minute = newTime.minute.toString().padStart(2, '0');
+							setValue(
+								`tracks.${trackIndex}.preview_start`,
+								`${hour}:${minute}`,
+							);
+						}
 					}}
 				/>
 			</div>

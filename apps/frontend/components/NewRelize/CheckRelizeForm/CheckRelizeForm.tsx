@@ -2,16 +2,21 @@
 import { TReleaseInsertForm } from '@/schema/release.schema';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
-import { ChevronUpIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { useFormContext } from 'react-hook-form';
 import Areas from './Areas/Areas';
 import Platforms from './Platfroms/Platforms';
+import { useState } from 'react';
+import { motion } from 'motion/react';
+import { releasePreviewSchema } from 'shared/schema/release.schema';
 
 export default function CheckRelizeForm() {
-	const { formState, watch } = useFormContext<TReleaseInsertForm>();
+	const { formState, getValues } = useFormContext<TReleaseInsertForm>();
 
-	const values = watch();
+	const [releaseValues] = useState(() => getValues());
+
+	const [showTracks, setShowTracks] = useState(false);
 
 	return (
 		<div className='mb-5'>
@@ -29,30 +34,40 @@ export default function CheckRelizeForm() {
 						<p className='text-lg'>
 							В форме присутствуют обязательные поля, которые вы пропустили:
 						</p>
+						{(
+							Object.keys(formState.errors) as (keyof typeof formState.errors)[]
+						).map((ek) => (
+							<p key={ek}>{formState.errors[ek]?.message}</p>
+						))}
 					</>
 				)}
 			</div>
-			{/* <div className='bg-zinc-900 p-5 rounded-lg mt-5 max-w-7xl '>
+			<div className='bg-zinc-900 p-5 rounded-lg mt-5 max-w-7xl '>
 				<div className='flex  gap-5   '>
-					<Image
-						src={'/assets/XaQw7AVPHNY.jpg'}
-						width={110}
-						height={110}
-						alt=''
-						className='rounded-md'
-					/>
+					<div
+						className={cn('min-w-[110px] h-[110px] relative rounded-md', {
+							'border-white border-[2px]': !!!releaseValues.preview,
+						})}>
+						{releaseValues.preview && (
+							<Image
+								src={URL.createObjectURL(releaseValues.preview)}
+								fill
+								alt='release-preview'
+							/>
+						)}
+					</div>
 
 					<div className='flex justify-between w-full'>
 						<div>
 							<div>
 								<p className='text-lg'>
-									{values.title ? (
-										values.title
+									{releaseValues.title ? (
+										releaseValues.title
 									) : (
 										<span className='text-red-500'>Не указано</span>
 									)}
 								</p>
-								<p className='text-sm'>{values.subtitle}</p>
+								<p className='text-sm'>{releaseValues.subtitle}</p>
 							</div>
 							<div className='flex gap-10 mt-3'>
 								<div>
@@ -60,8 +75,8 @@ export default function CheckRelizeForm() {
 										Тип релиза
 									</p>
 									<p className='text-sm'>
-										{values.type ? (
-											values.type
+										{releaseValues.type ? (
+											releaseValues.type
 										) : (
 											<span className='text-red-500'>Не указано</span>
 										)}
@@ -70,8 +85,8 @@ export default function CheckRelizeForm() {
 								<div>
 									<p className='text-xs font-extralight text-gray-300'>Жанр</p>
 									<p className='text-sm'>
-										{values.genre ? (
-											values.genre
+										{releaseValues.genre ? (
+											releaseValues.genre
 										) : (
 											<span className='text-red-500'>Не указано</span>
 										)}
@@ -79,19 +94,19 @@ export default function CheckRelizeForm() {
 								</div>
 								<div>
 									<p className='text-xs font-extralight text-gray-300'>Лейбл</p>
-									<p className='text-sm'>{values.labelName}</p>
+									<p className='text-sm'>{releaseValues.labelName}</p>
 								</div>
-								{values.upc && (
+								{releaseValues.upc && (
 									<div>
 										<p className='text-xs font-extralight text-gray-300'>UPC</p>
-										<p className='text-sm'>{values.upc}</p>
+										<p className='text-sm'>{releaseValues.upc}</p>
 									</div>
 								)}
 							</div>
 						</div>
 						<p className='text-sm text-end'>
-							{values.language ? (
-								values.language
+							{releaseValues.language ? (
+								releaseValues.language
 							) : (
 								<span className='text-red-500'>Не указано</span>
 							)}
@@ -103,34 +118,38 @@ export default function CheckRelizeForm() {
 						<p className='text-xs font-extralight text-gray-300'>
 							Дата предзаказа
 						</p>
-						<p className='text-sm '>{DateFormatter(values.preorderDate)}</p>
+						<p className='text-sm '>
+							{DateFormatter(releaseValues.preorderDate)}
+						</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Дата релиза</p>
-						<p className='text-sm '>{DateFormatter(values.releaseDate)}</p>
+						<p className='text-sm '>
+							{DateFormatter(releaseValues.releaseDate)}
+						</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Дата старта</p>
-						<p className='text-sm '>{DateFormatter(values.startDate)}</p>
+						<p className='text-sm '>{DateFormatter(releaseValues.startDate)}</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300 flex'>
 							Территории
 						</p>
-						<Areas areas={values.area} />
+						<Areas areas={releaseValues.area} />
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Площадки</p>
-						<Platforms platforms={values.platforms} />
+						<Platforms platforms={releaseValues.platforms} />
 					</div>
 				</div>
-				{values.roles.filter((r) => {
+				{releaseValues.roles.filter((r) => {
 					return r.role === 'Исполнитель';
 				}).length ? (
 					<div className='mt-3'>
 						<p className='text-sm'>
 							Исполнители:{' '}
-							{values.roles
+							{releaseValues.roles
 								.filter((r) => {
 									return r.role === 'Исполнитель';
 								})
@@ -145,13 +164,13 @@ export default function CheckRelizeForm() {
 						Исполнители: <span className='text-red-500'>Не указано</span>
 					</p>
 				)}
-				{values.roles.filter((r) => {
+				{releaseValues.roles.filter((r) => {
 					return r.role === 'feat.';
 				}).length > 0 && (
 					<div className='mt-1'>
 						<p className='text-sm'>
 							feat:{' '}
-							{values.roles
+							{releaseValues.roles
 								.filter((r) => {
 									return r.role === 'feat.';
 								})
@@ -162,11 +181,32 @@ export default function CheckRelizeForm() {
 						</p>
 					</div>
 				)}
-				<div className='inline-block hover:text-indigo-700'>
-					<p className='mt-3 cursor-pointer'>Список треков</p>
-					<ChevronUpIcon width={20} />
-				</div>
-			</div> */}
+				{!!releaseValues.tracks.length && (
+					<>
+						<button
+							className='mt-3 flex hover:text-indigo-700 items-center gap-1'
+							onClick={() => setShowTracks((show) => !show)}
+							type='button'>
+							<p className=' cursor-pointer'>Список треков</p>
+							<motion.div
+								animate={{
+									rotate: showTracks ? 180 : 0,
+								}}
+								initial={{ rotate: 0 }}>
+								<ChevronDownIcon width={20} />
+							</motion.div>
+						</button>
+						<motion.div
+							initial={{ height: 0 }}
+							animate={{ height: !showTracks ? 0 : 'auto' }}
+							className='overflow-hidden '>
+							{releaseValues.tracks.map((track) => (
+								<p key={track.title}>{track.title}</p>
+							))}
+						</motion.div>
+					</>
+				)}
+			</div>
 		</div>
 	);
 }

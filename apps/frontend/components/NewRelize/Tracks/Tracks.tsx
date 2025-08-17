@@ -47,7 +47,7 @@ export default function Tracks() {
 				appendTrack({
 					language: '',
 					partner_code: '',
-					preview_start: '',
+					preview_start: '00:00',
 					roles: [],
 					subtitle: '',
 					title: '',

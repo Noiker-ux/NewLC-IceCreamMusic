@@ -21,6 +21,8 @@ import WorkWithRelize from './Relize/WorkWithRelize/WorkWithRelize';
 import Tracks from './Tracks/Tracks';
 import { FileUploader } from './Upload/FileUploader';
 import { action } from './action';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { releaseInsertFormSchema } from 'shared/schema/release.schema';
 
 type TUploadBase = {
 	file: File;
@@ -68,6 +70,7 @@ export default function NewRelizeForm() {
 
 	const methods = useForm<TReleaseInsertForm>({
 		mode: 'onSubmit',
+		resolver: zodResolver(releaseInsertFormSchema),
 		defaultValues: {
 			labelName: 'ICECREAMMUSIC',
 			area: {
@@ -75,6 +78,7 @@ export default function NewRelizeForm() {
 				data: ['all'],
 			},
 			platforms: ['all'],
+			tracks: [],
 		},
 	});
 
