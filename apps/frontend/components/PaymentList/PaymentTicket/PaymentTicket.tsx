@@ -48,9 +48,9 @@ export default function PaymentTicket({
 				<p>
 					Статус:{' '}
 					{payout.confirmed ? (
-						<span className='text-red-500'>Новая заявка</span>
-					) : (
 						<span className='text-green-500'>Заявка закрыта</span>
+					) : (
+						<span className='text-red-500'>Новая заявка</span>
 					)}
 				</p>
 			</div>

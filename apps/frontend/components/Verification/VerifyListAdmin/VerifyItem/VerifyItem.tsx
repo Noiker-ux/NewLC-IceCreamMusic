@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import DateFormatter from '@/utils/dateFormatter';
 import { TVerification } from 'sdk/lib/verification/verification.controller';
-import { Button, Tooltip } from '@heroui/react';
+import { Button, Link, Tooltip } from '@heroui/react';
 import { XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { actionPatchStatus } from './actionPatchStatus';
 import { Toaster, toast } from 'sonner';
@@ -134,10 +134,20 @@ export default function VerifyItem({
 						<p>{verifyToken.registrationAddress}</p>
 					</div>
 				</div>
-				<p className='font-semibold text-xl mt-5'>Банковские реквизиты</p>
-				<p className='mt-2'>
-					{verifyToken.bankName}: {verifyToken.accountNumber}
-				</p>
+				<div className='flex justify-between items-end'>
+					<div>
+						<p className='font-semibold text-xl mt-5'>Банковские реквизиты</p>
+						<p className='mt-2'>
+							{verifyToken.bankName}: {verifyToken.accountNumber}
+						</p>
+					</div>
+					<Button
+						as={Link}
+						download
+						href={` ${process.env.NEXT_PUBLIC_S3_URL}/studio-backgrounds/${verifyToken.id}.${verifyToken.contract}`}>
+						Cкачать договор
+					</Button>
+				</div>
 			</div>
 		</div>
 	);
