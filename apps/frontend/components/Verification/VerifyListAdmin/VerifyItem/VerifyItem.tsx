@@ -144,7 +144,7 @@ export default function VerifyItem({
 					<Button
 						as={Link}
 						download
-						href={` ${process.env.NEXT_PUBLIC_S3_URL}/studio-backgrounds/${verifyToken.id}.${verifyToken.contract}`}>
+						href={`${process.env.NEXT_PUBLIC_S3_URL}/contracts/${verifyToken.id}.${verifyToken.contract}`}>
 						Cкачать договор
 					</Button>
 				</div>
