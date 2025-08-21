@@ -21,20 +21,13 @@ export async function actionPost(data: TCreateNews) {
 		headers,
 	});
 
-	functional.v1.news
-		.createNews(connection, {
-			data: {
-				title: data.title,
-				content: data.content,
-				preview: data.preview,
-			},
-		})
-		.catch((error) => {
-			return {
-				success: false as const,
-				message: error.message,
-			};
-		});
+	functional.v1.news.createNews(connection, {
+		data: {
+			title: data.title,
+			content: data.content,
+			preview: data.preview ?? null,
+		},
+	});
 
 	return {
 		success: true as const,
