@@ -3,15 +3,19 @@ import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { functional } from 'sdk';
 import { cookies } from 'next/headers';
 import { sessionCookieName } from '@/shared/lib/config/auth';
-import { TUpdateNews } from 'sdk/lib/news/news.controller';
+import { TUpdateNews, TUpdateNewsResponse } from 'sdk/lib/news/news.controller';
+import { TActionResult } from '@/components/Account/actionGetPersonalData';
 
-export async function actionPatch(data: TUpdateNews & { id: string }) {
+export async function actionPatch(
+	id: string,
+	data: TUpdateNews,
+): Promise<TActionResult<TUpdateNewsResponse>> {
 	const cookieStore = await cookies();
 	const token = cookieStore.get(sessionCookieName)?.value;
 	if (!token) {
 		return {
 			success: false as const,
-			message: 'Вы не авторизованы',
+			error: 'Вы не авторизованы',
 		};
 	}
 
@@ -21,23 +25,20 @@ export async function actionPatch(data: TUpdateNews & { id: string }) {
 		headers,
 	});
 
-	functional.v1.news
-		.updateNews(connection, data.id, {
-			data: {
-				title: data.title,
-				content: data.content,
-				preview: data.preview,
-			},
+	const updateResult = await functional.v1.news
+		.updateNews(connection, id, {
+			data,
 		})
+		.then((res) => ({
+			success: true as const,
+			data: res,
+		}))
 		.catch((error) => {
 			return {
 				success: false as const,
-				message: error.message,
+				error: error.message,
 			};
 		});
 
-	return {
-		success: true as const,
-		message: 'Новость успешно обновлена',
-	};
+	return updateResult;
 }
