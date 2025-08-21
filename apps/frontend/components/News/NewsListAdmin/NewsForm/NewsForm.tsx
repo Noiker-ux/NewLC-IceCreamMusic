@@ -44,7 +44,11 @@ export default function NewsForm({
 			? { content: editNews.content, title: editNews.title }
 			: undefined,
 	});
-	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+	const { isOpen, onOpen, onClose } = useDisclosure({
+		onClose: () => {
+			methods.reset();
+		},
+	});
 	const router = useRouter();
 	const refInputPreview = useRef<HTMLInputElement>(null);
 
@@ -124,7 +128,7 @@ export default function NewsForm({
 
 		methods.reset();
 		router.refresh();
-		onOpenChange();
+		onClose();
 	};
 
 	const previewFile = methods.watch('preview');
@@ -135,7 +139,7 @@ export default function NewsForm({
 				{children}
 			</Button>
 			<Toaster />
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange} size={'5xl'}>
+			<Modal isOpen={isOpen} onClose={onClose} size={'5xl'}>
 				<ModalContent>
 					{() => (
 						<>
@@ -148,10 +152,10 @@ export default function NewsForm({
 									onSubmit={methods.handleSubmit(onSubmit)}>
 									<Image
 										src={
-											editNews
-												? `${process.env.NEXT_PUBLIC_S3_URL}/news-previews/${editNews.id}.${editNews.preview}`
-												: previewFile
-													? URL.createObjectURL(previewFile)
+											previewFile
+												? URL.createObjectURL(previewFile)
+												: editNews
+													? `${process.env.NEXT_PUBLIC_S3_URL}/news-previews/${editNews.id}.${editNews.preview}`
 													: '/assets/emptyImage.png'
 										}
 										className='w-full h-96 object-cover'
