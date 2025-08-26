@@ -3,15 +3,16 @@ import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { functional } from 'sdk';
 import { cookies } from 'next/headers';
 import { sessionCookieName } from '@/shared/lib/config/auth';
-import { TCreateNews } from 'sdk/lib/news/news.controller';
+import { TCreateNews, TUpdateNewsResponse } from 'sdk/lib/news/news.controller';
+import { TActionResult } from '@/components/Account/actionGetPersonalData';
 
-export async function actionPost(data: TCreateNews) {
+export async function actionPost(data: TCreateNews): Promise<TActionResult<TUpdateNewsResponse>> {
 	const cookieStore = await cookies();
 	const token = cookieStore.get(sessionCookieName)?.value;
 	if (!token) {
 		return {
 			success: false as const,
-			message: 'Вы не авторизованы',
+			error: 'Вы не авторизованы',
 		};
 	}
 
@@ -21,6 +22,7 @@ export async function actionPost(data: TCreateNews) {
 		headers,
 	});
 
+<<<<<<< HEAD
 	functional.v1.news.createNews(connection, {
 		data: {
 			title: data.title,
@@ -28,9 +30,22 @@ export async function actionPost(data: TCreateNews) {
 			preview: data.preview ?? null,
 		},
 	});
+=======
+	const addNewsResult = await functional.v1.news
+		.createNews(connection, {
+			data: {
+				title: data.title,
+				content: data.content,
+				preview: data.preview,
+			},
+		}).then(res=>({success: true as const, data: res}))
+		.catch((error) => {
+			return {
+				success: false as const,
+				error: error.message as string,
+			};
+		});
+>>>>>>> origin/vk-auth
 
-	return {
-		success: true as const,
-		message: 'Новость успешно добавлена',
-	};
+	return addNewsResult;
 }

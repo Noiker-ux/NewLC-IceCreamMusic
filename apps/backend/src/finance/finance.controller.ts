@@ -50,7 +50,9 @@ export type TMakeOrderResponse = {
 export type TPayoutTicketData = InferSelectModel<typeof schema.payouts>;
 
 export type TGetPayoutTicketsResponse = {
-  data: TPayoutTicketData[];
+  data: (TPayoutTicketData & {
+    user: Pick<TSelectUserSchema, 'id' | 'name'>;
+  })[];
 };
 
 export type TGetPayoutTicketsQuery = TPageQuery & {
@@ -321,6 +323,11 @@ export class FinanceController {
     return {
       data: await this.db.query.payouts.findMany({
         where: eq(schema.payouts.confirmed, params.confirmed ?? false),
+        with: {
+          user: {
+            columns: { id: true, name: true },
+          },
+        },
         limit: params.size,
         offset: (params.page - 1) * params.size,
       }),
@@ -344,6 +351,9 @@ export class FinanceController {
           eq(schema.payouts.confirmed, params.confirmed ?? false),
           eq(schema.payouts.userId, user?.id),
         ),
+        with: {
+          user: { columns: { id: true, name: true } },
+        },
         limit: params.size,
         offset: (params.page - 1) * params.size,
       }),
@@ -363,6 +373,14 @@ export class FinanceController {
 
     const ticket = await this.db.query.payouts.findFirst({
       where: eq(schema.payouts.id, ticketId),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     if (!ticket) throw new NotFoundException('Тикет не найден');

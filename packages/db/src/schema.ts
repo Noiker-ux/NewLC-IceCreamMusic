@@ -466,6 +466,10 @@ export const studios = schema.table("studios", {
   annotation: text("annotation"),
 
   description: text("description"),
+
+  lattitude: doublePrecision("lattitude"),
+
+  longitude: doublePrecision("longitude"),
 });
 
 export const studios_relations = relations(studios, ({ many }) => ({
