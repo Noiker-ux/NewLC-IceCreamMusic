@@ -1,10 +1,13 @@
 'use client';
 import { TReleaseInsertForm } from '@/schema/release.schema';
+import { uploadBlob } from '@/shared/lib/upload/stream';
 import { Button } from '@heroui/button';
 import { Tab, Tabs } from '@heroui/tabs';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { releaseInsertFormSchema } from 'shared/schema/release.schema';
 import { TActionResult } from '../Account/actionGetPersonalData';
 import AdditionalParams from './Additional/AdditionalParams/AdditionalParams';
 import CommentForModerator from './Additional/CommentForModerator/CommentForModerator';
@@ -19,17 +22,15 @@ import Platfroms from './Relize/Platforms/Platfroms';
 import Preview from './Relize/Preview/Preview';
 import WorkWithRelize from './Relize/WorkWithRelize/WorkWithRelize';
 import Tracks from './Tracks/Tracks';
-import { FileUploader } from './Upload/FileUploader';
+import { UploadVisualizer } from './Upload/UploadVisualizer';
 import { action } from './action';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { releaseInsertFormSchema } from 'shared/schema/release.schema';
 
 type TUploadBase = {
 	file: File;
 	url: string;
 };
 
-type TUpload =
+type TUploadFile =
 	| (TUploadBase & { belongsTo: 'release'; type: 'preview' })
 	| (TUploadBase & {
 			belongsTo: 'track';
@@ -37,7 +38,14 @@ type TUpload =
 			type: 'track' | 'text_sync' | 'video' | 'video_shot' | 'ringtone';
 	  });
 
-const localization: Record<TUpload['type'], string> = {
+type TUploadResult = TUploadFile & {
+	progress: number;
+	result?: TActionResult<string>;
+	retry?: () => void;
+	title: string;
+};
+
+const localization: Record<TUploadFile['type'], string> = {
 	preview: 'Файл превью',
 	track: 'Файл трека',
 	text_sync: 'Файл синхронизации текста',
@@ -49,24 +57,11 @@ const localization: Record<TUpload['type'], string> = {
 export default function NewRelizeForm() {
 	const [currentTab, setCurrentTab] = useState<string | number>('Main');
 
-	const [isTabsDisabled, setTabsDisabled] = useState<boolean>(false);
-
-	const [filesToUpload, setFilesToUpload] = useState<TUpload[]>([]);
+	const [tabsBlocked, setTabsBlocked] = useState(false);
 
 	const router = useRouter();
 
-	const [uploadResults, setUploadResults] = useState<TActionResult<string>[]>(
-		[],
-	);
-
-	useEffect(() => {
-		const successUploads = uploadResults.filter((result) => result.success);
-		const equalCount = successUploads.length === filesToUpload.length;
-		const succesGreaterThanZero = successUploads.length > 0;
-		if (equalCount && succesGreaterThanZero) {
-			router.push('/dashboard/relizes/my-relizes');
-		}
-	}, [uploadResults, filesToUpload, router]);
+	const [uploadResults, setUploadResults] = useState<TUploadResult[]>([]);
 
 	const methods = useForm<TReleaseInsertForm>({
 		mode: 'onSubmit',
@@ -104,7 +99,7 @@ export default function NewRelizeForm() {
 
 		// console.log('🚀 ~ onSubmit ~ urlsResult.data:', urlsResult.data);
 
-		const filesToUpload: TUpload[] = [
+		const filesToUpload: TUploadFile[] = [
 			{
 				file: data.preview,
 				url: urlsResult.data.preview,
@@ -177,20 +172,81 @@ export default function NewRelizeForm() {
 			}
 		}
 
-		setFilesToUpload(filesToUpload);
+		const uploadResults: TUploadResult[] = filesToUpload
+			.map((f) => {
+				let uploaderTitle = '';
+
+				if (f.belongsTo === 'release') {
+					uploaderTitle = `${localization[f.type]} к релизу`;
+				}
+
+				if (f.belongsTo === 'track') {
+					uploaderTitle = `${localization[f.type]} к треку №${f.trackIndex + 1}`;
+				}
+
+				return {
+					...f,
+					title: uploaderTitle,
+					progress: 0,
+				};
+			})
+			.map((upload, index) => {
+				const { retry } = uploadBlob({
+					file: upload.file,
+					uploadUrl: upload.url,
+					onProgress: (progress) => {
+						setUploadResults((prevResults) => {
+							const preUpdated = prevResults.slice(0, index);
+
+							const postUpdated = prevResults.slice(index + 1);
+
+							const updated: TUploadResult = {
+								...upload,
+								progress,
+							};
+							return [...preUpdated, updated, ...postUpdated];
+						});
+					},
+					onFinish: (result) => {
+						setUploadResults((prevResults) => {
+							const preUpdated = prevResults.slice(0, index);
+
+							const postUpdated = prevResults.slice(index + 1);
+
+							const updated: TUploadResult = {
+								...upload,
+								progress: 1,
+								result,
+							};
+
+							return [...preUpdated, updated, ...postUpdated];
+						});
+					},
+					meta: {
+						filename: upload.title,
+					},
+				});
+				return {
+					...upload,
+					retry,
+				};
+			});
+
+		setUploadResults(uploadResults);
+
+		setTabsBlocked(true);
 
 		setCurrentTab('Upload');
-
-		setTabsDisabled(true);
 	};
 
 	return (
 		<FormProvider {...methods}>
-			<form onSubmit={methods.handleSubmit(onSubmit)}>
+			<form
+				onSubmit={methods.handleSubmit(onSubmit, (data) => console.log(data))}>
 				<div className='w-full'>
 					<Tabs
 						aria-label='Main'
-						isDisabled={isTabsDisabled}
+						isDisabled={tabsBlocked}
 						selectedKey={currentTab}
 						onSelectionChange={setCurrentTab}>
 						<Tab key='Main' title='Информация по релизу'>
@@ -235,31 +291,29 @@ export default function NewRelizeForm() {
 							</Button>
 						</Tab>
 						<Tab key='Upload' title='Загрузка'>
-							{filesToUpload.length > 0 &&
-								isTabsDisabled &&
-								filesToUpload.map((upload) => {
-									let uploaderTitle = '';
-
-									if (upload.belongsTo === 'release') {
-										uploaderTitle = `${localization[upload.type]} к релизу`;
-									}
-
-									if (upload.belongsTo === 'track') {
-										uploaderTitle = `${localization[upload.type]} к треку №${upload.trackIndex + 1}`;
-									}
-
+							{uploadResults.length > 0 &&
+								uploadResults.map((upload) => {
 									return (
-										<FileUploader
+										<UploadVisualizer
 											key={upload.url}
 											file={upload.file}
-											uploadUrl={upload.url}
-											title={uploaderTitle}
-											setUploadResult={(p) => {
-												setUploadResults((prev) => [...prev, p]);
-											}}
+											title={upload.title}
+											result={upload.result}
+											progress={upload.progress}
+											retryAction={upload.retry}
 										/>
 									);
 								})}
+							{uploadResults.length === 0 && <p>Нечего загружать</p>}
+							{uploadResults.every((upload) => upload.result?.success) &&
+								uploadResults.length > 0 && (
+									<button
+										onClick={() => {
+											router.push('/dashboard/relizes/my-relizes');
+										}}>
+										Завершить
+									</button>
+								)}
 						</Tab>
 					</Tabs>
 				</div>
