@@ -19,9 +19,19 @@ import { TTrack } from 'shared/schema/release.schema';
 export default function FileList({
 	track,
 	downloadTrackFile,
+	disabled,
 }: {
-	track: Primitive<TTrack>;
+	track: {
+		id: string;
+		track?: string;
+		ringtone: string | null;
+		text_sync: string | null;
+		video: string | null;
+		video_shot: string | null;
+		text: string | null;
+	};
 	downloadTrackFile: boolean;
+	disabled: boolean;
 }) {
 	const ringtoneRef = useRef<HTMLAnchorElement | null>(null);
 	const syncTextRef = useRef<HTMLAnchorElement | null>(null);
@@ -39,6 +49,7 @@ export default function FileList({
 				}>
 				<Button
 					isIconOnly
+					disabled={disabled}
 					variant='light'
 					onPress={() => {
 						if (!track.ringtone) {
@@ -75,6 +86,7 @@ export default function FileList({
 				}>
 				<Button
 					isIconOnly
+					disabled={disabled}
 					variant='light'
 					onPress={() => {
 						if (!track.text_sync) {
@@ -106,6 +118,7 @@ export default function FileList({
 				}>
 				<Button
 					isIconOnly
+					disabled={disabled}
 					variant='light'
 					className={cn(
 						track.video ? 'text-indigo-400 border border-indigo-400' : '',
@@ -137,6 +150,7 @@ export default function FileList({
 				}>
 				<Button
 					isIconOnly
+					disabled={disabled}
 					variant='light'
 					className={cn(
 						track.video_shot ? 'text-indigo-400 border border-indigo-400' : '',

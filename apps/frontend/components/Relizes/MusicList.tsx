@@ -62,7 +62,7 @@ export default function MusicList({ tracks }: { tracks: Primitive<TTrack>[] }) {
 				<p className='border-zinc-800 pb-2 text-end border-b-1'>Файл</p>
 
 				{tracks.map((track) => (
-					<React.Fragment key={track.id}>
+					<React.Fragment key={track.title}>
 						<p>{track.index + 1}</p>
 						<Button
 							isIconOnly
@@ -85,7 +85,19 @@ export default function MusicList({ tracks }: { tracks: Primitive<TTrack>[] }) {
 						</p>
 						<p className='text-center'>{track.author_rights}%</p>
 						<div className='flex justify-center items-center gap-2'>
-							<FileList track={track} downloadTrackFile={false} />
+							<FileList
+								disabled={false}
+								track={{
+									id: track.id,
+									ringtone: track.ringtone,
+									video: track.video,
+									text_sync: track.text_sync,
+									text: track.text,
+									video_shot: track.video_shot,
+									track: track.track,
+								}}
+								downloadTrackFile={false}
+							/>
 						</div>
 						<div className='flex justify-end items-center'>
 							<Button

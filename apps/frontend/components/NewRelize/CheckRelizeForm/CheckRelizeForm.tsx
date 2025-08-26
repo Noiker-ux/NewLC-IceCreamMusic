@@ -2,7 +2,10 @@
 import { TReleaseInsertForm } from '@/schema/release.schema';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import {
+	ArrowDownTrayIcon,
+	ChevronDownIcon,
+} from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { useFormContext } from 'react-hook-form';
 import Areas from './Areas/Areas';
@@ -10,6 +13,13 @@ import Platforms from './Platfroms/Platforms';
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { releasePreviewSchema } from 'shared/schema/release.schema';
+import MusicList from '@/components/Relizes/MusicList';
+import React from 'react';
+import { Button } from '@heroui/button';
+import { CiPause1, CiPlay1 } from 'react-icons/ci';
+import Link from 'next/link';
+import { toast } from 'sonner';
+import FileList from '@/components/Relizes/FileList';
 
 export default function CheckRelizeForm() {
 	const { formState, getValues } = useFormContext<TReleaseInsertForm>();
@@ -52,6 +62,7 @@ export default function CheckRelizeForm() {
 							<Image
 								src={URL.createObjectURL(releaseValues.preview)}
 								fill
+								className={'object-cover'}
 								alt='release-preview'
 							/>
 						)}
@@ -199,10 +210,86 @@ export default function CheckRelizeForm() {
 						<motion.div
 							initial={{ height: 0 }}
 							animate={{ height: !showTracks ? 0 : 'auto' }}
-							className='overflow-hidden '>
-							{releaseValues.tracks.map((track) => (
-								<p key={track.title}>{track.title}</p>
-							))}
+							className='overflow-hidden  px-5'>
+							<div className='mt-3'>
+								<div
+									className='grid grid-cols-[50px,50px,1fr,1fr,1fr,1fr,200px] border-t-1  items-center
+			 border-zinc-800 justify-between py-2 gap-y-2 '>
+									<p className='border-zinc-800 pb-2 border-b-1'>№</p>
+									<p className='border-zinc-800 pb-2 border-b-1'> </p>
+									<p className='border-zinc-800 pb-2 text-center border-b-1'>
+										Название
+									</p>
+									<p className='border-zinc-800 pb-2 text-center border-b-1'>
+										Подзаголовок
+									</p>
+									<p className='border-zinc-800 pb-2 text-center border-b-1'>
+										Язык трека
+									</p>
+									<p className='border-zinc-800 pb-2 text-center border-b-1'>
+										Доля прав
+									</p>
+									<p className='border-zinc-800 pb-2 text-center border-b-1'>
+										Сервисы
+									</p>
+
+									{releaseValues.tracks.map((trackEl, idx) => (
+										<React.Fragment key={trackEl.title}>
+											<p>{idx + 1}</p>
+											{/* <Button
+												isIconOnly
+												variant='light'
+												onPress={() => {
+													handlePlayAudio();
+												}}>
+												{play ? <CiPause1 /> : <CiPlay1 />}
+												<figure className='hidden'>
+													<audio
+														ref={trackRefAudio}
+														controls
+														src={`${process.env.NEXT_PUBLIC_S3_URL}/tracks/${track.id}.${track.track}`}></audio>
+												</figure>
+											</Button> */}
+											<p></p>
+											<p className='text-center'>
+												{trackEl.title ?? (
+													<span className='text-red-500'>Не указано</span>
+												)}
+											</p>
+											<p className='text-center'>
+												{trackEl.subtitle ?? (
+													<span className='text-red-500'>Не указано</span>
+												)}
+											</p>
+											<p className='text-center'>
+												{trackEl.language ?? (
+													<span className='text-red-500'>Не указано</span>
+												)}
+											</p>
+											<p className='text-center'>
+												{trackEl.author_rights ?? (
+													<span className='text-red-500'>Не указано</span>
+												)}
+												%
+											</p>
+											<div className='flex justify-center items-center gap-2'>
+												<FileList
+													disabled={true}
+													track={{
+														id: '',
+														ringtone: trackEl.ringtone ? 'Да' : null,
+														text: trackEl.text ?? null,
+														text_sync: trackEl.text_sync ? 'Да' : null,
+														video: trackEl.video ? 'Да' : null,
+														video_shot: trackEl.video_shot ? 'Да' : null,
+													}}
+													downloadTrackFile={false}
+												/>
+											</div>
+										</React.Fragment>
+									))}
+								</div>
+							</div>
 						</motion.div>
 					</>
 				)}
