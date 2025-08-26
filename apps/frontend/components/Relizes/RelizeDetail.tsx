@@ -162,7 +162,11 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 					<div className='flex gap-2 items-center'>
 						Файлы:{' '}
 						<div className='flex gap-2'>
-							<FileList track={track} downloadTrackFile={true} />
+							<FileList
+								track={track}
+								downloadTrackFile={true}
+								disabled={true}
+							/>
 						</div>
 					</div>
 					<div className='grid grid-cols-4 gap-x-5 gap-y-5 mt-5'>

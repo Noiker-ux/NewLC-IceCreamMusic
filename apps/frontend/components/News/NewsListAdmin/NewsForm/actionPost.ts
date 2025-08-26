@@ -22,15 +22,6 @@ export async function actionPost(data: TCreateNews): Promise<TActionResult<TUpda
 		headers,
 	});
 
-<<<<<<< HEAD
-	functional.v1.news.createNews(connection, {
-		data: {
-			title: data.title,
-			content: data.content,
-			preview: data.preview ?? null,
-		},
-	});
-=======
 	const addNewsResult = await functional.v1.news
 		.createNews(connection, {
 			data: {
@@ -45,7 +36,6 @@ export async function actionPost(data: TCreateNews): Promise<TActionResult<TUpda
 				error: error.message as string,
 			};
 		});
->>>>>>> origin/vk-auth
 
 	return addNewsResult;
 }
