@@ -98,8 +98,8 @@ services:
     networks:
       - icecream
     restart: unless-stopped
-    # ports:
-    #   - "9000:9000"
+    ports:
+      - "9000:9000"
     #   - "9001:9001"
   postgres: #port 5432
     container_name: icecream_data
