@@ -438,9 +438,12 @@ export class FinanceController {
         .where(eq(schema.payouts.id, ticket.id));
 
       if (body.data.confirmed) {
-        await tx.update(schema.users).set({
-          balance: sql`${schema.users.balance} - ${ticket.amount ?? 0}`,
-        });
+        await tx
+          .update(schema.users)
+          .set({
+            balance: sql`${schema.users.balance} - ${ticket.amount ?? 0}`,
+          })
+          .where(eq(schema.users.id, ticket.userId));
       }
     });
 
