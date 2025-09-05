@@ -2,6 +2,8 @@ services:
   icecream-backend:
     container_name: icecream_backend
     image: icecream-backend:latest
+    extra_hosts:
+      - host.docker.internal:host-gateway
     environment:
       #DB
       DB_USER: ${DB_USER:?error}
@@ -56,6 +58,8 @@ services:
       #YOOKASSA
       YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID:?error}
       YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY:?error}
+      #BACKEND
+      API_URL: ${API_URL:?error}
     env_file:
       - .env
     restart: unless-stopped
@@ -138,6 +142,8 @@ services:
   proxy_manager:
     container_name: icecream_proxy
     image: "jc21/nginx-proxy-manager:latest"
+    extra_hosts:
+      - host.docker.internal:host-gateway
     ports:
       - "80:80"
       - "81:81"

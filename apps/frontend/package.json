@@ -4,7 +4,11 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build && cpy .next/static .next/standalone/apps/frontend && cpy public .next/standalone/apps/frontend",
+		"build:app": "npm run build:app && npm run copy:static && npm run copy:public && npm run copy:modules",
+		"build": "next build",
+		"copy:static": "cpy .next/static .next/standalone/apps/frontend",
+		"copy:public": "cpy public .next/standalone/apps/frontend",
+		"copy:modules": "cpy node_modules/**/**/* apps/frontend/node_modules --cwd=.next/standalone",
 		"start": "node .next/standalone/apps/frontend/server.js",
 		"lint": "next lint",
 		"dev:email": "email dev"
