@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsert, TReleaseInsertForm } from '@/schema/release.schema';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
 import {
@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { useFormContext } from 'react-hook-form';
 import Areas from './Areas/Areas';
 import Platforms from './Platfroms/Platforms';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { releasePreviewSchema } from 'shared/schema/release.schema';
 import MusicList from '@/components/Relizes/MusicList';
@@ -20,6 +20,7 @@ import { CiPause1, CiPlay1 } from 'react-icons/ci';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import FileList from '@/components/Relizes/FileList';
+import { Retranslated } from './Retranslated';
 
 export default function CheckRelizeForm() {
 	const { formState, getValues } = useFormContext<TReleaseInsertForm>();
@@ -28,30 +29,43 @@ export default function CheckRelizeForm() {
 
 	const [showTracks, setShowTracks] = useState(false);
 
+	const [validForm, setValidForm] = useState('');
+
 	return (
 		<div className='mb-5'>
-			<div
-				className={cn(
-					'w-full   p-5 bg-red-500 rounded-xl',
-					formState.isValid && 'bg-green-600',
-				)}>
-				{formState.isValid ? (
-					<p className='text-lg'>
-						Форма заполненна корректна и готова к отправке
-					</p>
-				) : (
-					<>
+			{formState.isSubmitted && (
+				<div
+					className={cn(
+						'w-full   p-5 bg-red-500 rounded-xl',
+						formState.isValid && 'bg-green-600',
+					)}>
+					{formState.isValid ? (
 						<p className='text-lg'>
-							В форме присутствуют обязательные поля, которые вы пропустили:
+							Форма заполненна корректна и готова к отправке
 						</p>
-						{(
-							Object.keys(formState.errors) as (keyof typeof formState.errors)[]
-						).map((ek) => (
-							<p key={ek}>{formState.errors[ek]?.message}</p>
-						))}
-					</>
-				)}
-			</div>
+					) : (
+						<>
+							<p className='text-lg'>
+								В форме присутствуют обязательные поля, которые вы пропустили:
+							</p>
+							{(
+								Object.keys(
+									formState.errors,
+								) as (keyof typeof formState.errors)[]
+							).map((ek: string) => (
+								<>
+									<p key={ek}>
+										{Retranslated[ek]} -{' '}
+										{Retranslated[formState.errors[ek]?.type]} -{' '}
+										{Retranslated[formState.errors[ek]?.message]}
+									</p>
+								</>
+							))}
+						</>
+					)}
+				</div>
+			)}
+
 			<div className='bg-zinc-900 p-5 rounded-lg mt-5 max-w-7xl '>
 				<div className='flex  gap-5   '>
 					<div

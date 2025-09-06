@@ -1,0 +1,15 @@
+export const Retranslated = {
+	language: 'Язык метаданных',
+	title: 'Название релиза',
+	subtitle: 'Подзаголовок релиза',
+	type: 'Тип релиза',
+	genre: 'Жанр',
+	releaseDate: 'Дата релиза',
+	startDate: 'Дата начала',
+	preorderDate: 'Дата предзаказа',
+	tracks: 'Ошибка в загруженных треках',
+	preview: 'Отстутствует файл превью',
+	roles: 'Роли релиза',
+	invalid_type: 'Неверный тип данных',
+	Required: 'Обязательное поле',
+};

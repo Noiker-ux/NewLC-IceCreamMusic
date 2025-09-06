@@ -62,8 +62,10 @@ export default function NewsForm({
 		let editResponse: Promise<TActionResult<TUpdateNewsResponse>>;
 
 		if (editNews) {
+			console.log('patch');
 			editResponse = actionPatch(editNews.id, submitData);
 		} else {
+			console.log('post');
 			editResponse = actionPost(submitData);
 		}
 

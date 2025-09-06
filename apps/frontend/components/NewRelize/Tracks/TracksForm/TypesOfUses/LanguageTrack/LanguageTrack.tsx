@@ -23,7 +23,8 @@ export default function LanguageTrack({ trackIndex }: { trackIndex: number }) {
 						isRequired
 						className='w-1/2 pt-3'
 						ref={ref}
-						onChange={onChange}>
+						onChange={onChange}
+						selectedKeys={[value]}>
 						<>
 							<SelectItem key={'Без слов'} textValue='Без слов'>
 								Без слов
