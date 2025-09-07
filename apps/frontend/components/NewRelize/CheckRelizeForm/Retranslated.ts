@@ -1,4 +1,6 @@
-export const Retranslated = {
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
+
+export const Retranslated: Record<keyof TReleaseInsertForm, string> & Record<string, string> = {
 	language: 'Язык метаданных',
 	title: 'Название релиза',
 	subtitle: 'Подзаголовок релиза',
@@ -12,4 +14,15 @@ export const Retranslated = {
 	roles: 'Роли релиза',
 	invalid_type: 'Неверный тип данных',
 	Required: 'Обязательное поле',
+	labelName: 'Название лейбла',
+	area: 'Регионы',
+	platforms: 'Платформы',
+	performer: 'Исполнитель',
+	feat: 'feat.',
+	earlyStartInRussia: 'Начало релиза в России',
+	moderatorComment: 'Комментарий модератора',
+	realTimeDelivery: 'Доставка в реальном времени',
+	remixer: 'Ремиксер',
+	upc: 'UPC',
+	yandexSoonNewRelease: 'Яндекс скоро новый релиз',
 };

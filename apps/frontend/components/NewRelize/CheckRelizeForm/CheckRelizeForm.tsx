@@ -1,25 +1,15 @@
 'use client';
-import { TReleaseInsert, TReleaseInsertForm } from '@/schema/release.schema';
+import FileList from '@/components/Relizes/FileList';
+import { TReleaseInsertForm } from '@/schema/release.schema';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
-import {
-	ArrowDownTrayIcon,
-	ChevronDownIcon,
-} from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { motion } from 'motion/react';
 import Image from 'next/image';
+import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import Areas from './Areas/Areas';
 import Platforms from './Platfroms/Platforms';
-import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
-import { releasePreviewSchema } from 'shared/schema/release.schema';
-import MusicList from '@/components/Relizes/MusicList';
-import React from 'react';
-import { Button } from '@heroui/button';
-import { CiPause1, CiPlay1 } from 'react-icons/ci';
-import Link from 'next/link';
-import { toast } from 'sonner';
-import FileList from '@/components/Relizes/FileList';
 import { Retranslated } from './Retranslated';
 
 export default function CheckRelizeForm() {
@@ -49,17 +39,15 @@ export default function CheckRelizeForm() {
 								В форме присутствуют обязательные поля, которые вы пропустили:
 							</p>
 							{(
-								Object.keys(
-									formState.errors,
-								) as (keyof typeof formState.errors)[]
-							).map((ek: string) => (
-								<>
-									<p key={ek}>
-										{Retranslated[ek]} -{' '}
-										{Retranslated[formState.errors[ek]?.type]} -{' '}
-										{Retranslated[formState.errors[ek]?.message]}
-									</p>
-								</>
+								Object.keys(formState.errors) as Array<
+									keyof typeof formState.errors
+								>
+							).map((ek, error_index: number) => (
+								<p key={error_index}>
+									{Retranslated[ek]} -{' '}
+									{Retranslated[formState.errors[ek]?.type ?? '']} -{' '}
+									{Retranslated[formState.errors[ek]?.message ?? '']}
+								</p>
 							))}
 						</>
 					)}
