@@ -71,36 +71,42 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 								</>
 							)}
 						</span>
-						{!data.feat && !data.performer && !data.remixer && (
-							<>
-								<p className='text-gray-400 mt-3 flex flex-row gap-1'>
-									Исполнители:{' '}
-									<span className='flex gap-3 flex-wrap'>
-										{JSON.parse(JSON.stringify(data.roles))
-											.filter(
-												(r: TReleaseRoles[number]) => r.role === 'Исполнитель',
-											)
-											.map((r: TReleaseRoles[number]) => (
-												<span className='text-white' key={r.person}>
-													{r.person}
-												</span>
-											))}
-									</span>
-								</p>
-								<p className='text-gray-400  flex flex-row gap-1'>
-									Feat:{' '}
-									<span className='flex gap-3 flex-wrap'>
-										{JSON.parse(JSON.stringify(data.roles))
-											.filter((r: TReleaseRoles[number]) => r.role === 'feat.')
-											.map((r: TReleaseRoles[number]) => (
-												<span className='text-white' key={r.person}>
-													{r.person}
-												</span>
-											))}
-									</span>
-								</p>
-							</>
-						)}
+						{!data.feat &&
+							!data.performer &&
+							!data.remixer &&
+							data.roles && (
+								<>
+									<p className='text-gray-400 mt-3 flex flex-row gap-1'>
+										Исполнители:{' '}
+										<span className='flex gap-3 flex-wrap'>
+											{JSON.parse(JSON.stringify(data.roles))
+												.filter(
+													(r: TReleaseRoles[number]) =>
+														r.role === 'Исполнитель',
+												)
+												.map((r: TReleaseRoles[number]) => (
+													<span className='text-white' key={r.person}>
+														{r.person}
+													</span>
+												))}
+										</span>
+									</p>
+									<p className='text-gray-400  flex flex-row gap-1'>
+										Feat:{' '}
+										<span className='flex gap-3 flex-wrap'>
+											{JSON.parse(JSON.stringify(data.roles))
+												.filter(
+													(r: TReleaseRoles[number]) => r.role === 'feat.',
+												)
+												.map((r: TReleaseRoles[number]) => (
+													<span className='text-white' key={r.person}>
+														{r.person}
+													</span>
+												))}
+										</span>
+									</p>
+								</>,
+							)}
 					</div>
 					<div>
 						<p className='text-xl'>Лейбл и идентификация</p>
@@ -215,7 +221,8 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 						</div>
 						<div>
 							<p className='text-xl'>Персоны и роли</p>
-							<p className='flex flex-wrap text-gray-400 gap-1 mt-3'>
+							{track.roles ? 
+							<><p className='flex flex-wrap text-gray-400 gap-1 mt-3'>
 								Исполнитель(и):{' '}
 								<span className='flex gap-3 flex-wrap'>
 									{JSON.parse(JSON.stringify(track.roles))
@@ -268,7 +275,7 @@ export default function RelizeDetail({ relizeID }: { relizeID: string }) {
 											</span>
 										))}
 								</span>
-							</p>
+							</p></> : <span>Нет информации</span>}
 						</div>
 						<div>
 							<p className='text-xl'>Права</p>
