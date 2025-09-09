@@ -2,12 +2,11 @@ import { sessionCookieName } from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { Payment } from '@a2seven/yoo-checkout';
 import { cookies } from 'next/headers';
+import React from 'react';
 import { functional } from 'sdk';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
 import { paramsSchema, subscriptionLevels, TPremiumPlans } from './constants';
-import { Button } from '@heroui/button';
 import { PayButton } from './PayButton';
-import React from 'react';
 
 export default async function PurchasePage({
 	params,
@@ -28,15 +27,44 @@ export default async function PurchasePage({
 		return <>unauthorized</>;
 	}
 
-	const receiptHeaders = new Headers();
+	const headersStore = new Headers();
 
-	receiptHeaders.set('Authorization', sessionToken);
+	headersStore.set('Authorization', sessionToken);
 
-	const receiptConnection = createSDKConnection({ headers: receiptHeaders });
+	const receiptConnection = createSDKConnection({ headers: headersStore });
+
+	const sessionConection = createSDKConnection({
+		headers: headersStore,
+		next: { tags: ['authorization'] },
+	});
+
+	const sessionResult = await functional.v1.auth
+		.checkSessionToken(sessionConection)
+		.catch(() => ({
+			user: null,
+		}));
+
+	if (!sessionResult.user) {
+		return <>unauthorized</>;
+	}
 
 	let receipt: Payment['receipt']['items'] = [];
 
 	if (paramsResult.data[0] === 'release') {
+		const releaseConnection = createSDKConnection({
+			headers: headersStore,
+			next: { tags: ['release_purchase'] },
+		});
+
+		const releaseResponse = await functional.v1.releases.getReleaseById(
+			releaseConnection,
+			paramsResult.data[1],
+		);
+
+		if (releaseResponse.data.authorId !== sessionResult.user.id) {
+			return <>page not found</>;
+		}
+
 		const receiptResponse =
 			await functional.v1.finance.release.getReleaseEstimate(
 				receiptConnection,
