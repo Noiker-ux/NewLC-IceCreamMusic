@@ -36,7 +36,13 @@ export default function YandexMusic() {
 							errorMessage={formState.errors.yandexSoonNewRelease?.message?.toString()}
 							{...field}
 							onChange={(value) => {
-								field.onChange(value?.toDate());
+								if (value) {
+									if (
+										dateISOFormatter(value.toDate()).split('-')[0].length === 4
+									) {
+										field.onChange(new Date(value.toDate()));
+									}
+								}
 							}}
 							value={
 								field.value &&

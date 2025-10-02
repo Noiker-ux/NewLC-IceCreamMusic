@@ -6,7 +6,8 @@ import { I18nProvider } from '@react-aria/i18n';
 import { TReleaseInsertForm } from '@/schema/release.schema';
 
 export default function MainDates() {
-	const { control, formState } = useFormContext<TReleaseInsertForm>();
+	const { control, formState, register, getValues } =
+		useFormContext<TReleaseInsertForm>();
 	return (
 		<div className='p-5'>
 			<p className='font-extrabold'>Основные даты релиза</p>
@@ -21,15 +22,19 @@ export default function MainDates() {
 								description='Дата для предзаказа альбома на iTunes и Apple Music. Если релиз выпускается без предзаказа, укажите дату старта'
 								label='Дата предзаказа'
 								labelPlacement={'outside'}
-								hideTimeZone={true}
-								minValue={parseAbsoluteToLocal(dateISOFormatter(new Date()))}
 								granularity='day'
 								showMonthAndYearPickers={true}
-								isInvalid={!!formState.errors.preorderDate}
-								errorMessage={formState.errors.preorderDate?.message?.toString()}
+								hideTimeZone={true}
 								{...field}
 								onChange={(value) => {
-									field.onChange(value?.toDate());
+									if (value) {
+										if (
+											dateISOFormatter(value.toDate()).split('-')[0].length ===
+											4
+										) {
+											field.onChange(new Date(value.toDate()));
+										}
+									}
 								}}
 								value={
 									field.value &&
@@ -39,6 +44,7 @@ export default function MainDates() {
 						</I18nProvider>
 					)}
 				/>
+
 				<Controller
 					control={control}
 					name='startDate'
@@ -57,7 +63,14 @@ export default function MainDates() {
 								errorMessage={formState.errors.startDate?.message?.toString()}
 								{...field}
 								onChange={(value) => {
-									field.onChange(value?.toDate());
+									if (value) {
+										if (
+											dateISOFormatter(value.toDate()).split('-')[0].length ===
+											4
+										) {
+											field.onChange(new Date(value.toDate()));
+										}
+									}
 								}}
 								value={
 									field.value &&
@@ -85,7 +98,14 @@ export default function MainDates() {
 								errorMessage={formState.errors.releaseDate?.message?.toString()}
 								{...field}
 								onChange={(value) => {
-									field.onChange(value?.toDate());
+									if (value) {
+										if (
+											dateISOFormatter(value.toDate()).split('-')[0].length ===
+											4
+										) {
+											field.onChange(new Date(value.toDate()));
+										}
+									}
 								}}
 								value={
 									field.value &&
