@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Input } from '@heroui/input';
 import { Tooltip } from '@heroui/tooltip';

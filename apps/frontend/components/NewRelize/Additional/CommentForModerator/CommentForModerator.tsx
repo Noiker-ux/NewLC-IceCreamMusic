@@ -1,4 +1,4 @@
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { Textarea } from '@heroui/input';
 import { useFormContext } from 'react-hook-form';
 

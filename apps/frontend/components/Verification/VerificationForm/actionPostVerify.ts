@@ -1,6 +1,6 @@
 'use server';
 import { TActionResult } from '@/components/Account/actionGetPersonalData';
-import { TVerificationFormSchema } from '@/schema/verification.schema';
+import { TVerificationFormSchema } from 'shared/schema/verification.schema';
 import { sessionCookieName } from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';

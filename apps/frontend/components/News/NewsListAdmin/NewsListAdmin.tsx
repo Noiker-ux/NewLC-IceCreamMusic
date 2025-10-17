@@ -1,9 +1,7 @@
 import { createSDKConnection } from '@/shared/lib/config/sdk';
-import NewsCardAdmin from './NewsCardAdmin/NewsCardAdmin';
-import { TGetNewsResponse } from 'sdk/lib/news/news.controller';
 import { functional, Primitive } from 'sdk';
-import { Button } from '@heroui/button';
-import Link from 'next/link';
+import { TGetNewsResponse } from 'sdk/lib/news/news.controller';
+import NewsCardAdmin from './NewsCardAdmin/NewsCardAdmin';
 import NewsForm from './NewsForm/NewsForm';
 
 const connection = createSDKConnection({

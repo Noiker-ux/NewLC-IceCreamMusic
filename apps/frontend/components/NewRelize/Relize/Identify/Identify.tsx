@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { Input } from '@heroui/input';
 import { Controller, useFormContext } from 'react-hook-form';
 

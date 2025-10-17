@@ -3,7 +3,7 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 import { Controller, useFormContext } from 'react-hook-form';
 import dateISOFormatter from '@/utils/dateISOFormatter';
 import { I18nProvider } from '@react-aria/i18n';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 
 export default function MainDates() {
 	const { control, formState, register, getValues } =

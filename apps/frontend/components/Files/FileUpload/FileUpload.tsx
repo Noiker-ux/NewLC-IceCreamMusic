@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-import { fileSchema } from '@/schema/shared.schema';
+import { fileSchema } from 'shared/schema/shared.schema';
 import { useFormContext } from 'react-hook-form';
 
 const mainVariant = {

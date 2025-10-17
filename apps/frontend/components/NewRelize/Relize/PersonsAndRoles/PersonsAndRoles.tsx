@@ -5,7 +5,7 @@ import { Input } from '@heroui/input';
 import { Select, SelectItem } from '@heroui/select';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 
 const roles = ['Исполнитель', 'feat.'];
 

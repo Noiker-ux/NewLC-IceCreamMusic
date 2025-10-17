@@ -3,7 +3,7 @@
 import {
 	signUpClientSchema,
 	TSignUpClientSchema,
-} from '@/schema/signup.schema';
+} from 'shared/schema/signup.schema';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { zodResolver } from '@hookform/resolvers/zod';

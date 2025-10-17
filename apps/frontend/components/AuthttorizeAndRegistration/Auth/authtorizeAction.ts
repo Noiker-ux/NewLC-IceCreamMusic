@@ -1,5 +1,5 @@
 'use server';
-import { TSignInClientSchema } from '@/schema/signin.schema';
+import { TSignInClientSchema } from 'shared/schema/signin.schema';
 import { functional } from 'sdk';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';

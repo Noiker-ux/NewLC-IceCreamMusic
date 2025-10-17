@@ -1,5 +1,5 @@
 'use server';
-import { TSignUpClientSchema } from '@/schema/signup.schema';
+import { TSignUpClientSchema } from 'shared/schema/signup.schema';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { createSMTPClient } from '@/utils/createSMTPClient';
 import { functional } from 'sdk';

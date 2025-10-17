@@ -1,6 +1,6 @@
 'use client';
 import FileList from '@/components/Relizes/FileList';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';

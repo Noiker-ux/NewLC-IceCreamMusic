@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useFormContext } from 'react-hook-form';
 import { VirtuosoGrid } from 'react-virtuoso';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { gridComponents } from '@/utils/VirtuosoGrid';
 import clsx from 'clsx';
 import { IoMdClose } from 'react-icons/io';

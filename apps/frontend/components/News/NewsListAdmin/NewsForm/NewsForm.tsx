@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren, useEffect, useRef } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Primitive } from 'sdk';
 import {
@@ -29,6 +29,7 @@ import { toast, Toaster } from 'sonner';
 import { actionPatch } from './actionPatch';
 import { actionPost } from './actionPost';
 import { TActionResult } from '@/components/Account/actionGetPersonalData';
+import { revalidateTagAction } from '@/shared/api/revalidate';
 
 export default function NewsForm({
 	children,
@@ -38,8 +39,14 @@ export default function NewsForm({
 	isIconOnly: boolean;
 	editNews?: Primitive<TGetNewsResponse>[number];
 } & PropsWithChildren) {
-	const methods = useForm<TUpdateNewsForm>({
-		resolver: zodResolver(updateNewsFormSchema),
+	const methods = useForm({
+		resolver: zodResolver(
+			updateNewsFormSchema.extend({
+				preview: !!editNews
+					? updateNewsFormSchema.shape.preview.optional()
+					: updateNewsFormSchema.shape.preview,
+			}),
+		),
 		defaultValues: editNews
 			? { content: editNews.content, title: editNews.title }
 			: undefined,
@@ -49,10 +56,22 @@ export default function NewsForm({
 			methods.reset();
 		},
 	});
+
+	useEffect(() => {
+		if (editNews) {
+			methods.setValue('content', editNews.content);
+			methods.setValue('title', editNews.title);
+		}
+	}, [editNews]);
+
 	const router = useRouter();
 	const refInputPreview = useRef<HTMLInputElement>(null);
 
-	const onSubmit: SubmitHandler<TUpdateNewsForm> = async (data) => {
+	const onSubmit: SubmitHandler<{
+		title: string;
+		content: string;
+		preview?: File | undefined;
+	}> = async (data) => {
 		const submitData = {
 			title: data.title,
 			content: data.content,
@@ -130,6 +149,7 @@ export default function NewsForm({
 
 		methods.reset();
 		router.refresh();
+		await revalidateTagAction('NewsAdmin');
 		onClose();
 	};
 

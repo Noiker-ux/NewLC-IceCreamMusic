@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { action } from './actionDelete';
 import NewsForm from '../NewsForm/NewsForm';
+import { useRouter } from 'next/navigation';
 
 export default function NewsCardAdmin({
 	newsItem,
@@ -22,8 +23,11 @@ export default function NewsCardAdmin({
 }) {
 	const { id, title, preview, content, createdAt } = newsItem;
 
+	const router = useRouter();
+
 	const deleteNews = async () => {
 		await action(id);
+		router.refresh();
 	};
 
 	return (

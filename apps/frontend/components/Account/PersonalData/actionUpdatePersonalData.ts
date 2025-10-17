@@ -1,6 +1,6 @@
 'use server';
 
-import { TProfileFormSchema } from '@/schema/profile.schema';
+import { TProfileFormSchema } from 'shared/schema/profile.schema';
 import { sessionCookieName } from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';

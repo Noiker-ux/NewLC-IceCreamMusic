@@ -1,5 +1,8 @@
 'use client';
-import { profileFormSchema, TProfileFormSchema } from '@/schema/profile.schema';
+import {
+	profileFormSchema,
+	TProfileFormSchema,
+} from 'shared/schema/profile.schema';
 import { CameraIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';

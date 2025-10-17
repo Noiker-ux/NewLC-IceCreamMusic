@@ -1,5 +1,8 @@
 'use client';
-import { resetPasswordSchema, TResetPassword } from '@/schema/reset.schema';
+import {
+	resetPasswordSchema,
+	TResetPassword,
+} from 'shared/schema/reset.schema';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { zodResolver } from '@hookform/resolvers/zod';

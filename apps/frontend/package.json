@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbopack",
+		"dev": "dotenvx run -- next dev --turbopack",
 		"build:app": "npm run build:app && npm run copy:static && npm run copy:public && npm run copy:modules",
 		"build": "next build",
 		"copy:static": "cpy .next/static .next/standalone/apps/frontend",
@@ -15,6 +15,7 @@
 	},
 	"dependencies": {
 		"@a2seven/yoo-checkout": "^1.1.4",
+		"@dotenvx/dotenvx": "^1.51.0",
 		"@headlessui/react": "^2.2.2",
 		"@heroicons/react": "^2.2.0",
 		"@heroui/avatar": "^2.2.15",
