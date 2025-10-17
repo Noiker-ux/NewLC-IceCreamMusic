@@ -6,6 +6,14 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { functional } from 'sdk';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Админ панель Релизы аналитика',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
+
 export default async function AdminAnalyticPage({
 	params,
 }: {

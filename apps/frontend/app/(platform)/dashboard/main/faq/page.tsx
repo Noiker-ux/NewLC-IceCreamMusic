@@ -4,6 +4,13 @@ import { FaTelegramPlane } from 'react-icons/fa';
 import { FaVk } from 'react-icons/fa';
 import { RiWhatsappFill } from 'react-icons/ri';
 import { FaViber } from 'react-icons/fa6';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | FAQ',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export const dynamic = 'force-dynamic';
 export default function FAQPage() {

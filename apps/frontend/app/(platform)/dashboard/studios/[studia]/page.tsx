@@ -1,6 +1,13 @@
 import StudioDetail from '@/components/Studios/StudiosDetail/StudioDetail';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { Metadata } from 'next';
 import { functional } from 'sdk';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Студии звукозаписи',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export const dynamic = 'force-dynamic';
 
