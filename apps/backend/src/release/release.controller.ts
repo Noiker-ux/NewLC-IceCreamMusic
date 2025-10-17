@@ -91,9 +91,8 @@ export type TUpdateReleaseResponse = {
 
 export type TUpdateReleaseStatusBody = {
   status: TRelease['status'];
-  rejectReason?: TUpdateReleaseStatusBody['status'] extends 'rejected'
-    ? string
-    : undefined;
+  rejectReason?: string;
+  upc?: string;
 };
 
 export type TGetReleasePriceResponse = {
@@ -521,13 +520,35 @@ export class ReleaseController {
     @TypedParam('releaseId') releaseId: string,
     @TypedBody() body: TUpdateReleaseStatusBody,
   ): Promise<TSuccessionResponse> {
-    await this.db.transaction(async (tx) => {
-      await tx
-        .update(schema.release)
-        .set({ status: body.status })
-        .where(eq(schema.release.id, releaseId));
-    });
+    return await this.db.transaction(async (tx) => {
+      if (body.status === 'approved' && !!body.upc) {
+        await tx
+          .update(schema.release)
+          .set({ upc: body.upc, status: body.status })
+          .where(eq(schema.release.id, releaseId));
 
-    return { success: true };
+        return { success: true };
+      }
+
+      if (body.status === 'rejected' && !!body.rejectReason) {
+        await tx
+          .update(schema.release)
+          .set({ rejectReason: body.rejectReason, status: body.status })
+          .where(eq(schema.release.id, releaseId));
+
+        return { success: true };
+      }
+
+      if (body.status === 'moderating') {
+        await tx
+          .update(schema.release)
+          .set({ status: body.status })
+          .where(eq(schema.release.id, releaseId));
+
+        return { success: true };
+      }
+
+      throw new BadRequestException('Неверные данные');
+    });
   }
 }
