@@ -1,5 +1,12 @@
 import { actionGetAnalyticById } from '@/components/Analytic/CardAnalytic/actionGetAnalyticById';
 import DateFormatter from '@/utils/dateFormatter';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Аналитика',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export default async function Page({
 	params,

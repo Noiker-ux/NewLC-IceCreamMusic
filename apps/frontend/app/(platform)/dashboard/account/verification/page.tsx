@@ -2,6 +2,13 @@ import VerificationForm from '@/components/Verification/VerificationForm/Verific
 import Link from 'next/link';
 import { checkUserVerified } from './checkUserVerified';
 import { redirect } from 'next/navigation';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Верификация',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export const dynamic = 'force-dynamic';
 

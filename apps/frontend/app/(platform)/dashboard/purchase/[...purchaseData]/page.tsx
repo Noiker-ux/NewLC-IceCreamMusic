@@ -7,6 +7,13 @@ import { functional } from 'sdk';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
 import { paramsSchema, subscriptionLevels, TPremiumPlans } from './constants';
 import { PayButton } from './PayButton';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Форма оплаты',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export default async function PurchasePage({
 	params,

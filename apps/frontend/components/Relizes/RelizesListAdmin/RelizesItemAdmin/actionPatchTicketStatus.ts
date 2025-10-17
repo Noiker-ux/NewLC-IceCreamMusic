@@ -8,6 +8,8 @@ import { functional } from 'sdk';
 export default async function actionPatchTicketStatus(
 	releaseId: string,
 	status: 'moderating' | 'approved' | 'rejected',
+	reason?: string,
+	upc?: string,
 ) {
 	const cookiesStore = await cookies();
 
@@ -24,16 +26,33 @@ export default async function actionPatchTicketStatus(
 		next: { tags: ['admin-releases'], revalidate: 5 },
 	});
 
-	await functional.v1.releases.moderation
-		.updateReleaseModerationStatus(connection, releaseId, {
-			data: status,
-		})
-		.catch((e) => {
-			return {
-				success: false as const,
-				message: e.message,
-			};
-		});
+	if (reason && status === 'rejected') {
+		await functional.v1.releases.moderation
+			.updateReleaseModerationStatus(connection, releaseId, {
+				data: status,
+				reason: reason,
+			})
+			.catch((e) => {
+				return {
+					success: false as const,
+					message: e.message,
+				};
+			});
+	}
+
+	if (upc && status === 'approved') {
+		await functional.v1.releases.moderation
+			.updateReleaseModerationStatus(connection, releaseId, {
+				data: status,
+				upc: upc,
+			})
+			.catch((e) => {
+				return {
+					success: false as const,
+					message: e.message,
+				};
+			});
+	}
 
 	return {
 		success: true as const,

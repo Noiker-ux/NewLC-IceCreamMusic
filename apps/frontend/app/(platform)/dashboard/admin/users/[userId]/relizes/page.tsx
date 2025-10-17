@@ -1,9 +1,16 @@
 import RelizecCard from '@/components/Relizes/RelizesCard';
 import { sessionCookieName } from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { functional } from 'sdk';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Админ панель Релизы пользователя',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export default async function AdminRelizesPage({
 	params,

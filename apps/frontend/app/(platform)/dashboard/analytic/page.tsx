@@ -2,9 +2,16 @@ import { actionGetAnalyticMe } from '@/components/Analytic/actionGetAnalyticMe';
 import CardAnalytic from '@/components/Analytic/CardAnalytic/CardAnalytic';
 import { sessionCookieName } from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { functional } from 'sdk';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Аналитика',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export const dynamic = 'force-dynamic';
 

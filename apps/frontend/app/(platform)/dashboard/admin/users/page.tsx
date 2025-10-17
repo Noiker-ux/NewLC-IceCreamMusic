@@ -11,6 +11,13 @@ import Balance from '@/components/Balance/Balance';
 import MoneyFormatter from '@/utils/moneyFormatter';
 
 import { ChartBarIcon } from '@heroicons/react/24/outline';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Админ панель Пользователи',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export default async function UsersPage() {
 	await checkUserAdmin();
