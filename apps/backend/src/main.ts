@@ -21,9 +21,9 @@ async function bootstrap() {
 
   const config = app.get(ConfigService);
 
-  const showDocsValue = config.getOrThrow<string>('SHOW_API_DOCS');
+  const nodeEnv = config.get<string>('NODE_ENV');
 
-  if (showDocsValue === 'true') {
+  if (nodeEnv === 'development') {
     const document = await NestiaSwaggerComposer.document(app, {
       openapi: '3.1',
       servers: [

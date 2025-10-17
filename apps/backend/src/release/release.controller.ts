@@ -90,7 +90,10 @@ export type TUpdateReleaseResponse = {
 };
 
 export type TUpdateReleaseStatusBody = {
-  data: TRelease['status'];
+  status: TRelease['status'];
+  rejectReason?: TUpdateReleaseStatusBody['status'] extends 'rejected'
+    ? string
+    : undefined;
 };
 
 export type TGetReleasePriceResponse = {
@@ -521,7 +524,7 @@ export class ReleaseController {
     await this.db.transaction(async (tx) => {
       await tx
         .update(schema.release)
-        .set({ status: body.data })
+        .set({ status: body.status })
         .where(eq(schema.release.id, releaseId));
     });
 

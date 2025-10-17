@@ -49,6 +49,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       inject: [ConfigService],
       useFactory(config: ConfigService) {
         const s3Endpoint = config.getOrThrow<string>('S3_HOST');
+        const s3port = config.get<number>('S3_PORT');
         const s3AccessKey = config.getOrThrow<string>('S3_ACCESS_KEY');
         const s3SecretKey = config.getOrThrow<string>('S3_SECRET_KEY');
         const s3UseSSLValue = config.getOrThrow<string>('S3_USE_SSL');
@@ -56,6 +57,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 
         return {
           endPoint: s3Endpoint,
+          port: !!s3port ? s3port : undefined,
           useSSL: s3UseSSL,
           accessKey: s3AccessKey,
           secretKey: s3SecretKey,
