@@ -26,7 +26,7 @@ export default async function actionPatchTicketStatus(
 		next: { tags: ['admin-releases'], revalidate: 5 },
 	});
 
-	if (reason && status === 'rejected') {
+	if (!!reason && status === 'rejected') {
 		await functional.v1.releases.moderation
 			.updateReleaseModerationStatus(connection, releaseId, {
 				data: status,
@@ -40,7 +40,7 @@ export default async function actionPatchTicketStatus(
 			});
 	}
 
-	if (upc && status === 'approved') {
+	if (!!upc && status === 'approved') {
 		await functional.v1.releases.moderation
 			.updateReleaseModerationStatus(connection, releaseId, {
 				data: status,
