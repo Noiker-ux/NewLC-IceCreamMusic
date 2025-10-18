@@ -118,6 +118,11 @@ export const navigationAdmin: TMenu[] = [
 		href: '/dashboard/admin/releases/',
 	},
 	{
+		name: 'Студии',
+		icon: 'heroicons:map',
+		href: '/dashboard/admin/studios/',
+	},
+	{
 		name: 'FAQ',
 		icon: 'heroicons:sparkles',
 		href: '/dashboard/admin/faq/',
