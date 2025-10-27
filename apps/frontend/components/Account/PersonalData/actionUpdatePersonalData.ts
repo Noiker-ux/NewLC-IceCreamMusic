@@ -27,7 +27,7 @@ export async function actionUpdatePersonalData(
 		headers,
 	});
 
-	const response = await functional.v1.users.me.updateMyInfo(connection, {
+	const response = await functional.api.v1.users.me.updateMyInfo(connection, {
 		data,
 	});
 

@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
 		new Date().getTime() + validTokens.expires_in * 1000,
 	);
 
-	const session = await functional.v1.auth.oauth
+	const session = await functional.api.v1.auth.oauth
 		.OAuthSignin(connection, {
 			providerAccountId: validAccount.user_id,
 			provider: 'vk',

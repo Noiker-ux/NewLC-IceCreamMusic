@@ -33,7 +33,7 @@ export const middleware = async function (request: NextRequest) {
 			},
 		});
 
-		const checkTokenResult = await functional.v1.auth
+		const checkTokenResult = await functional.api.v1.auth
 			.checkSessionToken(connecttion)
 			.catch(() => ({
 				user: null,

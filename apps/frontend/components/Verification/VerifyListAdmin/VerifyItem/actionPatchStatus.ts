@@ -23,7 +23,7 @@ export async function actionPatchStatus(
 		headers,
 	});
 
-	const result = await functional.v1.verification.status
+	const result = await functional.api.v1.verification.status
 		.updateTicketStatus(connection, verifyId, {
 			status: status,
 		})

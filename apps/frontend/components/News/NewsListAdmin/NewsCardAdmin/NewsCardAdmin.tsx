@@ -8,13 +8,12 @@ import {
 import { Button } from '@heroui/button';
 import { Tooltip } from '@heroui/tooltip';
 import Image from 'next/image';
-import { TGetNewsResponse } from 'sdk/lib/news/news.controller';
-import { Primitive } from 'sdk';
 import Link from 'next/link';
-import { createSDKConnection } from '@/shared/lib/config/sdk';
-import { action } from './actionDelete';
-import NewsForm from '../NewsForm/NewsForm';
 import { useRouter } from 'next/navigation';
+import { Primitive } from 'sdk';
+import { TGetNewsResponse } from 'sdk/lib/news/news.controller';
+import NewsForm from '../NewsForm/NewsForm';
+import { action } from './actionDelete';
 
 export default function NewsCardAdmin({
 	newsItem,

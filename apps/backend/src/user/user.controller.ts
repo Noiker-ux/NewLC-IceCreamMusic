@@ -11,7 +11,6 @@ import {
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
 import { eq, InferSelectModel } from 'drizzle-orm';
-import { Primitive } from 'typia';
 import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
@@ -53,16 +52,14 @@ export type TGetUsersResponse = {
 };
 
 export type TUpdateMeBody = {
-  data: Primitive<
-    Partial<
-      Omit<
-        TUserData,
-        | 'id'
-        | 'emailVerified'
-        | 'isVerifiedAuthor'
-        | 'subscriptionLevel'
-        | 'isSubscribed'
-      >
+  data: Partial<
+    Omit<
+      TUserData,
+      | 'id'
+      | 'emailVerified'
+      | 'isVerifiedAuthor'
+      | 'subscriptionLevel'
+      | 'isSubscribed'
     >
   >;
 };
@@ -76,7 +73,7 @@ export type TUpdateBalanceBody = {
 @ApiTags('users')
 @UseGuards(AuthGuard)
 @ApiSecurity('bearer')
-@Controller('users')
+@Controller({ version: '1', path: 'users' })
 export class UserController {
   logger = new Logger(UserController.name);
 

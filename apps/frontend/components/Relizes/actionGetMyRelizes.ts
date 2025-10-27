@@ -15,7 +15,7 @@ export async function actionGetMyRelizes() {
 		headers,
 	});
 
-	const res = await functional.v1.releases.my.getMyReleases(connection, {
+	const res = await functional.api.v1.releases.my.getMyReleases(connection, {
 		page: 1,
 		size: 1000,
 	});

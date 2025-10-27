@@ -2,20 +2,23 @@ import { INestiaConfig } from '@nestia/sdk';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './src/app.module';
+import { VersioningType } from '@nestjs/common';
 
 const NESTIA_CONFIG: INestiaConfig = {
   input: async () => {
     const app = await NestFactory.create(AppModule);
     // const app = await NestFactory.create(YourModule, new FastifyAdapter());
-    app.setGlobalPrefix('v1');
-    // app.enableVersioning({
-    //     type: VersioningType.URI,
-    //     prefix: "v",
-    // })
+    app.setGlobalPrefix('api');
+    app.enableVersioning({
+        type: VersioningType.URI,
+        prefix: "v",
+    })
     return app;
   },
   output: 'src/sdk',
   distribute: '../../packages/sdk',
+  // assert: true,
+  // primitive: true,
   swagger: {
     openapi: '3.1',
     output: 'swagger/swagger.json',

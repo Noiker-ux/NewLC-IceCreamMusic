@@ -22,7 +22,7 @@ export async function actionPost(data: TCreateNews): Promise<TActionResult<TUpda
 		headers,
 	});
 
-	const addNewsResult = await functional.v1.news
+	const addNewsResult = await functional.api.v1.news
 		.createNews(connection, {
 			data: {
 				title: data.title,

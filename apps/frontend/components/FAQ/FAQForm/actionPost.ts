@@ -21,7 +21,7 @@ export async function actionPost(data: TCreateFAQBody) {
 		headers,
 	});
 
-	functional.v1.faq
+	functional.api.v1.faq
 		.createFAQ(connection, {
 			question: data.question,
 			answer: data.answer,

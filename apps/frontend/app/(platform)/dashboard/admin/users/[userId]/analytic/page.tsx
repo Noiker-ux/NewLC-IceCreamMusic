@@ -36,7 +36,7 @@ export default async function AdminAnalyticPage({
 		next: { tags: ['admin-analytic'], revalidate: 5 },
 	});
 
-	const analyticResult = await functional.v1.analytics.user
+	const analyticResult = await functional.api.v1.analytics.user
 		.getUserAnalytics(connection, userId, {
 			page: 1,
 			size: 1000,

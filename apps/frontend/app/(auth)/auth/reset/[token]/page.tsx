@@ -17,7 +17,7 @@ export default async function ResetPasswordPage({
 }) {
 	const { token } = await params;
 
-	const validationResult = await functional.v1.auth.token
+	const validationResult = await functional.api.v1.auth.token
 		.verifyEmailToken(connection, token, 'recover')
 		.catch((e) => `${e.message}`);
 

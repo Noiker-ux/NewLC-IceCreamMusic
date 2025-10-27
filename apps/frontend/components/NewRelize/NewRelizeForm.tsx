@@ -1,5 +1,4 @@
 'use client';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { uploadBlob } from '@/shared/lib/upload/stream';
 import { Button } from '@heroui/button';
 import { Tab, Tabs } from '@heroui/tabs';
@@ -7,7 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { releaseInsertFormSchema } from 'shared/schema/release.schema';
+import {
+	createReleaseUpsertSchema,
+	releaseInsertSchema,
+	releaseUpdateSchema,
+	TRelease,
+	TReleaseUpsert,
+} from 'shared/schema/release.schema';
 import { TActionResult } from '../Account/actionGetPersonalData';
 import AdditionalParams from './Additional/AdditionalParams/AdditionalParams';
 import CommentForModerator from './Additional/CommentForModerator/CommentForModerator';
@@ -23,7 +28,7 @@ import Preview from './Relize/Preview/Preview';
 import WorkWithRelize from './Relize/WorkWithRelize/WorkWithRelize';
 import Tracks from './Tracks/Tracks';
 import { UploadVisualizer } from './Upload/UploadVisualizer';
-import { action } from './action';
+import { createRelease, updateRelease } from './actions';
 
 type TUploadBase = {
 	file: File;
@@ -54,7 +59,15 @@ const localization: Record<TUploadFile['type'], string> = {
 	ringtone: 'Файл рингтона',
 };
 
-export default function NewRelizeForm() {
+type TReleaseEdit = {
+	release?: TRelease;
+};
+
+export default function NewRelizeForm({ release }: TReleaseEdit) {
+	const isUpdating = !!release;
+
+	const schema = createReleaseUpsertSchema(isUpdating);
+
 	const [currentTab, setCurrentTab] = useState<string | number>('Main');
 
 	const [tabsBlocked, setTabsBlocked] = useState(false);
@@ -63,9 +76,9 @@ export default function NewRelizeForm() {
 
 	const [uploadResults, setUploadResults] = useState<TUploadResult[]>([]);
 
-	const methods = useForm<TReleaseInsertForm>({
+	const methods = useForm<TReleaseUpsert>({
 		mode: 'onSubmit',
-		resolver: zodResolver(releaseInsertFormSchema),
+		resolver: zodResolver(schema),
 		defaultValues: {
 			labelName: 'ICECREAMMUSIC',
 			area: {
@@ -73,103 +86,133 @@ export default function NewRelizeForm() {
 				data: ['all'],
 			},
 			platforms: ['all'],
-			tracks: [],
 		},
 	});
 
-	const onSubmit: SubmitHandler<TReleaseInsertForm> = async (data) => {
-		// console.log('🚀 ~ onSubmit ~ data:', data);
+	const onSubmit: SubmitHandler<TReleaseUpsert> = async (data) => {
+		const filesToUpload: TUploadFile[] = [];
 
-		const urlsResult = await action({
-			...data,
-			preview: data.preview.name.split('.').at(-1)!,
-			tracks: data.tracks.map((track) => ({
-				...track,
-				track: track.track.name.split('.').at(-1)!,
-				video: track.video?.name.split('.').at(-1),
-				video_shot: track.video_shot?.name.split('.').at(-1),
-				text_sync: track.text_sync?.name.split('.').at(-1),
-				ringtone: track.ringtone?.name.split('.').at(-1),
-			})),
-		});
+		if (!isUpdating) {
+			const dataResult = await releaseInsertSchema.safeParse(data);
 
-		if (!urlsResult.success) {
-			return;
-		}
+			if (!dataResult.success) {
+				return;
+			}
 
-		// console.log('🚀 ~ onSubmit ~ urlsResult.data:', urlsResult.data);
+			const newReleaseData = dataResult.data;
 
-		const filesToUpload: TUploadFile[] = [
-			{
-				file: data.preview,
-				url: urlsResult.data.preview,
-				belongsTo: 'release',
-				type: 'preview',
-			},
-		];
-
-		const tracksLen = urlsResult.data.tracks.length;
-
-		for (let trackIndex = 0; trackIndex < tracksLen; trackIndex++) {
-			filesToUpload.push({
-				file: data.tracks[trackIndex].track,
-				url: urlsResult.data.tracks[trackIndex].track,
-				type: 'track',
-				belongsTo: 'track',
-				trackIndex,
+			const urlsResult = await createRelease({
+				...newReleaseData,
+				preview: newReleaseData.preview.name.split('.').at(-1)!,
+				tracks: newReleaseData.tracks.map((track) => ({
+					...track,
+					track: track.track.name.split('.').at(-1)!,
+					video: track.video?.name.split('.').at(-1),
+					video_shot: track.video_shot?.name.split('.').at(-1),
+					text_sync: track.text_sync?.name.split('.').at(-1),
+					ringtone: track.ringtone?.name.split('.').at(-1),
+				})),
 			});
 
-			const trackTextSync = data.tracks[trackIndex].text_sync;
-			const trackTextSyncUrl = urlsResult.data.tracks[trackIndex].text_sync;
+			if (!urlsResult.success) {
+				return;
+			}
 
-			if (trackTextSync && trackTextSyncUrl) {
+			filesToUpload.push({
+				file: newReleaseData.preview,
+				url: urlsResult.data.release.preview,
+				belongsTo: 'release',
+				type: 'preview',
+			});
+
+			const tracksLen = urlsResult.data.tracks.length;
+
+			for (let trackIndex = 0; trackIndex < tracksLen; trackIndex++) {
 				filesToUpload.push({
-					file: trackTextSync,
-					url: trackTextSyncUrl,
-					type: 'text_sync',
+					file: newReleaseData.tracks[trackIndex].track,
+					url: urlsResult.data.tracks[trackIndex].track,
+					type: 'track',
 					belongsTo: 'track',
 					trackIndex,
 				});
+
+				const trackTextSync = data.tracks[trackIndex].text_sync;
+				const trackTextSyncUrl = urlsResult.data.tracks[trackIndex].text_sync;
+
+				if (trackTextSync && trackTextSyncUrl) {
+					filesToUpload.push({
+						file: trackTextSync,
+						url: trackTextSyncUrl,
+						type: 'text_sync',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackVideo = data.tracks[trackIndex].video;
+				const trackVideoUrl = urlsResult.data.tracks[trackIndex].video;
+
+				if (trackVideo && trackVideoUrl) {
+					filesToUpload.push({
+						file: trackVideo,
+						url: trackVideoUrl,
+						type: 'video',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackVideoShot = data.tracks[trackIndex].video_shot;
+				const trackVideoShotUrl = urlsResult.data.tracks[trackIndex].video_shot;
+
+				if (trackVideoShot && trackVideoShotUrl) {
+					filesToUpload.push({
+						file: trackVideoShot,
+						url: trackVideoShotUrl,
+						type: 'video_shot',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackRingtone = data.tracks[trackIndex].ringtone;
+				const trackRingtoneUrl = urlsResult.data.tracks[trackIndex].ringtone;
+
+				if (trackRingtone && trackRingtoneUrl) {
+					filesToUpload.push({
+						file: trackRingtone,
+						url: trackRingtoneUrl,
+						type: 'ringtone',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+			}
+		} else {
+			const dataResult = await releaseUpdateSchema.safeParse(data);
+
+			if (!dataResult.success) {
+				return;
 			}
 
-			const trackVideo = data.tracks[trackIndex].video;
-			const trackVideoUrl = urlsResult.data.tracks[trackIndex].video;
+			const updatedReleaseData = dataResult.data;
 
-			if (trackVideo && trackVideoUrl) {
-				filesToUpload.push({
-					file: trackVideo,
-					url: trackVideoUrl,
-					type: 'video',
-					belongsTo: 'track',
-					trackIndex,
-				});
-			}
+			const urlsResult = await updateRelease({
+				...newReleaseData,
+				preview: newReleaseData.preview.name.split('.').at(-1)!,
+				tracks: newReleaseData.tracks.map((track) => ({
+					...track,
+					track: track.track.name.split('.').at(-1)!,
+					video: track.video?.name.split('.').at(-1),
+					video_shot: track.video_shot?.name.split('.').at(-1),
+					text_sync: track.text_sync?.name.split('.').at(-1),
+					ringtone: track.ringtone?.name.split('.').at(-1),
+				})),
+			});
 
-			const trackVideoShot = data.tracks[trackIndex].video_shot;
-			const trackVideoShotUrl = urlsResult.data.tracks[trackIndex].video_shot;
-
-			if (trackVideoShot && trackVideoShotUrl) {
-				filesToUpload.push({
-					file: trackVideoShot,
-					url: trackVideoShotUrl,
-					type: 'video_shot',
-					belongsTo: 'track',
-					trackIndex,
-				});
-			}
-
-			const trackRingtone = data.tracks[trackIndex].ringtone;
-			const trackRingtoneUrl = urlsResult.data.tracks[trackIndex].ringtone;
-
-			if (trackRingtone && trackRingtoneUrl) {
-				filesToUpload.push({
-					file: trackRingtone,
-					url: trackRingtoneUrl,
-					type: 'ringtone',
-					belongsTo: 'track',
-					trackIndex,
-				});
-			}
+			// if (!urlsResult.success) {
+			// 	return;
+			// }
 		}
 
 		const uploadResults: TUploadResult[] = filesToUpload

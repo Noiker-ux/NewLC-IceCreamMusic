@@ -19,8 +19,6 @@ import {
   releaseMetadataSchema,
   subscriptionMetadataSchema,
 } from 'shared/schema/order.schema';
-import { Primitive } from 'typia';
-import { TSelectUserSchema } from '../../../../packages/shared/lib/schema/user.schema';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
@@ -28,6 +26,9 @@ import { SessionService } from '../auth/session.service';
 import { checkout, currency } from '../shared/checkout';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { FinanceService } from './finance.service';
+import { users } from 'db/schema';
+
+export type TSelectUserSchema = InferSelectModel<typeof users>;
 
 export type TCreateOrderResponse = {
   redirect_url: string;
@@ -64,16 +65,14 @@ export type TGetPayoutTicketResponse = {
 };
 
 export type TCreatePayoutTicketBody = {
-  data: Primitive<
-    Pick<
-      InferInsertModel<typeof schema.payouts>,
-      'recieverName' | 'amount' | 'accountNumber'
-    >
+  data: Pick<
+    InferInsertModel<typeof schema.payouts>,
+    'recieverName' | 'amount' | 'accountNumber'
   >;
 };
 
 export type TUpdatePayoutTicketStatusBody = {
-  data: Pick<Primitive<TPayoutTicketData>, 'confirmed'>;
+  data: Pick<TPayoutTicketData, 'confirmed'>;
 };
 
 export type TReceiptItems = Payment['receipt']['items'];
@@ -87,7 +86,7 @@ export type TGetReleaseEstimateResponse = {
 };
 
 @ApiTags('finance')
-@Controller('finance')
+@Controller({ version: '1', path: 'finance' })
 export class FinanceController {
   logger = new Logger(FinanceController.name);
 
@@ -455,7 +454,7 @@ export class FinanceController {
   @TypedRoute.Get('/subscription/:level')
   getSubscriptionEstimate(
     @TypedParam('level')
-    level: Primitive<NonNullable<TSelectUserSchema['subscriptionLevel']>>,
+    level: NonNullable<TSelectUserSchema['subscriptionLevel']>,
   ): TGetSubscriptionEstimateResponse {
     const result = this.financeService.calculateSubscriptionEstimate(level);
 

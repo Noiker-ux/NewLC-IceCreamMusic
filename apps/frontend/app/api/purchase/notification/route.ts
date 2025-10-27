@@ -44,7 +44,7 @@ export async function POST(req: Request) {
 			return badResponse;
 		}
 
-		const result = await functional.v1.finance
+		const result = await functional.api.v1.finance
 			.confirmOrder(connection, payment.id)
 			.catch((e: unknown) => {
 				console.log(JSON.stringify(e, null, 2));

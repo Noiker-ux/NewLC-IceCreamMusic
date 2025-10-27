@@ -13,17 +13,18 @@ import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
 import { and, asc, eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import {
+  authorRightsSchema,
   releaseAreaSchema,
   releaseRolesSchema,
   trackRolesSchema,
 } from 'shared/schema/release.schema';
-import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
-import { SessionService } from '../auth/session.service';
+import { SessionService, TUser } from '../auth/session.service';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
-import { ReleaseService } from './release.sercice';
+import { ReleaseService } from './release.service';
+import { User } from '../auth/user.decorator';
 
 export type TPromoLink = InferSelectModel<typeof schema.promoLinks>;
 
@@ -44,15 +45,20 @@ export type TGetSpecificReleaseResponse = {
   data: TCompleteReleaseData;
 };
 
-export type TReleaseInsert = Primitive<
-  Omit<
-    InferInsertModel<typeof schema.release>,
-    'id' | 'authorId' | 'confirmed' | 'status' | 'rejectReason'
-  >
+export type TReleaseInsert = Omit<
+  InferInsertModel<typeof schema.release>,
+  'id' | 'authorId' | 'confirmed' | 'status' | 'rejectReason'
 >;
 
-export type TTrackInsert = Primitive<
-  Omit<InferInsertModel<typeof schema.track>, 'id' | 'releaseId' | 'index'>
+export type TReleaseUpdate = Partial<TReleaseInsert>;
+
+export type TTrackInsert = Omit<
+  InferInsertModel<typeof schema.track>,
+  'id' | 'releaseId' | 'index'
+>;
+
+export type TTrackUpdate = Partial<
+  Omit<InferInsertModel<typeof schema.track>, 'id' | 'releaseId'>
 >;
 
 export type TCreateReleaseBody = {
@@ -60,19 +66,27 @@ export type TCreateReleaseBody = {
   tracks: TTrackInsert[];
 };
 
+// export type TCreateReleaseResponse = {
+//   preview: string;
+//   tracks: {
+//     track: string;
+//     text_sync?: string;
+//     video?: string;
+//     video_shot?: string;
+//     ringtone?: string;
+//   }[];
+// };
+
 export type TCreateReleaseResponse = {
-  preview: string;
-  tracks: {
-    track: string;
-    text_sync?: string;
-    video?: string;
-    video_shot?: string;
-    ringtone?: string;
-  }[];
+  release: Pick<TRelease, 'preview'>;
+  tracks: Pick<
+    TTrack,
+    'track' | 'text_sync' | 'video' | 'video_shot' | 'ringtone'
+  >[];
 };
 
 export type TUpdateTrackBody = {
-  data: Primitive<Partial<Omit<TTrack, 'id' | 'releaseId'>>>;
+  data: Partial<Omit<TTrack, 'id' | 'releaseId'>>;
 };
 
 export type TUpdateTrackResponse = {
@@ -83,10 +97,16 @@ export type TUpdateTrackResponse = {
   ringtone?: string;
 };
 
-export type TUpdateReleaseBody = { data: Primitive<Partial<TReleaseInsert>> };
+export type TUpdateReleaseBody = {
+  release: TReleaseUpdate;
+  tracks: TTrackUpdate[];
+};
 
 export type TUpdateReleaseResponse = {
-  preview?: string;
+  release?: Partial<Pick<TRelease, 'preview'>>;
+  tracks?: Partial<
+    Pick<TTrack, 'track' | 'text_sync' | 'video' | 'video_shot' | 'ringtone'>
+  >;
 };
 
 export type TUpdateReleaseStatusBody = {
@@ -106,7 +126,7 @@ export type TGetReleasePeice = {
 @ApiTags('releases')
 @ApiSecurity('bearer')
 @UseGuards(AuthGuard)
-@Controller('releases')
+@Controller({ version: '1', path: 'releases' })
 export class ReleaseController {
   logger = new Logger(ReleaseController.name);
 
@@ -137,13 +157,9 @@ export class ReleaseController {
 
   @TypedRoute.Get('my')
   async getMyReleases(
-    @Session() sessionToken: string,
+    @User() user: TUser,
     @TypedQuery() params: TPageQuery,
   ): Promise<TGetReleaseListResponse> {
-    const { user } = await this.sessionService.validateSession(sessionToken);
-
-    if (!user) throw new ForbiddenException('Необходима авторизация');
-
     const releases = await this.db.query.release.findMany({
       where: eq(schema.release.authorId, user.id),
       with: { tracks: { orderBy: asc(schema.track.index) }, promoLinks: true },
@@ -194,12 +210,6 @@ export class ReleaseController {
 
     return { data: releases };
   }
-
-  // @TypedRoute.Get(':releaseId/tracks')
-  // async getReleaseTracks() {}
-
-  // @TypedRoute.Get(':releaseId/tracks/:trackId')
-  // async getReleaseTrack() {}
 
   @TypedRoute.Post()
   async createRelease(
@@ -269,6 +279,16 @@ export class ReleaseController {
             `Не верный формат ролей в треке ${0} (${currentTrack.title})`,
           );
 
+        const authorRightsResult = authorRightsSchema.safeParse(
+          currentTrack.author_rights,
+        );
+
+        if (!authorRightsResult.success) {
+          throw new BadRequestException(
+            `Не верный формат прав автора в треке ${0} (${currentTrack.title})`,
+          );
+        }
+
         const trackInstantGratification = currentTrack.instant_gratification
           ? new Date(currentTrack.instant_gratification)
           : undefined;
@@ -326,14 +346,19 @@ export class ReleaseController {
 
         trackUrls.push({
           track: trackPublicUrl,
-          text_sync: trackTextSyncPublicUrl,
-          ringtone: trackRingtonePublicUrl,
-          video: trackVideoPublicUrl,
-          video_shot: trackVideoShotPublicUrl,
+          text_sync: trackTextSyncPublicUrl ?? null,
+          ringtone: trackRingtonePublicUrl ?? null,
+          video: trackVideoPublicUrl ?? null,
+          video_shot: trackVideoShotPublicUrl ?? null,
         });
       }
 
-      return { preview: publicReleasePreviewUrl, tracks: trackUrls };
+      return {
+        release: {
+          preview: publicReleasePreviewUrl,
+        },
+        tracks: trackUrls,
+      };
     });
   }
 
@@ -431,15 +456,15 @@ export class ReleaseController {
 
   @TypedRoute.Patch(':releaseId')
   async updateRelease(
-    @Session() sessionToken: string,
+    @User() user: TUser,
     @TypedParam('releaseId') releaseId: string,
     @TypedBody() body: TUpdateReleaseBody,
   ): Promise<TUpdateReleaseResponse> {
-    const { user } = await this.sessionService.validateSession(sessionToken);
+    this.logger.log('releaseId', releaseId);
+    this.logger.log('body', body);
+    this.logger.log('user', user);
 
-    if (!user) throw new ForbiddenException('Необходима авторизация');
-
-    const { data } = body;
+    const { release: releaseData } = body;
 
     return await this.db.transaction(async (tx) => {
       const release = await tx.query.release.findFirst({
@@ -451,31 +476,33 @@ export class ReleaseController {
       if (release.authorId !== user.id)
         throw new ForbiddenException('Недостаточно прав');
 
-      const releasePreviewUrl = data.preview
+      const releasePreviewUrl = release.preview
         ? await this.releaseService.createPutUrl(
             'previews',
-            `${releaseId}.${data.preview}`,
+            `${releaseId}.${releaseData.preview}`,
           )
         : '';
 
-      const releaseDate = data.releaseDate
-        ? new Date(data.releaseDate)
+      const releaseDate = releaseData.releaseDate
+        ? new Date(releaseData.releaseDate)
         : undefined;
 
-      const startDate = data.startDate ? new Date(data.startDate) : undefined;
-
-      const preorderDate = data.preorderDate
-        ? new Date(data.preorderDate)
+      const startDate = releaseData.startDate
+        ? new Date(releaseData.startDate)
         : undefined;
 
-      const yandexSoonNewRelease = data.yandexSoonNewRelease
-        ? new Date(data.yandexSoonNewRelease)
+      const preorderDate = releaseData.preorderDate
+        ? new Date(releaseData.preorderDate)
+        : undefined;
+
+      const yandexSoonNewRelease = releaseData.yandexSoonNewRelease
+        ? new Date(releaseData.yandexSoonNewRelease)
         : undefined;
 
       await tx
         .update(schema.release)
         .set({
-          ...data,
+          ...releaseData,
           releaseDate,
           startDate,
           preorderDate,
@@ -483,7 +510,11 @@ export class ReleaseController {
         })
         .where(eq(schema.release.id, release.id));
 
-      return { preview: releasePreviewUrl };
+      return {
+        release: {
+          preview: releasePreviewUrl,
+        },
+      };
     });
   }
 

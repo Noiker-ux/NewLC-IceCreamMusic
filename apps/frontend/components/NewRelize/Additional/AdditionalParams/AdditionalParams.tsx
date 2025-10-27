@@ -1,8 +1,8 @@
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { Checkbox } from '@heroui/checkbox';
 import { useFormContext } from 'react-hook-form';
 export default function AdditionalParams() {
-	const { register } = useFormContext<TReleaseInsertForm>();
+	const { register } = useFormContext<TReleaseUpsert>();
 
 	return (
 		<div className='bg-zinc-900 rounded-xl p-5 w-full'>

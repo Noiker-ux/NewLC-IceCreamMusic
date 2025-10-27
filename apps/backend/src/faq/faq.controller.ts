@@ -22,7 +22,7 @@ export type TCreateFAQBody = Omit<TFAQData, 'id'>;
 export type TUpdateFAQBody = Partial<TCreateFAQBody>;
 
 @ApiTags('FAQ')
-@Controller('faq')
+@Controller({ version: '1', path: 'faq' })
 export class FAQController {
   logger = new Logger(FAQController.name);
 

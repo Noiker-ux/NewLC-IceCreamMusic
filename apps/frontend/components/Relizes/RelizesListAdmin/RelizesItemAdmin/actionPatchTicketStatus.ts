@@ -27,7 +27,7 @@ export default async function actionPatchTicketStatus(
 	});
 
 	if (!!reason && status === 'rejected') {
-		await functional.v1.releases.moderation
+		await functional.api.v1.releases.moderation
 			.updateReleaseModerationStatus(connection, releaseId, {
 				status,
 				rejectReason: reason,
@@ -41,7 +41,7 @@ export default async function actionPatchTicketStatus(
 	}
 
 	if (!!upc && status === 'approved') {
-		await functional.v1.releases.moderation
+		await functional.api.v1.releases.moderation
 			.updateReleaseModerationStatus(connection, releaseId, {
 				status: status,
 				upc: upc,

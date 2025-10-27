@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useFormContext } from 'react-hook-form';
 import { VirtuosoGrid } from 'react-virtuoso';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { gridComponents } from '@/utils/VirtuosoGrid';
 import clsx from 'clsx';
 import { IoMdClose } from 'react-icons/io';
@@ -27,13 +27,13 @@ export default function Countyes() {
 		});
 	};
 
-	const { watch, setValue, getValues } = useFormContext<TReleaseInsertForm>();
+	const { watch, setValue, getValues } = useFormContext<TReleaseUpsert>();
 	const areas = watch('area');
 
 	const [areaRadioValue, setAreaRadioValue] = useState<string>(() => {
-		if (areas.negate) return 'allExcept';
-		if (areas.data.includes('sng')) return 'sng';
-		if (areas.data.includes('all')) return 'allCountry';
+		if (areas?.negate) return 'allExcept';
+		if (areas?.data.includes('sng')) return 'sng';
+		if (areas?.data.includes('all')) return 'allCountry';
 		return 'certain';
 	});
 
@@ -65,11 +65,11 @@ export default function Countyes() {
 					startContent={<MagnifyingGlassIcon className='h-4 w-4' />}
 					endContent={
 						<div className='text-tiny text-foreground-400'>
-							{areas.data.includes('all')
+							{areas?.data.includes('all')
 								? allCounty.length
-								: areas.data.includes('sng')
+								: areas?.data.includes('sng')
 									? 9
-									: areas.data.length}
+									: areas?.data.length}
 							/{allCounty.length}
 						</div>
 					}
@@ -102,14 +102,17 @@ export default function Countyes() {
 					<div className='scrollbar overflow-hidden scrollbar-thumb-sky-700 scrollbar-track-sky-300 h-40 '>
 						<CheckboxGroup
 							value={
-								areas.data.includes('all')
+								areas?.data.includes('all')
 									? allAreasArray
-									: areas.data.includes('sng')
+									: areas?.data.includes('sng')
 										? sngAreasArray
-										: areas.data
+										: areas?.data
 							}
 							onChange={(value) => {
-								setValue('area', { negate: areas.negate, data: value });
+								setValue('area', {
+									negate: areas?.negate ?? false,
+									data: value,
+								});
 							}}>
 							<div className='h-40'>
 								<VirtuosoGrid

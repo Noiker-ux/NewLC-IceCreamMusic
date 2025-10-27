@@ -27,7 +27,7 @@ export async function actionGetAnalyticById({
 		headers,
 	});
 
-	const responce = await functional.v1.analytics.getAnalyticsById(
+	const responce = await functional.api.v1.analytics.getAnalyticsById(
 		connection,
 		analyticsId,
 	);

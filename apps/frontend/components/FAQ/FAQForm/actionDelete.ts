@@ -20,7 +20,7 @@ export async function actionDelete(id: string) {
 		headers,
 	});
 
-	functional.v1.faq.deleteFAQ(connection, id).catch((error) => {
+	functional.api.v1.faq.deleteFAQ(connection, id).catch((error) => {
 		return {
 			success: false as const,
 			message: error.message,

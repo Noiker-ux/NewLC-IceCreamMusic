@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 		},
 	});
 
-	const { user } = await functional.v1.auth
+	const { user } = await functional.api.v1.auth
 		.checkSessionToken(authConnection)
 		.catch(() => ({ user: null }));
 
@@ -162,7 +162,7 @@ export async function GET(request: NextRequest) {
 		headers: authHeaders,
 	});
 
-	const linkResult = await functional.v1.auth.link
+	const linkResult = await functional.api.v1.auth.link
 		.linkAccount(linkConnection, {
 			provider: 'yandex',
 			providerAccountId: validAccount.id,

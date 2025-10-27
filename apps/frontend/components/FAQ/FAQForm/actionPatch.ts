@@ -22,7 +22,7 @@ export async function actionPatch(data: TUpdateFAQBody & { id: string }) {
 		headers,
 	});
 
-	functional.v1.faq
+	functional.api.v1.faq
 		.updateFAQ(connection, data.id, {
 			question: data.question,
 			answer: data.answer,

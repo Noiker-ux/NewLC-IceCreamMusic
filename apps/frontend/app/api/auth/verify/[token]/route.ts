@@ -10,7 +10,7 @@ export const GET = async (
 ) => {
 	const { token } = await params;
 
-	const result = await functional.v1.auth.verification
+	const result = await functional.api.v1.auth.verification
 		.confirmEmail(connection, token)
 		.catch((e) => `${e.message}`);
 

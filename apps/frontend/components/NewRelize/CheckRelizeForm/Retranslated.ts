@@ -1,6 +1,6 @@
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 
-export const Retranslated: Record<keyof TReleaseInsertForm, string> & Record<string, string> = {
+export const Retranslated: Record<keyof TReleaseUpsert, string> & Record<string, string> = {
 	language: 'Язык метаданных',
 	title: 'Название релиза',
 	subtitle: 'Подзаголовок релиза',

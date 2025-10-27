@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import { DatePicker } from '@heroui/date-picker';
 import { I18nProvider } from '@react-aria/i18n';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseInsert, TReleaseUpsert } from 'shared/schema/release.schema';
 import { Controller, useFormContext } from 'react-hook-form';
 import dateISOFormatter from '@/utils/dateISOFormatter';
 import { parseAbsoluteToLocal } from '@internationalized/date';
 
 export default function YandexMusic() {
-	const { control, formState } = useFormContext<TReleaseInsertForm>();
+	const { control, formState } = useFormContext<TReleaseUpsert>();
 
 	return (
 		<div className='bg-zinc-900 rounded-xl p-5 w-full'>

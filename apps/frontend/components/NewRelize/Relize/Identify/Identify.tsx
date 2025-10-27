@@ -1,10 +1,10 @@
 'use client';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { Input } from '@heroui/input';
 import { Controller, useFormContext } from 'react-hook-form';
 
 export default function Identify() {
-	const { control, formState } = useFormContext<TReleaseInsertForm>();
+	const { control, formState } = useFormContext<TReleaseUpsert>();
 	return (
 		<div className='bg-zinc-900 h-min rounded-xl p-5'>
 			<p className='font-extrabold'>Идентификация</p>

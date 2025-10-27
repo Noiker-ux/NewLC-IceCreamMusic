@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 const connection = createSDKConnection({});
 
 export async function actionAuthtorize(data: TSignInClientSchema) {
-	const signInResult = await functional.v1.auth.signin
+	const signInResult = await functional.api.v1.auth.signin
 		.credentialsSignIn(connection, {
 			email: data.email,
 			password: data.password,

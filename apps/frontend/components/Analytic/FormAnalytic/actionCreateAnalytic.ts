@@ -27,11 +27,11 @@ export async function actionCreateAnalytic({
 		headers,
 	});
 
-	functional.v1.analytics.createAnalytics(connection, {
+	await functional.api.v1.analytics.createAnalytics(connection, {
 		data: data,
 	});
 
-	revalidateTag('admin-analytic');
+	await revalidateTag('admin-analytic');
 
 	return {
 		success: true as const,

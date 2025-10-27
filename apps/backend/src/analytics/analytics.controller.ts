@@ -12,7 +12,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { TSuccessionResponse } from '../shared/types';
-import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
@@ -36,11 +35,11 @@ export type TGetAnalyticsResponse = {
 };
 
 export type TCreateAnalyticsBody = {
-  data: Primitive<TInsertAnalytics>;
+  data: TInsertAnalytics;
 };
 
 export type TUpdateAnalyticsBody = {
-  data: Primitive<Partial<Omit<TInsertAnalytics, 'userId'>>>;
+  data: Partial<Omit<TInsertAnalytics, 'userId'>>;
 };
 
 export type TUpdateAnalyticsRespomse = {
@@ -49,7 +48,7 @@ export type TUpdateAnalyticsRespomse = {
 
 @ApiTags('analytics')
 @UseGuards(AuthGuard)
-@Controller('analytics')
+@Controller({ version: '1', path: 'analytics' })
 export class AnalyticsController {
   logger = new Logger(AnalyticsController.name);
 

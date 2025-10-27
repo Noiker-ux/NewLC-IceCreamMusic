@@ -24,7 +24,7 @@ export async function actionGetVerifyList(
 		headers,
 	});
 
-	const result = await functional.v1.verification
+	const result = await functional.api.v1.verification
 		.getVerificationTickets(connection, status, {
 			size: 1000,
 			page: 1,

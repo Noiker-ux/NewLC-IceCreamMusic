@@ -10,7 +10,7 @@
 		"copy:public": "cpy public .next/standalone/apps/frontend",
 		"copy:modules": "cpy node_modules/**/**/* apps/frontend/node_modules --cwd=.next/standalone",
 		"start": "node .next/standalone/apps/frontend/server.js",
-		"lint": "next lint",
+		"lint": "eslint --fix",
 		"dev:email": "email dev"
 	},
 	"dependencies": {
@@ -57,6 +57,7 @@
 		"@types/nodemailer": "^6.4.17",
 		"@types/three": "^0.176.0",
 		"arctic": "^3.6.1",
+		"axios": "^0.21.4",
 		"clsx": "^2.1.1",
 		"clsx-for-tailwind": "^1.0.0",
 		"colorthief": "^2.6.0",
@@ -100,6 +101,7 @@
 		"cpy": "^11.1.0",
 		"eslint": "^9",
 		"eslint-config-next": "15.3.2",
+		"eslint-plugin-react-you-might-not-need-an-effect": "^0.6.1",
 		"jiti": "^1.21.6",
 		"postcss": "^8",
 		"react-email": "4.2.4",

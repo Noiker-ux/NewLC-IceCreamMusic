@@ -8,7 +8,6 @@ import { InjectMinio } from 'nestjs-minio';
 @Injectable()
 export class UserService {
   constructor(
-    private readonly config: ConfigService,
     @InjectMinio() private readonly s3Client: Client,
     @Inject('DB_TAG') private readonly db: DB,
   ) {}

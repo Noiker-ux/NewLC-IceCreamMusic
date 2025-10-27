@@ -27,7 +27,7 @@ export async function actionGetPersonalData(): Promise<
 		next: { tags: ['PersonalData'], revalidate: 10 },
 		headers,
 	});
-	const PersonalData = await functional.v1.users.me.getMyInfo(connection);
+	const PersonalData = await functional.api.v1.users.me.getMyInfo(connection);
 
 	const birthDate = PersonalData.data.birthDate
 		? new Date(PersonalData.data.birthDate)

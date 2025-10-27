@@ -1,7 +1,7 @@
 import { verification } from "db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { fileSchema } from './shared.schema';
+import { fileSchema, stringAsDateSchema } from './shared.schema';
 
 export const verificationInsertSchema = createInsertSchema(verification).omit({
   id: true,
@@ -19,8 +19,8 @@ export const verificationFormSchema = verificationInsertSchema.extend({
   })
 );
 
-export const serverVerificationSchema = verificationInsertSchema
-  .extend({ birthDate: z.string(), getDate: z.string() })
+export const verificationSchema = verificationInsertSchema
+  .extend({ birthDate: stringAsDateSchema, getDate: stringAsDateSchema })
   .transform(({ getDate, birthDate, ...data }) => ({
     birthDate: new Date(birthDate),
     getDate: new Date(getDate),

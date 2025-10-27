@@ -12,25 +12,18 @@ import { DB, schema } from 'db';
 import { eq, InferSelectModel } from 'drizzle-orm';
 import { Client } from 'minio';
 import { InjectMinio } from 'nestjs-minio';
-import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { StudioService } from './studio.service';
 
-export type TStudioData = Primitive<InferSelectModel<typeof schema.studios>>;
+export type TStudioData = InferSelectModel<typeof schema.studios>;
 
-export type TStudioPhotoData = Primitive<
-  InferSelectModel<typeof schema.studioPhotos>
->;
+export type TStudioPhotoData = InferSelectModel<typeof schema.studioPhotos>;
 
-export type TStudioTeamData = Primitive<
-  InferSelectModel<typeof schema.studioTeam>
->;
+export type TStudioTeamData = InferSelectModel<typeof schema.studioTeam>;
 
-export type TStudioStatData = Primitive<
-  InferSelectModel<typeof schema.studioStats>
->;
+export type TStudioStatData = InferSelectModel<typeof schema.studioStats>;
 
 export type TCompleteStudioData = TStudioData & {
   photos: TStudioPhotoData[];
@@ -83,7 +76,7 @@ export type TUpdateStudioResponse = {
 };
 
 @ApiTags('studios')
-@Controller('studios')
+@Controller({ version: '1', path: 'studios' })
 export class StudioController {
   logger = new Logger(StudioController.name);
 

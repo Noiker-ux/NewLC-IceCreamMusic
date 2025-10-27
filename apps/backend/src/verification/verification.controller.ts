@@ -11,7 +11,6 @@ import {
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { schema, type DB } from 'db';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
@@ -26,11 +25,9 @@ export type VerificationTicketsResponse = TVerification[];
 export type TStatus = 'approved' | 'rejected' | 'moderating';
 
 export type TTicketRegistrationData = {
-  data: Primitive<
-    Omit<
-      InferInsertModel<typeof schema.verification>,
-      'rejectReason' | 'status' | 'userId' | 'id'
-    >
+  data: Omit<
+    InferInsertModel<typeof schema.verification>,
+    'rejectReason' | 'status' | 'userId' | 'id'
   >;
 };
 
@@ -65,7 +62,7 @@ export type TUpdateCurrentVerificationTicketResponse = {
 };
 
 @ApiTags('verification')
-@Controller('verification')
+@Controller({ version: '1', path: 'verification' })
 @ApiSecurity('bearer')
 @UseGuards(AuthGuard)
 export class VerificationController {

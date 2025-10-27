@@ -21,7 +21,7 @@ export async function actionPostPayout(data: TPayoutTicketData) {
 		headers,
 	});
 
-	functional.v1.finance.payouts.createPayoutTicket(connection, {
+	functional.api.v1.finance.payouts.createPayoutTicket(connection, {
 		data: {
 			accountNumber: data.accountNumber,
 			amount: Number(data.amount),

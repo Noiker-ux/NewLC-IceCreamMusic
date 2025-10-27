@@ -15,6 +15,10 @@
     "./helpers/*": {
       "types": "./lib/helpers/*.d.ts",
       "default": "./lib/helpers/*.js"
+    },
+    "./types/*": {
+      "types": "./lib/types/*.d.ts",
+      "default": "./lib/types/*.js"
     }
   },
   "scripts": {

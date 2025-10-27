@@ -37,7 +37,7 @@ export default async function UsersPage() {
 		next: { tags: ['admin-users'], revalidate: 5 },
 	});
 
-	const result = await functional.v1.users
+	const result = await functional.api.v1.users
 		.getUsers(connection, {
 			page: 1,
 			size: 1000,

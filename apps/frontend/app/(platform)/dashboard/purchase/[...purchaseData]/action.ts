@@ -39,7 +39,7 @@ export async function makeOrder(
 			};
 		}
 
-		const result = await functional.v1.finance.createOrder(orderConnection, {
+		const result = await functional.api.v1.finance.createOrder(orderConnection, {
 			type: 'subscription',
 			subscriptionLevel: orderData as TPremiumPlans,
 		});
@@ -51,7 +51,7 @@ export async function makeOrder(
 	}
 
 	if (orderType === 'release') {
-		const result = await functional.v1.finance.createOrder(orderConnection, {
+		const result = await functional.api.v1.finance.createOrder(orderConnection, {
 			type: 'release',
 			releaseId: orderData,
 		});

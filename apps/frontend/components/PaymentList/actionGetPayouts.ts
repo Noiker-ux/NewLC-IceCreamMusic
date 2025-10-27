@@ -24,7 +24,7 @@ export async function actionGetPayouts(): Promise<
 		headers,
 	});
 
-	const responce = await functional.v1.finance.payouts
+	const responce = await functional.api.v1.finance.payouts
 		.getPayoutTickets(connection, {
 			page: 1,
 			size: 1000,

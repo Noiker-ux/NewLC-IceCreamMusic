@@ -26,6 +26,8 @@ export class AuthGuard implements CanActivate {
         context.getClass(),
       ]) ?? false;
 
+    request.user = user;
+
     if (mustBeAdmin) return user.isAdmin;
 
     return true;

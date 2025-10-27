@@ -11,7 +11,7 @@ const connection = createSDKConnection({
 });
 export default async function NewsListAdmin() {
 	const newsData: Primitive<TGetNewsResponse> =
-		await functional.v1.news.getNews(connection, {
+		await functional.api.v1.news.getNews(connection, {
 			page: 1,
 			size: 1000,
 		});

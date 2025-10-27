@@ -25,7 +25,7 @@ export async function actionDeleteAnalytic({
 		headers,
 	});
 
-	functional.v1.analytics.deleteAnalytics(connection, analyticsId);
+	functional.api.v1.analytics.deleteAnalytics(connection, analyticsId);
 
 	revalidateTag('admin-analytic');
 

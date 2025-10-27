@@ -6,9 +6,10 @@ import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';
 import { functional } from 'sdk';
 import { TRegisterVerificationTicketResponse } from 'sdk/lib/verification/verification.controller';
+import { TrueOmit } from 'shared/types/omit';
 
 export async function actionPostVerify(
-	data: TVerificationFormSchema & { contract: string },
+	data: TrueOmit<TVerificationFormSchema, 'contract'> & { contract: string },
 ): Promise<TActionResult<TRegisterVerificationTicketResponse['data']>> {
 	const cookieStore = await cookies();
 	const token = cookieStore.get(sessionCookieName)?.value;
@@ -25,7 +26,7 @@ export async function actionPostVerify(
 		headers,
 	});
 
-	const result = await functional.v1.verification
+	const result = await functional.api.v1.verification
 		.registerVerifiactionTicket(connection, {
 			data: {
 				...data,

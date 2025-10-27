@@ -15,7 +15,7 @@ export async function actionGetRelizeById(releaseId: string) {
 		headers,
 	});
 
-	const res = await functional.v1.releases.getReleaseById(
+	const res = await functional.api.v1.releases.getReleaseById(
 		connection,
 		releaseId,
 	);

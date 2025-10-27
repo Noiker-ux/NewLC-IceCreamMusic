@@ -21,7 +21,7 @@ export async function checkUserVerified() {
 			},
 		});
 
-  const userResult = await functional.v1.users.me.getMyInfo(connecttion).catch(()=>null);
+  const userResult = await functional.api.v1.users.me.getMyInfo(connecttion).catch(()=>null);
 
   if(userResult?.data.isVerifiedAuthor) {
     return {

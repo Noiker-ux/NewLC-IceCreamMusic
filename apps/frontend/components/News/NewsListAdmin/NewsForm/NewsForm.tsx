@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { PropsWithChildren, useEffect, useRef } from 'react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Primitive } from 'sdk';
 import {
@@ -30,6 +30,7 @@ import { actionPatch } from './actionPatch';
 import { actionPost } from './actionPost';
 import { TActionResult } from '@/components/Account/actionGetPersonalData';
 import { revalidateTagAction } from '@/shared/api/revalidate';
+import axios from 'axios';
 
 export default function NewsForm({
 	children,
@@ -57,6 +58,8 @@ export default function NewsForm({
 		},
 	});
 
+	const [isUploading, setUploadingStatus] = useState(false);
+
 	useEffect(() => {
 		if (editNews) {
 			methods.setValue('content', editNews.content);
@@ -72,6 +75,8 @@ export default function NewsForm({
 		content: string;
 		preview?: File | undefined;
 	}> = async (data) => {
+		setUploadingStatus(true);
+
 		const submitData = {
 			title: data.title,
 			content: data.content,
@@ -114,42 +119,39 @@ export default function NewsForm({
 			editResult.data.preview.length > 0 &&
 			data.preview
 		) {
-			const uploadToast = toast('Загружаем превью к новости');
+			const uploadToast = toast.info('Загружаем превью к новости');
 
-			const totalBytes = data.preview.size;
+			const result = await axios
+				.put(editResult.data.preview, data.preview, {
+					onUploadProgress(progress: ProgressEvent) {
+						toast.loading(
+							`${Math.round((progress.loaded * 100) / progress.total)}%`,
+							{
+								id: uploadToast,
+							},
+						);
+					},
+				})
+				.then(() => true as const)
+				.catch(() => false as const);
 
-			let uploaded = 0;
-
-			const progressTrackingStream = new TransformStream({
-				transform(chunk, controller) {
-					controller.enqueue(chunk);
-					uploaded += chunk.byteLength;
-
-					toast(`${Math.round(uploaded / totalBytes)}%`, {
-						id: uploadToast,
-					});
-				},
-				flush() {
-					toast.success(`${Math.round(uploaded / totalBytes)}%`, {
-						id: uploadToast,
-					});
-				},
-			});
-
-			await fetch(editResult.data.preview, {
-				method: 'PUT',
-				body: data.preview.stream().pipeThrough(progressTrackingStream),
-				duplex: 'half',
-				headers: {
-					'Content-Type': 'application/octet-stream',
-					'Content-Length': String(totalBytes),
-				},
-			} as RequestInit);
+			if (result)
+				toast.success('Загрузка завершена', {
+					id: uploadToast,
+					className: '!bg-green-300 !border-green-600 !text-green-800',
+				});
+			else {
+				toast.error('Ошибка загрузки', {
+					id: uploadToast,
+					className: '!bg-red-300 !border-red-600 !text-red-800',
+				});
+			}
 		}
 
 		methods.reset();
 		router.refresh();
 		await revalidateTagAction('NewsAdmin');
+		setUploadingStatus(false);
 		onClose();
 	};
 
@@ -161,7 +163,10 @@ export default function NewsForm({
 				{children}
 			</Button>
 			<Toaster />
-			<Modal isOpen={isOpen} onClose={onClose} size={'5xl'}>
+			<Modal
+				isOpen={isOpen}
+				onClose={() => !isUploading && onClose()}
+				size={'5xl'}>
 				<ModalContent>
 					{() => (
 						<>
