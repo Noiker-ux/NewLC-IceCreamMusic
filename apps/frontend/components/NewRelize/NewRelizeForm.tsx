@@ -29,6 +29,7 @@ import WorkWithRelize from './Relize/WorkWithRelize/WorkWithRelize';
 import Tracks from './Tracks/Tracks';
 import { UploadVisualizer } from './Upload/UploadVisualizer';
 import { createRelease, updateRelease } from './actions';
+import { track } from '../../../../packages/db/src/schema';
 
 type TUploadBase = {
 	file: File;
@@ -197,12 +198,12 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 
 			const updatedReleaseData = dataResult.data;
 
-			const urlsResult = await updateRelease({
-				...newReleaseData,
-				preview: newReleaseData.preview.name.split('.').at(-1)!,
-				tracks: newReleaseData.tracks.map((track) => ({
+			const urlsResult = await updateRelease(release.id, {
+				...updatedReleaseData,
+				preview: updatedReleaseData.preview?.name.split('.').at(-1),
+				tracks: updatedReleaseData?.tracks?.map((track) => ({
 					...track,
-					track: track.track.name.split('.').at(-1)!,
+					track: track?.track?.name.split('.').at(-1),
 					video: track.video?.name.split('.').at(-1),
 					video_shot: track.video_shot?.name.split('.').at(-1),
 					text_sync: track.text_sync?.name.split('.').at(-1),
@@ -210,9 +211,93 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 				})),
 			});
 
-			// if (!urlsResult.success) {
-			// 	return;
-			// }
+			if (
+				!urlsResult.success ||
+				(urlsResult.data.tracks.length === updatedReleaseData.tracks.length &&
+					!updatedReleaseData.tracks?.length)
+			) {
+				return;
+			}
+
+			if (!!urlsResult.data.release?.preview && updatedReleaseData.preview) {
+				filesToUpload.push({
+					file: updatedReleaseData.preview,
+					url: urlsResult.data.release.preview,
+					belongsTo: 'release',
+					type: 'preview',
+				});
+			}
+
+			for (
+				let trackIndex = 0;
+				trackIndex < urlsResult.data.tracks.length;
+				trackIndex++
+			) {
+				const trackFile = updatedReleaseData.tracks[trackIndex].track;
+				const trackUrl = urlsResult.data.tracks[trackIndex].track;
+
+				if (!!trackFile && !!trackUrl) {
+					filesToUpload.push({
+						file: trackFile,
+						url: trackUrl,
+						type: 'track',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackTextSync = updatedReleaseData.tracks[trackIndex].text_sync;
+				const trackTextSyncUrl = urlsResult.data.tracks[trackIndex].text_sync;
+
+				if (!!trackTextSync && !!trackTextSyncUrl) {
+					filesToUpload.push({
+						file: trackTextSync,
+						url: trackTextSyncUrl,
+						type: 'text_sync',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackVideo = updatedReleaseData.tracks[trackIndex].video;
+				const trackVideoUrl = urlsResult.data.tracks[trackIndex].video;
+
+				if (!!trackVideo && !!trackVideoUrl) {
+					filesToUpload.push({
+						file: trackVideo,
+						url: trackVideoUrl,
+						type: 'video',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackVideoShot = updatedReleaseData.tracks[trackIndex].video_shot;
+				const trackVideoShotUrl = urlsResult.data.tracks[trackIndex].video_shot;
+
+				if (!!trackVideoShot && !!trackVideoShotUrl) {
+					filesToUpload.push({
+						file: trackVideoShot,
+						url: trackVideoShotUrl,
+						type: 'video_shot',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackRingtone = updatedReleaseData.tracks[trackIndex].ringtone;
+				const trackRingtoneUrl = urlsResult.data.tracks[trackIndex].ringtone;
+
+				if (!!trackRingtone && !!trackRingtoneUrl) {
+					filesToUpload.push({
+						file: trackRingtone,
+						url: trackRingtoneUrl,
+						type: 'ringtone',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+			}
 		}
 
 		const uploadResults: TUploadResult[] = filesToUpload

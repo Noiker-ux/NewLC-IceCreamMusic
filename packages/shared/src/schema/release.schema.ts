@@ -1,6 +1,6 @@
 import { release, track } from "db/schema";
 import { InferSelectModel } from "drizzle-orm";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { fileSchema, stringAsDateSchema } from "./shared.schema";
 
@@ -62,6 +62,8 @@ export type TReleasePlatforms = z.infer<typeof releasePlatformsSchema>;
 
 const trackBaseSchema = createInsertSchema(track);
 
+const trackIdSchema = createSelectSchema(track).shape.id
+
 const TrackBaseSchema = trackBaseSchema
   .extend({
     title: z.string().min(1, "Название трека обязательно"),
@@ -87,8 +89,10 @@ export const trackInsertSchema = TrackBaseSchema.omit({
 export type TTrackInsertForm = z.infer<typeof trackInsertSchema>;
 
 export const trackUpdateFormSchema = TrackBaseSchema.partial().extend({
-  trackId: trackBaseSchema.shape.id,
+  trackId: trackIdSchema,
 });
+
+
 
 export type TTrackUpdateForm = z.infer<typeof trackUpdateFormSchema>;
 
@@ -124,9 +128,9 @@ export const releaseInsertSchema = ReleaseFormBaseSchema.extend({
 
 export type TReleaseInsert = z.infer<typeof releaseInsertSchema>;
 
-export const releaseUpdateSchema = ReleaseFormBaseSchema.extend({
-  tracks: trackUpdateFormSchema.array().min(1, "Должен быть хотя бы один трек"),
-}).partial();
+export const releaseUpdateSchema = ReleaseFormBaseSchema.partial().extend({
+  tracks: trackUpdateFormSchema.array(),
+});
 
 export type TReleaseUpdate = z.infer<typeof releaseUpdateSchema>;
 

@@ -22,9 +22,10 @@ import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
 import { SessionService, TUser } from '../auth/session.service';
+import { User } from '../auth/user.decorator';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { ReleaseService } from './release.service';
-import { User } from '../auth/user.decorator';
+import { Primitive } from 'typia';
 
 export type TPromoLink = InferSelectModel<typeof schema.promoLinks>;
 
@@ -58,24 +59,13 @@ export type TTrackInsert = Omit<
 >;
 
 export type TTrackUpdate = Partial<
-  Omit<InferInsertModel<typeof schema.track>, 'id' | 'releaseId'>
+  Omit<InferInsertModel<typeof schema.track>, 'releaseId'>
 >;
 
 export type TCreateReleaseBody = {
-  release: TReleaseInsert;
-  tracks: TTrackInsert[];
+  release: Primitive<TReleaseInsert>;
+  tracks: Primitive<TTrackInsert>[];
 };
-
-// export type TCreateReleaseResponse = {
-//   preview: string;
-//   tracks: {
-//     track: string;
-//     text_sync?: string;
-//     video?: string;
-//     video_shot?: string;
-//     ringtone?: string;
-//   }[];
-// };
 
 export type TCreateReleaseResponse = {
   release: Pick<TRelease, 'preview'>;
@@ -86,7 +76,7 @@ export type TCreateReleaseResponse = {
 };
 
 export type TUpdateTrackBody = {
-  data: Partial<Omit<TTrack, 'id' | 'releaseId'>>;
+  data: TTrackUpdate;
 };
 
 export type TUpdateTrackResponse = {
@@ -98,15 +88,15 @@ export type TUpdateTrackResponse = {
 };
 
 export type TUpdateReleaseBody = {
-  release: TReleaseUpdate;
-  tracks: TTrackUpdate[];
+  release: Primitive<TReleaseUpdate>;
+  tracks: Primitive<{ id: TTrack['id']; data: TTrackUpdate }>[];
 };
 
 export type TUpdateReleaseResponse = {
   release?: Partial<Pick<TRelease, 'preview'>>;
-  tracks?: Partial<
+  tracks: Partial<
     Pick<TTrack, 'track' | 'text_sync' | 'video' | 'video_shot' | 'ringtone'>
-  >;
+  >[];
 };
 
 export type TUpdateReleaseStatusBody = {
@@ -464,56 +454,141 @@ export class ReleaseController {
     this.logger.log('body', body);
     this.logger.log('user', user);
 
-    const { release: releaseData } = body;
+    const { release, tracks } = body;
 
     return await this.db.transaction(async (tx) => {
-      const release = await tx.query.release.findFirst({
+      const existingRelease = await tx.query.release.findFirst({
         where: eq(schema.release.id, releaseId),
       });
 
-      if (!release) throw new BadRequestException('Релиз не найден');
+      if (!existingRelease) throw new BadRequestException('Релиз не найден');
 
-      if (release.authorId !== user.id)
+      if (existingRelease.authorId !== user.id)
         throw new ForbiddenException('Недостаточно прав');
 
-      const releasePreviewUrl = release.preview
+      const releasePreviewUrl = existingRelease.preview
         ? await this.releaseService.createPutUrl(
             'previews',
-            `${releaseId}.${releaseData.preview}`,
+            `${releaseId}.${release.preview}`,
           )
         : '';
 
-      const releaseDate = releaseData.releaseDate
-        ? new Date(releaseData.releaseDate)
+      const releaseDate = release.releaseDate
+        ? new Date(release.releaseDate)
         : undefined;
 
-      const startDate = releaseData.startDate
-        ? new Date(releaseData.startDate)
+      const startDate = release.startDate
+        ? new Date(release.startDate)
         : undefined;
 
-      const preorderDate = releaseData.preorderDate
-        ? new Date(releaseData.preorderDate)
+      const preorderDate = release.preorderDate
+        ? new Date(release.preorderDate)
         : undefined;
 
-      const yandexSoonNewRelease = releaseData.yandexSoonNewRelease
-        ? new Date(releaseData.yandexSoonNewRelease)
+      const yandexSoonNewRelease = release.yandexSoonNewRelease
+        ? new Date(release.yandexSoonNewRelease)
         : undefined;
 
       await tx
         .update(schema.release)
         .set({
-          ...releaseData,
+          ...release,
           releaseDate,
           startDate,
           preorderDate,
           yandexSoonNewRelease,
         })
-        .where(eq(schema.release.id, release.id));
+        .where(eq(schema.release.id, releaseId));
+
+      const trackUrls: TUpdateReleaseResponse['tracks'] = [];
+
+      for (let trackIndex = 0; trackIndex < tracks.length; trackIndex++) {
+        const { id: trackId, data: trackData } = tracks[trackIndex];
+
+        const existingTrack = await tx.query.track.findFirst({
+          where: and(
+            eq(schema.track.id, trackId),
+            eq(schema.track.releaseId, releaseId),
+          ),
+        });
+
+        if (!existingTrack) {
+          throw new BadRequestException(
+            `Один или несколько треков не найдены в релизе`,
+          );
+        }
+
+        const authorRightsResult = authorRightsSchema.safeParse(
+          trackData.author_rights,
+        );
+
+        if (!!trackData.author_rights && !authorRightsResult.success) {
+          throw new BadRequestException(
+            `Неверные данные в правах автора трека`,
+          );
+        }
+
+        const instantGratification = trackData.instant_gratification
+          ? new Date(trackData.instant_gratification)
+          : undefined;
+
+        await tx
+          .update(schema.track)
+          .set({
+            ...trackData,
+            instant_gratification: instantGratification,
+          })
+          .where(eq(schema.track.id, trackId));
+
+        const releaseTrackUrl = trackData.track
+          ? await this.releaseService.createPutUrl(
+              'tracks',
+              `${trackId}.${trackData.track}`,
+            )
+          : undefined;
+
+        const trackTextSyncUrl = trackData.text_sync
+          ? await this.releaseService.createPutUrl(
+              'syncs',
+              `${trackId}.${trackData.text_sync}`,
+            )
+          : undefined;
+
+        const trackRingtoneUrl = trackData.ringtone
+          ? await this.releaseService.createPutUrl(
+              'ringtones',
+              `${trackId}.${trackData.ringtone}`,
+            )
+          : undefined;
+
+        const trackVideoUrl = trackData.video
+          ? await this.releaseService.createPutUrl(
+              'videos',
+              `${trackId}.${trackData.video}`,
+            )
+          : undefined;
+
+        const trackVideoShotUrl = trackData.video_shot
+          ? await this.releaseService.createPutUrl(
+              'videoshots',
+              `${trackId}.${trackData.video_shot}`,
+            )
+          : undefined;
+
+        trackUrls.push({
+          track: releaseTrackUrl,
+          text_sync: trackTextSyncUrl,
+          ringtone: trackRingtoneUrl,
+          video: trackVideoUrl,
+          video_shot: trackVideoShotUrl,
+        });
+      }
 
       return {
         release: {
           preview: releasePreviewUrl,
         },
+        tracks: trackUrls,
       };
     });
   }

@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { type DB, schema } from 'db';
 import { eq } from 'drizzle-orm';
 import { Client } from 'minio';
