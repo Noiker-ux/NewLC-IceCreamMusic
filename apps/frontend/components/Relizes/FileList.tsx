@@ -9,12 +9,10 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Tooltip } from '@heroui/tooltip';
-import { useRef } from 'react';
-import ModalTextTrack from './ModalTextTrack';
-import { toast, Toaster } from 'sonner';
 import Link from 'next/link';
-import { Primitive } from 'sdk';
-import { TTrack } from 'shared/schema/release.schema';
+import { useRef } from 'react';
+import { toast, Toaster } from 'sonner';
+import ModalTextTrack from './ModalTextTrack';
 
 export default function FileList({
 	track,

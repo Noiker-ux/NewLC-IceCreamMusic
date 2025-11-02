@@ -1,4 +1,4 @@
-import { TAuthUserSchema } from '@/schema/user.schema';
+import { TAuthUserSchema } from 'shared/schema/user.schema';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
 export const routeTypes = ['guest', 'public'] as const;

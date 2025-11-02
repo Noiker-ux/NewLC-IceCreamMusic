@@ -20,5 +20,5 @@ export async function action(id: string) {
 	const connection = createSDKConnection({
 		headers,
 	});
-	await functional.v1.news.deleteNews(connection, id);
+	await functional.api.v1.news.deleteNews(connection, id);
 }

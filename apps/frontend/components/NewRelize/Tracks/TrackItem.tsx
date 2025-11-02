@@ -1,4 +1,4 @@
-import { TTrackInsertForm } from '@/schema/release.schema';
+import { TTrackInsertForm } from 'shared/schema/release.schema';
 import { cn } from '@/utils/cn';
 import clsx from 'clsx';
 import { Reorder, useDragControls } from 'framer-motion';

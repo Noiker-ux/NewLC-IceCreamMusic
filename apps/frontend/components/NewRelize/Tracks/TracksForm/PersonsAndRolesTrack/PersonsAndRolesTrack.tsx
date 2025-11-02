@@ -1,6 +1,6 @@
 'use client';
 
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';

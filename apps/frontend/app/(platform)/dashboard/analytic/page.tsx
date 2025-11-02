@@ -27,7 +27,7 @@ export default async function AnalyticPage() {
 		headers: authHeaders,
 		next: { tags: ['my-analytic'], revalidate: 5 },
 	});
-	const session = await functional.v1.auth
+	const session = await functional.api.v1.auth
 		.checkSessionToken(connection)
 		.catch(() => null);
 

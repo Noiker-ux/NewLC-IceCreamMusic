@@ -34,7 +34,7 @@ export default async function AdminRelizesPage({
 		next: { tags: ['admin-releases'], revalidate: 5 },
 	});
 
-	const usersResult = await functional.v1.releases.user
+	const usersResult = await functional.api.v1.releases.user
 		.getUserReleases(connection, userId, {
 			page: 1,
 			size: 1000,

@@ -7,7 +7,7 @@ import { Button } from '@heroui/button';
 import {
 	signInClientSchema,
 	TSignInClientSchema,
-} from '@/schema/signin.schema';
+} from 'shared/schema/signin.schema';
 import { actionAuthtorize } from './authtorizeAction';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { yandexSignIn } from '@/features/signin/api/yandex';

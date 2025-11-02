@@ -1,5 +1,4 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { DB, schema } from 'db';
 import { eq } from 'drizzle-orm';
 import { Client } from 'minio';
@@ -11,7 +10,6 @@ export class StudioService {
 
   constructor(
     @InjectMinio() private readonly s3Client: Client,
-    private readonly config: ConfigService,
     @Inject('DB_TAG') private readonly db: DB,
   ) {}
 

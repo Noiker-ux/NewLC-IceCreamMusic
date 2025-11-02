@@ -1,7 +1,7 @@
 'use client';
 import { allGenres } from '@/data/allGenres';
 import { isoLangs } from '@/data/allLanguage';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Input } from '@heroui/input';
 import { Radio, RadioGroup } from '@heroui/radio';
@@ -10,7 +10,7 @@ import { Tooltip } from '@heroui/tooltip';
 import { Controller, useFormContext } from 'react-hook-form';
 
 export default function WorkWithRelize() {
-	const { control, formState } = useFormContext<TReleaseInsertForm>();
+	const { control, formState } = useFormContext<TReleaseUpsert>();
 
 	return (
 		<div className='h-auto p-5 '>

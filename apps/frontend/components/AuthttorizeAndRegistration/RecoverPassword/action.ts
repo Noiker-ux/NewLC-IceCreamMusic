@@ -10,7 +10,7 @@ import { functional } from 'sdk'
 const connection = createSDKConnection({})
 
 export async function requestRecoveryToken(email: string): Promise<TActionResult<null>> {
-  const result = await functional.v1.auth.recover.requestPasswordRecovery(connection, {email}).catch((e)=>`${e.message}`);
+  const result = await functional.api.v1.auth.recover.requestPasswordRecovery(connection, {email}).catch((e)=>`${e.message}`);
 
   if(typeof result ==='string'){
     return {

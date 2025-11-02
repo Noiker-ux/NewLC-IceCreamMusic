@@ -25,7 +25,7 @@ export default async function NewsDetailPageAdmin({
 }) {
 	await checkUserAdmin();
 
-	const newsDetail = await functional.v1.news.getNewsById(
+	const newsDetail = await functional.api.v1.news.getNewsById(
 		connection,
 		(await params).detail,
 	);

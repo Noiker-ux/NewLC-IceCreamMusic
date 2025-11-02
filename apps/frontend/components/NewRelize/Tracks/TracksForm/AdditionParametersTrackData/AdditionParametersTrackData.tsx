@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import dateISOFormatter from '@/utils/dateISOFormatter';
 import {
 	CheckBadgeIcon,

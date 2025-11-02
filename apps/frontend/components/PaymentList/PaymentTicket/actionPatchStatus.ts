@@ -28,7 +28,7 @@ export async function actionPatchStatus({
 	});
 
 	const responce =
-		await functional.v1.finance.payouts.status.updatePayoutTicketStatus(
+		await functional.api.v1.finance.payouts.status.updatePayoutTicketStatus(
 			connection,
 			ticketId,
 			{

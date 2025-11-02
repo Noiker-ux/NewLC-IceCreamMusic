@@ -1,4 +1,4 @@
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { useFormContext } from 'react-hook-form';
 import { useCallback, useRef } from 'react';
 import { Button } from '@heroui/button';

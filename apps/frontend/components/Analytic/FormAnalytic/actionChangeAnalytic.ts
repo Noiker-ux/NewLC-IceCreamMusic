@@ -31,7 +31,7 @@ export async function actionChangeAnalytic({
 		headers,
 	});
 
-	functional.v1.analytics.updateAnalytics(connection, analyticsId, {
+	await functional.api.v1.analytics.updateAnalytics(connection, analyticsId, {
 		data: {
 			periodStart: data.data.periodStart,
 			periodFinish: data.data.periodFinish,
@@ -39,7 +39,7 @@ export async function actionChangeAnalytic({
 		},
 	});
 
-	revalidateTag('admin-analytic');
+	await revalidateTag('admin-analytic');
 
 	return {
 		success: true as const,

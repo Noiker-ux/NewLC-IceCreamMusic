@@ -45,7 +45,7 @@ export default async function PurchasePage({
 		next: { tags: ['authorization'] },
 	});
 
-	const sessionResult = await functional.v1.auth
+	const sessionResult = await functional.api.v1.auth
 		.checkSessionToken(sessionConection)
 		.catch(() => ({
 			user: null,
@@ -63,7 +63,7 @@ export default async function PurchasePage({
 			next: { tags: ['release_purchase'] },
 		});
 
-		const releaseResponse = await functional.v1.releases.getReleaseById(
+		const releaseResponse = await functional.api.v1.releases.getReleaseById(
 			releaseConnection,
 			paramsResult.data[1],
 		);
@@ -73,7 +73,7 @@ export default async function PurchasePage({
 		}
 
 		const receiptResponse =
-			await functional.v1.finance.release.getReleaseEstimate(
+			await functional.api.v1.finance.release.getReleaseEstimate(
 				receiptConnection,
 				paramsResult.data[1],
 			);
@@ -91,7 +91,7 @@ export default async function PurchasePage({
 		}
 
 		const subscriptionLevelReceipt =
-			await functional.v1.finance.subscription.getSubscriptionEstimate(
+			await functional.api.v1.finance.subscription.getSubscriptionEstimate(
 				receiptConnection,
 				paramsResult.data[1] as keyof typeof premiumPlans,
 			);

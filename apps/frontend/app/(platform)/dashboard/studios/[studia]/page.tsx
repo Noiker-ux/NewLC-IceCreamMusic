@@ -22,7 +22,7 @@ export default async function StudiosPage({
 }: {
 	params: Promise<{ studia: string }>;
 }) {
-	const studioDetail = await functional.v1.studios.getStudioById(
+	const studioDetail = await functional.api.v1.studios.getStudioById(
 		connection,
 		(await params).studia,
 	);

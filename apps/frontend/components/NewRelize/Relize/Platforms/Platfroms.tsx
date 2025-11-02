@@ -8,7 +8,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { allPlatforms, TPlatfrom } from '@/data/allPlatforms';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { gridComponents } from '@/utils/VirtuosoGrid';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { useFormContext } from 'react-hook-form';
 import { IoMdClose } from 'react-icons/io';
 import clsx from 'clsx';
@@ -30,7 +30,7 @@ export default function Platforms() {
 		});
 	};
 
-	const { watch, setValue, getValues } = useFormContext<TReleaseInsertForm>();
+	const { watch, setValue, getValues } = useFormContext<TReleaseUpsert>();
 	const platformsWatch = watch('platforms');
 
 	return (
@@ -67,7 +67,7 @@ export default function Platforms() {
 							e.target.value === 'allPlatforms' ? ['all'] : [],
 						);
 					}}
-					value={platformsWatch.includes('all') ? 'allPlatforms' : 'some'}
+					value={platformsWatch?.includes('all') ? 'allPlatforms' : 'some'}
 					defaultValue='allPlatforms'>
 					<Radio value='allPlatforms'>На всех площадках</Radio>
 					<Radio value='some'>Только на некоторых</Radio>
@@ -76,7 +76,7 @@ export default function Platforms() {
 					<div className='scrollbar overflow-hidden scrollbar-thumb-sky-700 scrollbar-track-sky-300 h-40 '>
 						<CheckboxGroup
 							value={
-								platformsWatch.includes('all')
+								platformsWatch?.includes('all')
 									? allPlatformsArray
 									: platformsWatch
 							}
@@ -92,21 +92,21 @@ export default function Platforms() {
 										<div
 											className={clsx(
 												'flex justify-between flex-1 whitespace-nowrap h-10 items-center gap-3 p-3 cursor-pointer rounded-md hover:bg-zinc-700',
-												getValues('platforms').includes('all') &&
+												getValues('platforms')?.includes('all') &&
 													'bg-zinc-800 ',
-												getValues('platforms').includes(
+												getValues('platforms')?.includes(
 													searchPlatforms[index].name,
 												) && 'bg-zinc-800 ',
 											)}
 											onClick={() => {
 												if (
-													!getValues('platforms').includes('all') &&
-													!getValues('platforms').includes(
+													!getValues('platforms')?.includes('all') &&
+													!getValues('platforms')?.includes(
 														searchPlatforms[index].name,
 													)
 												) {
 													setValue('platforms', [
-														...getValues('platforms'),
+														...(getValues('platforms') ?? []),
 														searchPlatforms[index].name,
 													]);
 												}
@@ -121,13 +121,15 @@ export default function Platforms() {
 												/>
 												<p className='text-xs'>{searchPlatforms[index].name}</p>
 											</div>
-											{platformsWatch.includes(searchPlatforms[index].name) && (
+											{platformsWatch?.includes(
+												searchPlatforms[index].name,
+											) && (
 												<p
 													onClick={(e) => {
 														e.stopPropagation();
 														setValue(
 															'platforms',
-															getValues('platforms').filter((p) => {
+															getValues('platforms')?.filter((p) => {
 																return p != searchPlatforms[index].name;
 															}),
 														);

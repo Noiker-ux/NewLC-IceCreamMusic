@@ -32,7 +32,7 @@ export default async function actionGetRelizes(status: TRelease['status'] = 'mod
 		next: { tags: ['admin-releases'], revalidate: 5 },
 	});
 
-	const releasesData = await functional.v1.releases.status.getReleases(connection, validStatus, {
+	const releasesData = await functional.api.v1.releases.status.getReleases(connection, validStatus, {
 		page: 1,
 		size: 500,
 	});

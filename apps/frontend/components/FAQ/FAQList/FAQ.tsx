@@ -24,11 +24,11 @@ export default async function FAQList() {
 		headers: authHeaers,
 	});
 
-	const session = await functional.v1.auth
+	const session = await functional.api.v1.auth
 		.checkSessionToken(connection)
 		.catch(() => null);
 
-	const faqData: TGetFAQResponse = await functional.v1.faq.getFAQData(
+	const faqData: TGetFAQResponse = await functional.api.v1.faq.getFAQData(
 		connection,
 		{
 			page: 1,

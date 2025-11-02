@@ -4,12 +4,12 @@ import { encodeBase32NoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 
-type User = InferSelectModel<typeof schema.users>;
+export type TUser = InferSelectModel<typeof schema.users>;
 
-type Session = InferInsertModel<typeof schema.sessions>;
+export type TSession = InferInsertModel<typeof schema.sessions>;
 
 type SessionValidationResult =
-  | { session: Session; user: User }
+  | { session: TSession; user: TUser }
   | { session: null; user: null };
 
 const sessionTable = schema.sessions;
@@ -33,11 +33,11 @@ export class SessionService {
     return token;
   }
 
-  createSession(token: string, userId: string): Session {
+  createSession(token: string, userId: string): TSession {
     const sessionId = encodeHexLowerCase(
       sha256(new TextEncoder().encode(token)),
     );
-    const session: Session = {
+    const session: TSession = {
       sessionToken: sessionId,
       userId,
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),

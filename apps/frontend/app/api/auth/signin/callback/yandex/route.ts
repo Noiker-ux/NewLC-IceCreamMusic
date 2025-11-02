@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
 		'https://avatars.yandex.net/get-yapic',
 	);
 
-	const tokenRes = await functional.v1.auth.oauth.OAuthSignin(connection, {
+	const tokenRes = await functional.api.v1.auth.oauth.OAuthSignin(connection, {
 		provider: 'yandex',
 		providerAccountId: validAccount.id,
 		accessToken: validTokens.access_token,

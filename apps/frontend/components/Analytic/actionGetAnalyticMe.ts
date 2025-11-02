@@ -20,7 +20,7 @@ export async function actionGetAnalyticMe() {
 		headers,
 	});
 
-	const responce = await functional.v1.analytics.my.getMyAnalytics(connection, {
+	const responce = await functional.api.v1.analytics.my.getMyAnalytics(connection, {
 		page: 1,
 		size: 500,
 	});

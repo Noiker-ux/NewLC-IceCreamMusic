@@ -19,7 +19,7 @@ export default function VerificationForm() {
 		async (data) => {
 			const verificationPromise = actionPostVerify({
 				...data,
-				contract: data.contract.name.split('.').slice(-1)[0],
+				contract: data.contract.name.split('.').slice(-1)[0].trim(),
 			});
 
 			toast.promise(verificationPromise, {

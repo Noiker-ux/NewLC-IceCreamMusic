@@ -1,6 +1,6 @@
 'use server';
 
-import { TProfileFormSchema } from '@/schema/profile.schema';
+import { TProfileFormSchema } from 'shared/schema/profile.schema';
 import { sessionCookieName } from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { cookies } from 'next/headers';
@@ -27,7 +27,7 @@ export async function actionUpdatePersonalData(
 		headers,
 	});
 
-	const response = await functional.v1.users.me.updateMyInfo(connection, {
+	const response = await functional.api.v1.users.me.updateMyInfo(connection, {
 		data,
 	});
 

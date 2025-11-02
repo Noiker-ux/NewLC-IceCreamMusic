@@ -1,5 +1,5 @@
 import { isoLangs } from '@/data/allLanguage';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { Select, SelectItem } from '@heroui/select';
 import { Controller, useFormContext } from 'react-hook-form';
 

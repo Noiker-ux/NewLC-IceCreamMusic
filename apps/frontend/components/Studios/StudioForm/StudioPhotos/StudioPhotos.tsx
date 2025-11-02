@@ -4,9 +4,10 @@ import { Input } from '@heroui/input';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import Image from 'next/image';
 import { useCallback } from 'react';
+import { TStudio } from 'shared/schema/studio.schema';
 
 export default function StudioPhotos() {
-	const methods = useFormContext();
+	const methods = useFormContext<TStudio>();
 
 	const { fields, append, remove } = useFieldArray({
 		control: methods.control,
@@ -14,25 +15,26 @@ export default function StudioPhotos() {
 		rules: { required: 'Добавьте хотя бы одну фотографию студии' },
 	});
 
-	const handleFilePhotoChange = (i: number) => {
-		return function updateValue(newFiles: File[]) {
-			methods.setValue(`photos.${i}.photo`, newFiles.at(0));
-		};
+	const handleFilePhotoChange = (i: number, newFiles: File[]) => {
+		const newFile = newFiles.at(0);
+
+		if (!!newFile) methods.setValue(`photos.${i}.url`, newFile);
 	};
 
 	return (
 		<>
 			<div className='flex flex-col gap-3'>
 				{fields.map((photo, i) => {
-					const photoFileWatch = methods.watch(`photos.${i}.photo`);
+					const photoFile = methods.watch(`photos.${i}.url`);
+
 					return (
 						<div key={i} className='flex flex-col gap-1 justify-center w-1/4'>
 							<div className='relative'>
 								<Image
 									src={
-										!(photoFileWatch instanceof File)
+										!(photoFile instanceof File)
 											? '/assets/NoPicture.jpg'
-											: URL.createObjectURL(photoFileWatch)
+											: URL.createObjectURL(photoFile)
 									}
 									alt='Фотография студии'
 									width={100}
@@ -57,10 +59,9 @@ export default function StudioPhotos() {
 								placeholder='Статистический параметр'
 								radius='sm'
 								type='file'
-								{...methods.register(`photos.${i}.photo`)}
 								onChange={(e) =>
 									e.target.files &&
-									handleFilePhotoChange(i)(Array.from(e.target.files))
+									handleFilePhotoChange(i, Array.from(e.target.files))
 								}
 							/>
 						</div>
@@ -79,7 +80,7 @@ export default function StudioPhotos() {
 			</div>
 			<Button
 				className='w-fit mt-2 mx-auto'
-				onPress={() => append({ photo: null })}>
+				onPress={() => append({ url: {} as File, name: '' })}>
 				Добавить фотографию
 			</Button>
 		</>

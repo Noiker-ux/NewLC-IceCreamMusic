@@ -15,6 +15,8 @@ import {
 import { TStudioData } from 'sdk/lib/studio/studio.controller';
 import StudioStats from './StudioStats/StudioStats';
 import StudioPhotos from './StudioPhotos/StudioPhotos';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { studioSchema, TStudio } from 'shared/schema/studio.schema';
 
 export default function StudioForm() {
 	// Refs
@@ -22,15 +24,19 @@ export default function StudioForm() {
 	const BackgroundFileRef = useRef<HTMLInputElement | null>(null);
 
 	// RHF
-	const methods = useForm();
-	const onSubmit: SubmitHandler<TStudioData> = (e) => {
+	const methods = useForm<TStudio>({
+		resolver: zodResolver(studioSchema),
+	});
+	const onSubmit: SubmitHandler<TStudio> = (e) => {
 		console.log(e);
 	};
 
 	// Image Logo
 	const handleFileLogoChange = useCallback(
 		(newFiles: File[]) => {
-			methods.setValue(`logo`, newFiles.at(0));
+			const newFile = newFiles.at(0);
+
+			if (!!newFile) methods.setValue(`logo`, newFile);
 		},
 		[methods.setValue],
 	);
@@ -39,7 +45,8 @@ export default function StudioForm() {
 	// Image Background
 	const handleFileBackgroundChange = useCallback(
 		(newFiles: File[]) => {
-			methods.setValue(`background`, newFiles.at(0));
+			const newFile = newFiles.at(0);
+			if (!!newFile) methods.setValue(`background`, newFile);
 		},
 		[methods.setValue],
 	);
@@ -48,7 +55,7 @@ export default function StudioForm() {
 	return (
 		<FormProvider {...methods}>
 			<form
-				onSubmit={methods.handleSubmit(onSubmit)}
+				onSubmit={methods.handleSubmit(onSubmit, console.log)}
 				className='max-w-7xl text-center'>
 				<div className='flex gap-10 '>
 					<div className='flex flex-col gap-10 w-1/4'>
@@ -163,7 +170,6 @@ export default function StudioForm() {
 								max={5}
 								min={1}
 								step={0.01}
-								{...methods.register('rating')}
 								onChange={(e) => {
 									methods.setValue('rating', Number(e));
 								}}
@@ -254,7 +260,16 @@ export default function StudioForm() {
 						<StudioPhotos />
 					</div>
 				</div>
-
+				<NumberInput
+					step={0.01}
+					value={methods.watch('lattitude') ?? 0}
+					onChange={(e) => methods.setValue('lattitude', Number(e))}
+				/>
+				<NumberInput
+					step={0.01}
+					value={methods.watch('longitude') ?? 0}
+					onChange={(e) => methods.setValue('longitude', Number(e))}
+				/>
 				<Button color='success' type='submit' className='mt-8'>
 					Добавить
 				</Button>

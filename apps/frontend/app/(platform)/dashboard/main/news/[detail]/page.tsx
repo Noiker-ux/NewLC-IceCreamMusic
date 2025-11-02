@@ -1,8 +1,7 @@
 import NewsDetail from '@/components/News/NewsDetail/NewsDetail';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { Metadata } from 'next';
-import { functional, Primitive } from 'sdk';
-import { TGetNewsByIdResponse } from 'sdk/lib/news/news.controller';
+import { functional } from 'sdk';
 
 export const metadata: Metadata = {
 	title: 'ICECREAMMUSIC | Новости',
@@ -23,7 +22,7 @@ export default async function NewsDetailPage({
 }: {
 	params: Promise<{ detail: string }>;
 }) {
-	const newsDetail = await functional.v1.news.getNewsById(
+	const newsDetail = await functional.api.v1.news.getNewsById(
 		connection,
 		(await params).detail,
 	);

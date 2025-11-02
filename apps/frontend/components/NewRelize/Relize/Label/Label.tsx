@@ -5,9 +5,11 @@ import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Tooltip } from '@heroui/tooltip';
 import { useState } from 'react';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 
 export default function Label() {
-	const { control, formState, setValue, getValues, watch } = useFormContext();
+	const { control, formState, setValue, getValues, watch } =
+		useFormContext<TReleaseUpsert>();
 
 	const [labelChange, setLabelChange] = useState<boolean>(
 		() => getValues('labelName') !== 'ICECREAMMUSIC',
@@ -70,7 +72,7 @@ export default function Label() {
 					control={control}
 					defaultValue={'ICECREAMMUSIC'}
 					rules={{ required: 'Полей "Лейбл" является обязательным' }}
-					render={({ field }) => (
+					render={({ field, formState }) => (
 						<Input
 							label='Лейбл'
 							labelPlacement={'outside'}
@@ -79,9 +81,10 @@ export default function Label() {
 							radius='sm'
 							isDisabled={!labelChange}
 							description='Выпуская релиз под нашим лейблом на всех площадках вы будете указаны как член лейбла ICECREAMMUSIC'
-							isInvalid={!!formState.errors.label}
-							errorMessage={formState.errors.label?.message?.toString()}
+							isInvalid={!!formState.errors.labelName}
+							errorMessage={formState.errors.labelName?.message?.toString()}
 							{...field}
+							value={field.value!}
 						/>
 					)}
 				/>

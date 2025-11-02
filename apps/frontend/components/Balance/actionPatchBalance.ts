@@ -28,7 +28,7 @@ export async function actionPatchBalance({
 		headers,
 	});
 
-	functional.v1.users.balance.updateBalance(connection, userId, {
+	functional.api.v1.users.balance.updateBalance(connection, userId, {
 		data: {
 			balance: balance,
 		},

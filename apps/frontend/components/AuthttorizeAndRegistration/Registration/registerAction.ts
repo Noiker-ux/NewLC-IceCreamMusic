@@ -1,5 +1,5 @@
 'use server';
-import { TSignUpClientSchema } from '@/schema/signup.schema';
+import { TSignUpClientSchema } from 'shared/schema/signup.schema';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { createSMTPClient } from '@/utils/createSMTPClient';
 import { functional } from 'sdk';
@@ -10,8 +10,8 @@ import { redirect } from 'next/navigation';
 const connection = createSDKConnection({});
 
 export async function actionRegister(data: TSignUpClientSchema) {
-	
-	const signUpResult = await functional.v1.auth.signup
+
+	const signUpResult = await functional.api.v1.auth.signup
 		.credentialsSignUp(connection, {
 			name: data.name,
 			email: data.email,

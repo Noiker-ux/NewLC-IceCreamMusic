@@ -3,11 +3,11 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 import { Controller, useFormContext } from 'react-hook-form';
 import dateISOFormatter from '@/utils/dateISOFormatter';
 import { I18nProvider } from '@react-aria/i18n';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 
 export default function MainDates() {
 	const { control, formState, register, getValues } =
-		useFormContext<TReleaseInsertForm>();
+		useFormContext<TReleaseUpsert>();
 	return (
 		<div className='p-5'>
 			<p className='font-extrabold'>Основные даты релиза</p>

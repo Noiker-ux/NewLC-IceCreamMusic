@@ -42,7 +42,7 @@ export async function linkVk(currentPath: string) {
 		},
 	});
 
-	const { user } = await functional.v1.auth
+	const { user } = await functional.api.v1.auth
 		.checkSessionToken(connectionWithAuth)
 		.catch(() => ({ user: null }));
 

@@ -25,7 +25,7 @@ export async function actionPatch(
 		headers,
 	});
 
-	const updateResult = await functional.v1.news
+	const updateResult = await functional.api.v1.news
 		.updateNews(connection, id, {
 			data,
 		})

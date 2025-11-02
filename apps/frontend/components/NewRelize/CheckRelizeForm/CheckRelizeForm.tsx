@@ -1,6 +1,6 @@
 'use client';
 import FileList from '@/components/Relizes/FileList';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -13,7 +13,7 @@ import Platforms from './Platfroms/Platforms';
 import { Retranslated } from './Retranslated';
 
 export default function CheckRelizeForm() {
-	const { formState, getValues } = useFormContext<TReleaseInsertForm>();
+	const { formState, getValues } = useFormContext<TReleaseUpsert>();
 
 	const [releaseValues] = useState(() => getValues());
 
@@ -132,37 +132,45 @@ export default function CheckRelizeForm() {
 							Дата предзаказа
 						</p>
 						<p className='text-sm '>
-							{DateFormatter(releaseValues.preorderDate)}
+							{!!releaseValues.preorderDate
+								? DateFormatter(releaseValues.preorderDate)
+								: 'Не указано'}
 						</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Дата релиза</p>
 						<p className='text-sm '>
-							{DateFormatter(releaseValues.releaseDate)}
+							{releaseValues.releaseDate
+								? DateFormatter(releaseValues.releaseDate)
+								: 'Не указано'}
 						</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Дата старта</p>
-						<p className='text-sm '>{DateFormatter(releaseValues.startDate)}</p>
+						<p className='text-sm '>
+							{releaseValues.startDate
+								? DateFormatter(releaseValues.startDate)
+								: 'Не указано'}
+						</p>
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300 flex'>
 							Территории
 						</p>
-						<Areas areas={releaseValues.area} />
+						<Areas areas={releaseValues.area!} />
 					</div>
 					<div>
 						<p className='text-xs font-extralight text-gray-300'>Площадки</p>
-						<Platforms platforms={releaseValues.platforms} />
+						<Platforms platforms={releaseValues.platforms!} />
 					</div>
 				</div>
-				{releaseValues.roles.filter((r) => {
+				{(releaseValues.roles ?? []).filter((r) => {
 					return r.role === 'Исполнитель';
 				}).length ? (
 					<div className='mt-3'>
 						<p className='text-sm'>
 							Исполнители:{' '}
-							{releaseValues.roles
+							{(releaseValues.roles ?? [])
 								.filter((r) => {
 									return r.role === 'Исполнитель';
 								})
@@ -177,13 +185,13 @@ export default function CheckRelizeForm() {
 						Исполнители: <span className='text-red-500'>Не указано</span>
 					</p>
 				)}
-				{releaseValues.roles.filter((r) => {
+				{(releaseValues.roles ?? []).filter((r) => {
 					return r.role === 'feat.';
 				}).length > 0 && (
 					<div className='mt-1'>
 						<p className='text-sm'>
 							feat:{' '}
-							{releaseValues.roles
+							{(releaseValues.roles ?? [])
 								.filter((r) => {
 									return r.role === 'feat.';
 								})

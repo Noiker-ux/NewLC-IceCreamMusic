@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import clsx from 'clsx';
 import { Reorder } from 'framer-motion';
 import { useRef } from 'react';
