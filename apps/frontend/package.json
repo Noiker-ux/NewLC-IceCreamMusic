@@ -96,6 +96,7 @@
 		"@types/node": "^22",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"@yandex/ymaps3-types": "^1.0.17734864",
 		"cpy": "^11.1.0",
 		"eslint": "^9",
 		"eslint-config-next": "15.3.2",

@@ -15,6 +15,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='ru' className=' bg-[var(--background)]'>
+			<head>
+				<script src='https://api-maps.yandex.ru/2.1/?lang=ru_RU&load=package.full'></script>
+			</head>
 			<body className={`antialiased dark`}>
 				<GlobalProvider>{children} </GlobalProvider>
 			</body>

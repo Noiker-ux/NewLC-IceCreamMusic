@@ -1,15 +1,12 @@
-import { Metadata } from 'next';
+'use client';
 import style from './page.module.css';
 import StudioForm from '@/components/Studios/StudioForm/StudioForm';
+import YMap from '@/components/Studios/StudiosDetail/StudioMap/StudioMap';
 
-export const metadata: Metadata = {
-	title: 'ICECREAMMUSIC | Публичная оферта',
-	description:
-		'ICECREAMMUSIC - Публичная оферта о заключении договора об оказании услуг',
-};
 export default function Home() {
 	return (
 		<>
+			<YMap />
 			<StudioForm />
 			<main className={style.main}>
 				<div className={style.preview}>
