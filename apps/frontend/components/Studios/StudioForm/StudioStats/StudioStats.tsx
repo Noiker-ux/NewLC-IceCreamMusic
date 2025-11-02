@@ -16,10 +16,12 @@ export default function StudioStats() {
 	});
 	return (
 		<>
-			<div className='flex flex-col gap-3'>
+			<div className='flex flex-col gap-3 '>
 				{fields.map((stat, i) => {
 					return (
-						<div key={i} className='flex gap-5 justify-center'>
+						<div
+							key={i}
+							className='flex gap-5 justify-center bg-zinc-900 p-5 rounded-lg'>
 							<Input
 								label='Введите наименование статистического параметра'
 								labelPlacement='outside'

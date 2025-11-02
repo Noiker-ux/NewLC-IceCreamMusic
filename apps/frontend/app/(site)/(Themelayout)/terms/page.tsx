@@ -1,13 +1,9 @@
 'use client';
 import style from './page.module.css';
-import StudioForm from '@/components/Studios/StudioForm/StudioForm';
-import YMap from '@/components/Studios/StudiosDetail/StudioMap/StudioMap';
 
 export default function Home() {
 	return (
 		<>
-			<YMap />
-			<StudioForm />
 			<main className={style.main}>
 				<div className={style.preview}>
 					<h1 className={style.title}>ПУБЛИЧНАЯ ОФЕРТА</h1>

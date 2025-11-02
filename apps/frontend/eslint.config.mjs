@@ -13,12 +13,9 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-<<<<<<< HEAD
-	...compat.extends('next/core', 'next/typescript'),
-=======
-	...compat.extends('next/core-web-vitals', 'next/typescript'),
+	...compat.extends('next/core', 'next/core-web-vitals', 'next/typescript'),
 	reactYouMightNotNeedAnEffect.configs.recommended,
->>>>>>> origin/vk-auth
+
 	{
 		rules: {
 			'@typescript-eslint/no-explicit-any': 'off',

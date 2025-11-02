@@ -23,12 +23,14 @@ export default function StudioPhotos() {
 
 	return (
 		<>
-			<div className='flex flex-col gap-3'>
+			<div className='flex flex-row gap-5 flex-wrap'>
 				{fields.map((photo, i) => {
 					const photoFile = methods.watch(`photos.${i}.url`);
 
 					return (
-						<div key={i} className='flex flex-col gap-1 justify-center w-1/4'>
+						<div
+							key={i}
+							className='flex flex-col gap-1 justify-center w-1/4 bg-zinc-900 p-3 rounded-xl'>
 							<div className='relative'>
 								<Image
 									src={
@@ -54,7 +56,6 @@ export default function StudioPhotos() {
 							</div>
 
 							<Input
-								label='Введите наименование статистического параметра'
 								labelPlacement='outside'
 								placeholder='Статистический параметр'
 								radius='sm'

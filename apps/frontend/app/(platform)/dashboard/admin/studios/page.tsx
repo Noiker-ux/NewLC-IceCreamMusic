@@ -1,3 +1,5 @@
+import StudioForm from '@/components/Studios/StudioForm/StudioForm';
+import YMap from '@/components/Studios/StudiosDetail/StudioMap/StudioMap';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -7,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function AdminStudioPage() {
-	return <>studios</>;
+	return (
+		<div>
+			<YMap />
+			<StudioForm />
+		</div>
+	);
 }

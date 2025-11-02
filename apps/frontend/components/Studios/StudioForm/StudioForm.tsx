@@ -17,6 +17,7 @@ import StudioStats from './StudioStats/StudioStats';
 import StudioPhotos from './StudioPhotos/StudioPhotos';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { studioSchema, TStudio } from 'shared/schema/studio.schema';
+import StudioTeam from './StudioTeam/StudioTeam';
 
 export default function StudioForm() {
 	// Refs
@@ -149,127 +150,159 @@ export default function StudioForm() {
 							</div>
 						</div>
 					</div>
-					<div className='flex flex-col gap-5 w-full'>
-						<p className='font-bold text-xl text-left'>Информация о студии</p>
-						<div className='flex gap-5'>
-							<Input
-								label='Введите наименование студии'
+					<div className='flex flex-col gap-5 w-full '>
+						<div className='bg-zinc-900 p-5 rounded-xl'>
+							<p className='font-bold text-xl text-left'>Информация о студии</p>
+							<div className='flex gap-5 '>
+								<Input
+									label='Введите наименование студии'
+									labelPlacement='outside'
+									placeholder='Наименование студии'
+									radius='sm'
+									isRequired
+									type='text'
+									{...methods.register('name')}
+								/>
+								<NumberInput
+									label='Введите рейтинг студии'
+									labelPlacement='outside'
+									placeholder='Рейтинг студии'
+									radius='sm'
+									isRequired
+									max={5}
+									min={1}
+									step={0.01}
+									onChange={(e) => {
+										methods.setValue('rating', Number(e));
+									}}
+									value={methods.watch('rating')}
+								/>
+							</div>
+							<Textarea
+								label='Введите адрес студии'
 								labelPlacement='outside'
-								placeholder='Наименование студии'
+								placeholder='Адрес студии'
 								radius='sm'
+								isClearable
 								isRequired
-								type='text'
-								{...methods.register('name')}
-							/>
-							<NumberInput
-								label='Введите рейтинг студии'
-								labelPlacement='outside'
-								placeholder='Рейтинг студии'
-								radius='sm'
-								isRequired
-								max={5}
-								min={1}
-								step={0.01}
-								onChange={(e) => {
-									methods.setValue('rating', Number(e));
-								}}
-								value={methods.watch('rating')}
+								{...methods.register('address')}
 							/>
 						</div>
-						<Textarea
-							label='Введите адрес студии'
-							labelPlacement='outside'
-							placeholder='Адрес студии'
-							radius='sm'
-							isClearable
-							isRequired
-							{...methods.register('address')}
-						/>
-						<p className='font-bold text-xl text-left'>
-							Детальная информация о студии
-						</p>
-						<Textarea
-							label={
-								<div className='flex items-center relative gap-1 right-0 z-50'>
-									<p className='text-md'>Введите описание студии</p>
-									<Tooltip
-										size='md'
-										content={
-											<div className='max-w-xs p-3'>
-												<p>
-													Внимание! Для оформления текста следует использовать
-													Markdown разметку.
-												</p>
-												<Link
-													href='/'
-													className='underline pt-5 text-indigo-400'>
-													Документация Markdown
-												</Link>
-											</div>
-										}>
-										<InformationCircleIcon
-											width={18}
-											className='hover:text-indigo-400'
-										/>
-									</Tooltip>
-								</div>
-							}
-							labelPlacement='outside'
-							placeholder='Описание студии'
-							radius='sm'
-							isClearable
-							isRequired
-							{...methods.register('description')}
-						/>
-						<Textarea
-							label={
-								<div className='flex items-center relative gap-1 right-0 z-50'>
-									<p className='text-md'>Введите аннотацию для студии</p>
-									<Tooltip
-										size='md'
-										content={
-											<div className='max-w-xs p-3'>
-												<p>
-													Внимание! Для оформления текста следует использовать
-													Markdown разметку.
-												</p>
-												<Link
-													href='/'
-													className='underline pt-5 text-indigo-400'>
-													Документация Markdown
-												</Link>
-											</div>
-										}>
-										<InformationCircleIcon
-											width={18}
-											className='hover:text-indigo-400'
-										/>
-									</Tooltip>
-								</div>
-							}
-							labelPlacement='outside'
-							placeholder='Аннотация студии'
-							radius='sm'
-							isClearable
-							isRequired
-							{...methods.register('annotation')}
-						/>
+						<div className='bg-zinc-900 p-5 rounded-xl'>
+							<p className='font-bold text-xl text-left'>
+								Детальная информация о студии
+							</p>
+							<Textarea
+								label={
+									<div className='flex items-center relative gap-1 right-0 z-50'>
+										<p className='text-md'>Введите описание студии</p>
+										<Tooltip
+											size='md'
+											content={
+												<div className='max-w-xs p-3'>
+													<p>
+														Внимание! Для оформления текста следует использовать
+														Markdown разметку.
+													</p>
+													<Link
+														href='/'
+														className='underline pt-5 text-indigo-400'>
+														Документация Markdown
+													</Link>
+												</div>
+											}>
+											<InformationCircleIcon
+												width={18}
+												className='hover:text-indigo-400'
+											/>
+										</Tooltip>
+									</div>
+								}
+								labelPlacement='outside'
+								placeholder='Описание студии'
+								radius='sm'
+								isClearable
+								isRequired
+								{...methods.register('description')}
+							/>
+							<Textarea
+								label={
+									<div className='flex items-center relative gap-1 right-0 z-50'>
+										<p className='text-md'>Введите аннотацию для студии</p>
+										<Tooltip
+											size='md'
+											content={
+												<div className='max-w-xs p-3'>
+													<p>
+														Внимание! Для оформления текста следует использовать
+														Markdown разметку.
+													</p>
+													<Link
+														href='/'
+														className='underline pt-5 text-indigo-400'>
+														Документация Markdown
+													</Link>
+												</div>
+											}>
+											<InformationCircleIcon
+												width={18}
+												className='hover:text-indigo-400'
+											/>
+										</Tooltip>
+									</div>
+								}
+								labelPlacement='outside'
+								placeholder='Аннотация студии'
+								radius='sm'
+								isClearable
+								isRequired
+								{...methods.register('annotation')}
+							/>
+						</div>
 						<p className='font-bold text-xl text-left'>Цифры студии</p>
 						<StudioStats />
 						<p className='font-bold text-xl text-left'>Фотографии студии</p>
 						<StudioPhotos />
+						<p className='font-bold text-xl text-left'>Информация о студии</p>
+						<StudioTeam />{' '}
+						<div className='bg-zinc-900 p-5 rounded-xl'>
+							<p className='font-bold text-xl text-left'>
+								Информация для карты
+							</p>
+							<div className='flex gap-5 mt-5'>
+								<NumberInput
+									step={0.01}
+									label={'Широта'}
+									labelPlacement='outside'
+									value={methods.watch('lattitude') ?? 0}
+									onChange={(e) => methods.setValue('lattitude', Number(e))}
+								/>
+								<NumberInput
+									step={0.01}
+									label={'Долгота'}
+									labelPlacement='outside'
+									value={methods.watch('longitude') ?? 0}
+									onChange={(e) => methods.setValue('longitude', Number(e))}
+								/>
+							</div>
+						</div>
+						<div className='bg-zinc-900 p-5 rounded-xl'>
+							<p className='font-bold text-xl text-left'>Контакт</p>
+							<div className='flex gap-5 mt-5'>
+								<Input
+									label='Введите контактную ссылку'
+									labelPlacement='outside'
+									placeholder='Контактная ссылка'
+									radius='sm'
+									isRequired
+									type='text'
+									{...methods.register('contactUrl')}
+								/>
+							</div>
+						</div>
 					</div>
 				</div>
-				<NumberInput
-					step={0.01}
-					value={methods.watch('lattitude') ?? 0}
-					onChange={(e) => methods.setValue('lattitude', Number(e))}
-				/>
-				<NumberInput
-					step={0.01}
-					value={methods.watch('longitude') ?? 0}
-					onChange={(e) => methods.setValue('longitude', Number(e))}
-				/>
+
 				<Button color='success' type='submit' className='mt-8'>
 					Добавить
 				</Button>
