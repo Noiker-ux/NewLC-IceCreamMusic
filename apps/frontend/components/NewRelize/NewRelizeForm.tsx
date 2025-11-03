@@ -95,6 +95,7 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 						const author_rights = Number(trackData.author_rights);
 						return {
 							...trackData,
+							trackId: trackData.id,
 							roles,
 							author_rights,
 							instant_gratification: trackData.instant_gratification
@@ -449,16 +450,15 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 									);
 								})}
 							{uploadResults.length === 0 && <p>Нечего загружать</p>}
-							{uploadResults.every((upload) => upload.result?.success) &&
-								uploadResults.length > 0 && (
-									<button
-										type='button'
-										onClick={() => {
-											router.push('/dashboard/relizes/my-relizes');
-										}}>
-										Завершить
-									</button>
-								)}
+							{uploadResults.every((upload) => upload.result?.success) && (
+								<button
+									type='button'
+									onClick={() => {
+										router.push('/dashboard/relizes/my-relizes');
+									}}>
+									Завершить
+								</button>
+							)}
 						</Tab>
 					</Tabs>
 				</div>
