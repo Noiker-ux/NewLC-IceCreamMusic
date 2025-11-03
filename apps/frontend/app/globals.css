@@ -291,6 +291,6 @@ text.inner-text {
 	}
 }
 
-#map > ymaps:last-child {
+#map > ymaps:last-child:not(:first-child) {
 	display: none;
 }

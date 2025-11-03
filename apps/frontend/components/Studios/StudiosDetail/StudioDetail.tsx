@@ -7,6 +7,7 @@ import StudiosTeam from './StudiosTeam/StudiosTeam';
 import YMap from './StudioMap/StudioMap';
 import Link from 'next/link';
 import { TStudioData } from 'shared/schema/studio.schema';
+import { Button } from '@heroui/button';
 export default function StudioDetail({ studio }: { studio: TStudioData }) {
 	return (
 		<>
@@ -50,7 +51,9 @@ export default function StudioDetail({ studio }: { studio: TStudioData }) {
 			)}
 			{studio.contactUrl && (
 				<div className='mt-5'>
-					<Link href={studio.contactUrl}>Контакт</Link>
+					<Button as={Link} href={studio.contactUrl}>
+						Контакт
+					</Button>
 				</div>
 			)}
 		</>
