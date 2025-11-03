@@ -25,7 +25,7 @@ import StudioStats from './StudioStats/StudioStats';
 import StudioTeam from './StudioTeam/StudioTeam';
 
 export type TStudioForm = {
-	studio: TStudioData;
+	studio?: TStudioData;
 };
 
 const localization: Partial<Record<TUploadFile['type'], string>> = {
