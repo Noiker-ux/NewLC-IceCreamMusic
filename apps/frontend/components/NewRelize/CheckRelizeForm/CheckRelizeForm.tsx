@@ -38,7 +38,8 @@ export default function CheckRelizeForm() {
 							<p className='text-lg'>
 								В форме присутствуют обязательные поля, которые вы пропустили:
 							</p>
-							{(
+							{JSON.stringify(formState.errors)}
+							{/* {(
 								Object.keys(formState.errors) as Array<
 									keyof typeof formState.errors
 								>
@@ -48,7 +49,7 @@ export default function CheckRelizeForm() {
 									{Retranslated[formState.errors[ek]?.type ?? '']} -{' '}
 									{Retranslated[formState.errors[ek]?.message ?? '']}
 								</p>
-							))}
+							))} */}
 						</>
 					)}
 				</div>

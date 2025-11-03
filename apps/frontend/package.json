@@ -46,6 +46,7 @@
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"@oslojs/jwt": "^0.3.0",
+		"@pbe/react-yandex-maps": "^1.2.5",
 		"@react-aria/i18n": "^3.12.8",
 		"@react-email/components": "0.3.2",
 		"@react-email/render": "^1.1.3",

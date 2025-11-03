@@ -1,14 +1,15 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
-import { useFieldArray, useForm, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { TStudioUpsertForm } from 'shared/schema/studio.schema';
 
 export default function StudioStats() {
-	const methods = useFormContext();
+	const methods = useFormContext<TStudioUpsertForm>();
 
 	const { fields, append, remove } = useFieldArray({
 		control: methods.control,
-		name: 'stats' as const,
+		name: 'stats',
 		rules: {
 			required:
 				'Добавьте хотя бы одну статистическую информацию и приисвойте ей значение',
@@ -55,11 +56,9 @@ export default function StudioStats() {
 				})}
 			</div>
 			<div className='flex flex-col gap-2 mt-2 '>
-				{methods.getValues('stats') && methods.getValues('stats').length > 0 ? (
-					''
-				) : (
+				{methods.formState.errors.stats && (
 					<span className='text-tiny text-danger'>
-						Добавьте хотя бы одну статистическую информацию
+						{methods.formState.errors.stats.message}
 					</span>
 				)}
 			</div>

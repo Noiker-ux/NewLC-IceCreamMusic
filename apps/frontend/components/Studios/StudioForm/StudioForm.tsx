@@ -1,35 +1,116 @@
 'use client';
-import { InformationCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Input, Textarea } from '@heroui/input';
 import { Link, NumberInput, Tooltip } from '@heroui/react';
-import Image from 'next/image';
-import { useCallback, useMemo, useRef } from 'react';
-import {
-	FormProvider,
-	SubmitHandler,
-	useFieldArray,
-	useForm,
-	useFormContext,
-} from 'react-hook-form';
-import { TStudioData } from 'sdk/lib/studio/studio.controller';
-import StudioStats from './StudioStats/StudioStats';
-import StudioPhotos from './StudioPhotos/StudioPhotos';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { studioSchema, TStudio } from 'shared/schema/studio.schema';
+import Image from 'next/image';
+import { useCallback, useRef } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import {
+	createStudioUpsertSchema,
+	TStudioUpsertForm,
+	TStudio,
+	TStudioData,
+	studioInsertFormSchema,
+} from 'shared/schema/studio.schema';
+import StudioPhotos from './StudioPhotos/StudioPhotos';
+import StudioStats from './StudioStats/StudioStats';
 import StudioTeam from './StudioTeam/StudioTeam';
+import { TUploadFile } from '@/components/Upload/UploadVisualizer';
+import { createStudio } from './actions';
 
-export default function StudioForm() {
+export type TStudioForm = {
+	studio: TStudioData;
+};
+
+export default function StudioForm({ studio }: TStudioForm) {
 	// Refs
 	const LogoFileRef = useRef<HTMLInputElement | null>(null);
 	const BackgroundFileRef = useRef<HTMLInputElement | null>(null);
 
+	const isUpdating = !!studio;
+
+	const schema = createStudioUpsertSchema(isUpdating);
+
 	// RHF
-	const methods = useForm<TStudio>({
-		resolver: zodResolver(studioSchema),
+	const methods = useForm<TStudioUpsertForm>({
+		resolver: zodResolver(schema),
 	});
-	const onSubmit: SubmitHandler<TStudio> = (e) => {
-		console.log(e);
+	const onSubmit: SubmitHandler<TStudioUpsertForm> = async (data) => {
+		const filesToUpload: TUploadFile[] = [];
+
+		if (!isUpdating) {
+			const dataResult = studioInsertFormSchema.safeParse(data);
+
+			if (!dataResult.success) {
+				return;
+			}
+
+			const newStudioData = dataResult.data;
+
+			const { stats, team, photos, ...studio } = newStudioData;
+
+			const { background, logo } = studio;
+
+			const urlsResult = await createStudio({
+				...studio,
+				background: background.name.split('.').at(-1)!,
+				logo: logo.name.split('.').at(-1)!,
+				stats,
+				photos: photos.map((photo) => ({
+					...photo,
+					url: photo.name.split('.').at(-1)!,
+				})),
+				team: team.map((mate) => ({
+					...mate,
+					photo: mate.name.split('.').at(-1)!,
+				})),
+			});
+
+			if (!urlsResult.success) {
+				return;
+			}
+
+			filesToUpload.push({
+				file: logo,
+				url: urlsResult.data.studio.logo,
+				belongsTo: 'studio',
+				type: 'logo',
+			});
+
+			if (urlsResult.data.studio.background) {
+				filesToUpload.push({
+					file: background,
+					url: urlsResult.data.studio.background,
+					belongsTo: 'studio',
+					type: 'background',
+				});
+			}
+
+			const photoLen = urlsResult.data.photos.length;
+
+			for (let photoIndex = 0; photoIndex < photoLen; photoIndex++) {
+				filesToUpload.push({
+					file: photos[photoIndex].url,
+					url: urlsResult.data.photos[photoIndex].url,
+					belongsTo: 'studio_photo',
+					type: 'url',
+				});
+			}
+
+			const teamLen = urlsResult.data.team.length;
+
+			for (let teamIndex = 0; teamIndex < teamLen; teamIndex++) {
+				filesToUpload.push({
+					file: team[teamIndex].photo,
+					url: urlsResult.data.team[teamIndex].photo,
+					belongsTo: 'studio_team',
+					type: 'photo',
+				});
+			}
+		} else {
+		}
 	};
 
 	// Image Logo
@@ -264,7 +345,7 @@ export default function StudioForm() {
 						<p className='font-bold text-xl text-left'>Фотографии студии</p>
 						<StudioPhotos />
 						<p className='font-bold text-xl text-left'>Информация о студии</p>
-						<StudioTeam />{' '}
+						<StudioTeam />
 						<div className='bg-zinc-900 p-5 rounded-xl'>
 							<p className='font-bold text-xl text-left'>
 								Информация для карты

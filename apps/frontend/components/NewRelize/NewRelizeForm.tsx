@@ -8,12 +8,21 @@ import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
 	createReleaseUpsertSchema,
+	releaseAreaSchema,
 	releaseInsertSchema,
+	releasePlatformsSchema,
+	releaseRolesSchema,
 	releaseUpdateSchema,
-	TRelease,
+	trackRolesSchema,
+	TReleaseData,
 	TReleaseUpsert,
 } from 'shared/schema/release.schema';
-import { TActionResult } from '../Account/actionGetPersonalData';
+import {
+	TUploadFile,
+	TUploadResult,
+	UploadVisualizer,
+} from '../Upload/UploadVisualizer';
+import { createRelease, updateRelease } from './actions';
 import AdditionalParams from './Additional/AdditionalParams/AdditionalParams';
 import CommentForModerator from './Additional/CommentForModerator/CommentForModerator';
 import YandexMusic from './Additional/YandexMusic/YandexMusic';
@@ -27,31 +36,8 @@ import Platfroms from './Relize/Platforms/Platfroms';
 import Preview from './Relize/Preview/Preview';
 import WorkWithRelize from './Relize/WorkWithRelize/WorkWithRelize';
 import Tracks from './Tracks/Tracks';
-import { UploadVisualizer } from './Upload/UploadVisualizer';
-import { createRelease, updateRelease } from './actions';
-import { track } from '../../../../packages/db/src/schema';
 
-type TUploadBase = {
-	file: File;
-	url: string;
-};
-
-type TUploadFile =
-	| (TUploadBase & { belongsTo: 'release'; type: 'preview' })
-	| (TUploadBase & {
-			belongsTo: 'track';
-			trackIndex: number;
-			type: 'track' | 'text_sync' | 'video' | 'video_shot' | 'ringtone';
-	  });
-
-type TUploadResult = TUploadFile & {
-	progress: number;
-	result?: TActionResult<string>;
-	retry?: () => void;
-	title: string;
-};
-
-const localization: Record<TUploadFile['type'], string> = {
+const localization: Partial<Record<TUploadFile['type'], string>> = {
 	preview: 'Файл превью',
 	track: 'Файл трека',
 	text_sync: 'Файл синхронизации текста',
@@ -61,7 +47,7 @@ const localization: Record<TUploadFile['type'], string> = {
 };
 
 type TReleaseEdit = {
-	release?: TRelease;
+	release?: TReleaseData;
 };
 
 export default function NewRelizeForm({ release }: TReleaseEdit) {
@@ -82,11 +68,41 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 		resolver: zodResolver(schema),
 		defaultValues: {
 			labelName: 'ICECREAMMUSIC',
-			area: {
-				negate: false,
-				data: ['all'],
-			},
-			platforms: ['all'],
+			...release,
+			preview: undefined,
+			roles: release?.roles ? releaseRolesSchema.parse(release.roles) : [],
+			area: release?.area
+				? releaseAreaSchema.parse(release.area)
+				: {
+						negate: false,
+						data: ['all'],
+					},
+			platforms: release?.platforms
+				? releasePlatformsSchema.parse(release.platforms)
+				: ['all'],
+			yandexSoonNewRelease: release?.yandexSoonNewRelease ?? undefined,
+			tracks: release?.tracks
+				? release.tracks.map((t) => {
+						const {
+							track,
+							text_sync,
+							ringtone,
+							video,
+							video_shot,
+							...trackData
+						} = t;
+						const roles = trackRolesSchema.parse(trackData.roles);
+						const author_rights = Number(trackData.author_rights);
+						return {
+							...trackData,
+							roles,
+							author_rights,
+							instant_gratification: trackData.instant_gratification
+								? new Date(trackData.instant_gratification)
+								: undefined,
+						};
+					})
+				: [],
 		},
 	});
 
@@ -400,7 +416,7 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 							</div>
 						</Tab>
 						<Tab key='Tracks' title='Список треков'>
-							<Tracks />
+							<Tracks isUpdating={isUpdating} />
 						</Tab>
 						<Tab key='Additional' title='Дополнительные параметры'>
 							<div className='flex flex-col gap-5'>
@@ -436,6 +452,7 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 							{uploadResults.every((upload) => upload.result?.success) &&
 								uploadResults.length > 0 && (
 									<button
+										type='button'
 										onClick={() => {
 											router.push('/dashboard/relizes/my-relizes');
 										}}>

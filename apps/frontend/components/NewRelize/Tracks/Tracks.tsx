@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import clsx from 'clsx';
 import { Reorder } from 'framer-motion';
 import { useRef } from 'react';
@@ -7,8 +7,12 @@ import { useFieldArray, useFormContext } from 'react-hook-form';
 import { FaUpload } from 'react-icons/fa6';
 import TrackItem from './TrackItem';
 
-export default function Tracks() {
-	const { control } = useFormContext<TReleaseInsertForm>();
+export type TTRacks = {
+	isUpdating?: boolean;
+};
+
+export default function Tracks({ isUpdating }: TTRacks) {
+	const { control } = useFormContext<TReleaseUpsert>();
 
 	const constraintsRef = useRef(null);
 
@@ -52,7 +56,7 @@ export default function Tracks() {
 					subtitle: '',
 					title: '',
 					track: track,
-					author_rights: '',
+					author_rights: 0,
 				});
 			});
 		}
@@ -71,20 +75,22 @@ export default function Tracks() {
 				ref={fileInputRef}
 				onChange={handleAppendFiles}
 			/>
-			<div
-				className={clsx(
-					'border border-dashed border-sky-400 inset-0 z-30 bg-transparent flex flex-col gap-2 items-center justify-center h-80  mt-4 w-full  mx-auto rounded-lg',
-				)}
-				onClick={handleClick}>
-				<FaUpload width={20} height={20} />
-				<p className='font-bold  text-neutral-200 text-md '>
-					Перенесите поочередно файлы сюда или нажмите, чтобы загрузить
-				</p>{' '}
-				<p className='text-center  text-neutral-400 text-sm '>
-					Формат: .wav, .flac <br />
-					Максимальный размер: 1 ГБ
-				</p>
-			</div>
+			{!isUpdating && (
+				<div
+					className={clsx(
+						'border border-dashed border-sky-400 inset-0 z-30 bg-transparent flex flex-col gap-2 items-center justify-center h-80  mt-4 w-full  mx-auto rounded-lg',
+					)}
+					onClick={handleClick}>
+					<FaUpload width={20} height={20} />
+					<p className='font-bold  text-neutral-200 text-md '>
+						Перенесите поочередно файлы сюда или нажмите, чтобы загрузить
+					</p>{' '}
+					<p className='text-center  text-neutral-400 text-sm '>
+						Формат: .wav, .flac <br />
+						Максимальный размер: 1 ГБ
+					</p>
+				</div>
+			)}
 			<Reorder.Group
 				axis='y'
 				values={tracks}

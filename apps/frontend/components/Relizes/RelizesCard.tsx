@@ -1,7 +1,11 @@
 'use client';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
-import { LinkIcon, SquaresPlusIcon } from '@heroicons/react/24/outline';
+import {
+	LinkIcon,
+	PencilSquareIcon,
+	SquaresPlusIcon,
+} from '@heroicons/react/24/outline';
 import { Button, Link, Tooltip } from '@heroui/react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -189,7 +193,7 @@ export default function RelizecCard({
 						<SquaresPlusIcon width={20} />
 					</Button>
 				</Tooltip>
-				{/* <Tooltip
+				<Tooltip
 					content={
 						<div className='p-2'>
 							<p>Редактировать релиз</p>
@@ -197,11 +201,11 @@ export default function RelizecCard({
 					}>
 					<Button
 						as={Link}
-						href='https://github.com/heroui-inc/heroui'
+						href={`/dashboard/relizes/my-relizes/${release.id}/edit`}
 						isIconOnly>
 						<PencilSquareIcon width={20} />
 					</Button>
-				</Tooltip> */}
+				</Tooltip>
 				{/* <Tooltip
 					content={
 						<div className='p-2'>

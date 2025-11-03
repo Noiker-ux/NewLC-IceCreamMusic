@@ -8,13 +8,10 @@
     "apps/*"
   ],
   "devDependencies": {
-    "ts-patch": "^3.3.0",
-    "turbo": "^2.5.3"
+    "ts-patch": "3.3.0",
+    "turbo": "2.6.0"
   },
   "scripts": {
     "prepare": "ts-patch install"
-  },
-  "dependencies": {
-    "@pbe/react-yandex-maps": "^1.2.5"
   }
 }

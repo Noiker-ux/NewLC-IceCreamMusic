@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."studios" ADD COLUMN "contact_url" text;

@@ -4,10 +4,10 @@ import { Input } from '@heroui/input';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import Image from 'next/image';
 import { useCallback } from 'react';
-import { TStudio } from 'shared/schema/studio.schema';
+import { TStudio, TStudioUpsertForm } from 'shared/schema/studio.schema';
 
 export default function StudioPhotos() {
-	const methods = useFormContext<TStudio>();
+	const methods = useFormContext<TStudioUpsertForm>();
 
 	const { fields, append, remove } = useFieldArray({
 		control: methods.control,
@@ -70,12 +70,9 @@ export default function StudioPhotos() {
 				})}
 			</div>
 			<div className='flex flex-col gap-2 mt-2 '>
-				{methods.getValues('photos') &&
-				methods.getValues('photos').length > 0 ? (
-					''
-				) : (
+				{methods.formState.errors.photos && (
 					<span className='text-tiny text-danger'>
-						Добавьте хотя бы одну фотографию студии
+						{methods.formState.errors.photos.message}
 					</span>
 				)}
 			</div>

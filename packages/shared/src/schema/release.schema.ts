@@ -75,7 +75,7 @@ const TrackBaseSchema = trackBaseSchema
     ringtone: optionalFileSchema,
     video: optionalFileSchema,
     video_shot: optionalFileSchema,
-    instant_gratification: stringAsDateSchema,
+    instant_gratification: stringAsDateSchema.optional(),
   })
   .omit({
     id: true,
@@ -92,7 +92,11 @@ export const trackUpdateFormSchema = TrackBaseSchema.partial().extend({
   trackId: trackIdSchema,
 });
 
+export function createTrackUpsertSchema(isUpdating: boolean){
+  return isUpdating ? trackUpdateFormSchema : trackInsertSchema;
+}
 
+export type TTrackUpsert = z.infer<ReturnType<typeof createTrackUpsertSchema>>
 
 export type TTrackUpdateForm = z.infer<typeof trackUpdateFormSchema>;
 
@@ -108,7 +112,7 @@ const ReleaseFormBaseSchema = releaseBaseSchema
     startDate: stringAsDateSchema,
     preorderDate: stringAsDateSchema,
     releaseDate: stringAsDateSchema,
-    yandexSoonNewRelease: stringAsDateSchema,
+    yandexSoonNewRelease: stringAsDateSchema.optional(),
   })
   .omit({
     id: true,
@@ -134,12 +138,8 @@ export const releaseUpdateSchema = ReleaseFormBaseSchema.partial().extend({
 
 export type TReleaseUpdate = z.infer<typeof releaseUpdateSchema>;
 
-export type TRelease = InferSelectModel<typeof release>;
-
-export type TTrack = InferSelectModel<typeof track>;
-
 export function createReleaseUpsertSchema<T extends boolean>(isUpdate: T) {
-  const trackSchema = isUpdate ? trackUpdateFormSchema : trackInsertSchema;
+  const trackSchema = createTrackUpsertSchema(isUpdate);
   if (isUpdate) {
     return ReleaseFormBaseSchema.partial().extend({
       tracks: trackSchema.array().min(1, "Должен быть хотя бы один трек"),
@@ -155,4 +155,10 @@ export type TReleaseUpsert = z.infer<
   ReturnType<typeof createReleaseUpsertSchema>
 >;
 
-type qwe = TReleaseUpsert;
+export type TRelease = InferSelectModel<typeof release>;
+
+export type TTrack = InferSelectModel<typeof track>;
+
+export type TReleaseData = TRelease & {
+  tracks: TTrack[];
+}

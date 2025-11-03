@@ -187,8 +187,6 @@ export const news = schema.table("news", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
-// Придумать как хранить теги к новостям
-
 export const faq = schema.table("faq", {
   id: uuid("id").defaultRandom().primaryKey(),
 
@@ -470,6 +468,8 @@ export const studios = schema.table("studios", {
   lattitude: doublePrecision("lattitude"),
 
   longitude: doublePrecision("longitude"),
+
+  contactUrl: text("contact_url"),
 });
 
 export const studios_relations = relations(studios, ({ many }) => ({

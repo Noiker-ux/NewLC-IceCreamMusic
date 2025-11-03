@@ -1,18 +1,16 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
-import { useFieldArray, useFormContext } from 'react-hook-form';
 import Image from 'next/image';
-import { useCallback } from 'react';
-import { TStudio } from 'shared/schema/studio.schema';
-import { InputOtp } from '@heroui/react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { TStudioUpsertForm } from 'shared/schema/studio.schema';
 
 export default function StudioTeam() {
-	const methods = useFormContext<TStudio>();
+	const methods = useFormContext<TStudioUpsertForm>();
 
 	const { fields, append, remove } = useFieldArray({
 		control: methods.control,
-		name: 'team' as const,
+		name: 'team',
 		rules: { required: 'Добавьте хотя бы одну персону' },
 	});
 
@@ -98,11 +96,9 @@ export default function StudioTeam() {
 				})}
 			</div>
 			<div className='flex flex-col gap-2 mt-2 '>
-				{methods.getValues('team') && methods.getValues('team').length > 0 ? (
-					''
-				) : (
+				{methods.formState.errors.team && (
 					<span className='text-tiny text-danger'>
-						Добавьте хотя бы одну персону
+						{methods.formState.errors.team.message}
 					</span>
 				)}
 			</div>
