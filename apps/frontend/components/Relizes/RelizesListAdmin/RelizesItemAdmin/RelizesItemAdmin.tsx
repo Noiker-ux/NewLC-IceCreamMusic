@@ -34,7 +34,7 @@ export default function RelizesItemAdmin({
 				<ApprovedRelease id={release.id} />
 				<RejectedRelease id={release.id} />
 			</div>
-			<RelizecCard release={release} />
+			<RelizecCard isAdmin={true} release={release} />
 		</>
 	);
 }

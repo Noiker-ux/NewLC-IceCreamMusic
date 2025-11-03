@@ -7,7 +7,7 @@ export default async function RelizesList() {
 		<div className='flex flex-col gap-5'>
 			{arrRelizes.data.map((relize) => (
 				<div key={relize.id}>
-					<RelizecCard release={relize} />
+					<RelizecCard isAdmin={false} release={relize} />
 				</div>
 			))}
 		</div>

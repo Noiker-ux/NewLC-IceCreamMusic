@@ -19,8 +19,10 @@ import MusicList from './MusicList';
 
 export default function RelizecCard({
 	release,
+	isAdmin,
 }: {
 	release: Primitive<TGetReleaseListResponse['data'][number]>;
+	isAdmin: boolean;
 }) {
 	const [showMusicList, setShowMusicList] = useState<boolean>(false);
 	const router = useRouter();
@@ -128,12 +130,15 @@ export default function RelizecCard({
 						<p className='text-xs font-extralight text-gray-300'>Оплачен</p>
 						<p className='text-sm '>
 							{release.confirmed && <span className='text-green-400'>Да</span>}
-							{!release.confirmed && (
+							{!release.confirmed && !isAdmin && (
 								<Button
 									as={Link}
 									href={`/dashboard/purchase/release/${release.id}`}>
 									Оплатить
 								</Button>
+							)}
+							{!release.confirmed && isAdmin && (
+								<span className='text-red-700'>Нет</span>
 							)}
 						</p>
 					</div>

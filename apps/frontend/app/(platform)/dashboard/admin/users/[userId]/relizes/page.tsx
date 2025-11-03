@@ -53,7 +53,7 @@ export default async function AdminRelizesPage({
 	return (
 		<div className='max-w-7xl'>
 			{usersResult.data.map((r) => {
-				return <RelizecCard key={r.id} release={r} />;
+				return <RelizecCard isAdmin={true} key={r.id} release={r} />;
 			})}
 		</div>
 	);

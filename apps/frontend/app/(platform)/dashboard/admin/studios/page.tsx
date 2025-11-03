@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 export default function AdminStudioPage() {
 	return (
 		<div>
-			<YMap />
 			<StudioForm />
 		</div>
 	);

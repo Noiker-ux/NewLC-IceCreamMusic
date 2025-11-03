@@ -4,6 +4,8 @@ import StudioAbout from './StudioAbout/StudioAbout';
 import StudioPhotos from './StudioPhoto/StudioPhotos';
 import StudiosPreview from './StudiosPreview/StudiosPreview';
 import StudiosTeam from './StudiosTeam/StudiosTeam';
+import YMap from './StudioMap/StudioMap';
+import Link from 'next/link';
 export default function StudioDetail({
 	studio,
 }: {
@@ -40,6 +42,20 @@ export default function StudioDetail({
 				/>
 			</div>
 			{studio.team.length > 0 && <StudiosTeam people={studio.team} />}
+			{studio.lattitude && studio.longitude && (
+				<div className='mt-10'>
+					<YMap
+						lattitude={studio.lattitude}
+						longitude={studio.longitude}
+						address={studio.address}
+					/>
+				</div>
+			)}
+			{studio.contatUrl && (
+				<div className='mt-5'>
+					<Link href={studio.contatUrl}>Контакт</Link>
+				</div>
+			)}
 		</>
 	);
 }

@@ -1,20 +1,28 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-export default function YMap() {
+export default function YMap({
+	lattitude,
+	longitude,
+	address,
+}: {
+	lattitude: number;
+	longitude: number;
+	address: string;
+}) {
 	const [mapInstance, setMapInstance] = useState<ymaps.Map | null>(null);
 
 	const initMap = () => {
 		if (!window.ymaps) return;
 
 		window.ymaps.ready(() => {
-			const placemark = new window.ymaps.Placemark([55.75, 37.6], {
-				hintContent: 'Жопа коня',
-				balloonContent: 'Ебля осьминога',
+			const placemark = new window.ymaps.Placemark([lattitude, longitude], {
+				hintContent: `${address}`,
+				balloonContent: `${address}`,
 			});
 
 			const map = new window.ymaps.Map('map', {
-				center: [55.75, 37.6],
+				center: [lattitude, longitude],
 				zoom: 10,
 			});
 
