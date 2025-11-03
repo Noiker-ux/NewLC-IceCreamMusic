@@ -396,7 +396,13 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 						onSelectionChange={setCurrentTab}>
 						<Tab key='Main' title='Информация по релизу'>
 							<div className='w-full grid grid-cols-4 gap-5'>
-								<Preview />
+								<Preview
+									preview={
+										release
+											? `${process.env.NEXT_PUBLIC_S3_URL}/previews/${release.id}.${release.preview}`
+											: undefined
+									}
+								/>
 								<div className='col-span-3  bg-zinc-900 rounded-xl'>
 									<WorkWithRelize />
 								</div>
@@ -427,7 +433,7 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 							</div>
 						</Tab>
 						<Tab key='Check' title='Проверка'>
-							<CheckRelizeForm />
+							<CheckRelizeForm release={release} />
 							<Button
 								className='bg-indigo-700 mx-auto text-center block'
 								size='lg'

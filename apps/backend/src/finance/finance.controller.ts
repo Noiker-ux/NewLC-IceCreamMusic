@@ -207,7 +207,7 @@ export class FinanceController {
         },
       })
       .catch((e) => {
-        console.log(e);
+        this.logger.log(e);
         return null;
       });
 

@@ -290,3 +290,7 @@ text.inner-text {
 		padding: 2rem;
 	}
 }
+
+#map > ymaps:last-child {
+	display: none;
+}

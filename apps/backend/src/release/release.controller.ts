@@ -450,10 +450,6 @@ export class ReleaseController {
     @TypedParam('releaseId') releaseId: string,
     @TypedBody() body: TUpdateReleaseBody,
   ): Promise<TUpdateReleaseResponse> {
-    this.logger.log('releaseId', releaseId);
-    this.logger.log('body', body);
-    this.logger.log('user', user);
-
     const { release, tracks } = body;
 
     return await this.db.transaction(async (tx) => {

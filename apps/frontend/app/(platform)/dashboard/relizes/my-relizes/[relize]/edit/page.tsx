@@ -1,7 +1,14 @@
 import NewRelizeForm from '@/components/NewRelize/NewRelizeForm';
 import { actionGetRelizeById } from '@/components/Relizes/actionGetRelizeById';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Мой релиз',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export default async function EditReleasePage({
 	params,

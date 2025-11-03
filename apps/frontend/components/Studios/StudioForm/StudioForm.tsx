@@ -1,27 +1,38 @@
 'use client';
+import {
+	TUploadFile,
+	TUploadResult,
+} from '@/components/Upload/UploadVisualizer';
+import { uploadBlob } from '@/shared/lib/upload/stream';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Input, Textarea } from '@heroui/input';
 import { Link, NumberInput, Tooltip } from '@heroui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
 	createStudioUpsertSchema,
-	TStudioUpsertForm,
-	TStudio,
-	TStudioData,
 	studioInsertFormSchema,
+	TStudioData,
+	TStudioUpsertForm,
 } from 'shared/schema/studio.schema';
+import { UploadVisualizer } from '../../Upload/UploadVisualizer';
+import { createStudio } from './actions';
 import StudioPhotos from './StudioPhotos/StudioPhotos';
 import StudioStats from './StudioStats/StudioStats';
 import StudioTeam from './StudioTeam/StudioTeam';
-import { TUploadFile } from '@/components/Upload/UploadVisualizer';
-import { createStudio } from './actions';
 
 export type TStudioForm = {
 	studio: TStudioData;
+};
+
+const localization: Partial<Record<TUploadFile['type'], string>> = {
+	url: 'Фото',
+	logo: 'Логотип',
+	background: 'Фон',
+	photo: 'Фото',
 };
 
 export default function StudioForm({ studio }: TStudioForm) {
@@ -32,6 +43,8 @@ export default function StudioForm({ studio }: TStudioForm) {
 	const isUpdating = !!studio;
 
 	const schema = createStudioUpsertSchema(isUpdating);
+
+	const [uploadResults, setUploadResults] = useState<TUploadResult[]>([]);
 
 	// RHF
 	const methods = useForm<TStudioUpsertForm>({
@@ -111,6 +124,68 @@ export default function StudioForm({ studio }: TStudioForm) {
 			}
 		} else {
 		}
+
+		const uploadResults: TUploadResult[] = filesToUpload
+			.map((f) => {
+				let uploaderTitle = '';
+
+				if (f.belongsTo === 'release') {
+					uploaderTitle = `${localization[f.type]} к релизу`;
+				}
+
+				if (f.belongsTo === 'track') {
+					uploaderTitle = `${localization[f.type]} к треку №${f.trackIndex + 1}`;
+				}
+
+				return {
+					...f,
+					title: uploaderTitle,
+					progress: 0,
+				};
+			})
+			.map((upload, index) => {
+				const { retry } = uploadBlob({
+					file: upload.file,
+					uploadUrl: upload.url,
+					onProgress: (progress) => {
+						setUploadResults((prevResults) => {
+							const preUpdated = prevResults.slice(0, index);
+
+							const postUpdated = prevResults.slice(index + 1);
+
+							const updated: TUploadResult = {
+								...upload,
+								progress,
+							};
+							return [...preUpdated, updated, ...postUpdated];
+						});
+					},
+					onFinish: (result) => {
+						setUploadResults((prevResults) => {
+							const preUpdated = prevResults.slice(0, index);
+
+							const postUpdated = prevResults.slice(index + 1);
+
+							const updated: TUploadResult = {
+								...upload,
+								progress: 1,
+								result,
+							};
+
+							return [...preUpdated, updated, ...postUpdated];
+						});
+					},
+					meta: {
+						filename: upload.title,
+					},
+				});
+				return {
+					...upload,
+					retry,
+				};
+			});
+
+		setUploadResults(uploadResults);
 	};
 
 	// Image Logo
@@ -381,6 +456,22 @@ export default function StudioForm({ studio }: TStudioForm) {
 								/>
 							</div>
 						</div>
+						{uploadResults.length > 0 && (
+							<div className='bg-zinc-900 p-5 rounded-xl'>
+								{uploadResults.map((upload) => {
+									return (
+										<UploadVisualizer
+											key={upload.url}
+											file={upload.file}
+											title={upload.title}
+											result={upload.result}
+											progress={upload.progress}
+											retryAction={upload.retry}
+										/>
+									);
+								})}
+							</div>
+						)}
 					</div>
 				</div>
 
