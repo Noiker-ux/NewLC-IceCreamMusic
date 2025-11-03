@@ -1,10 +1,10 @@
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { useFormContext } from 'react-hook-form';
 import { useCallback, useRef } from 'react';
 import { Button } from '@heroui/button';
 
 export default function VideoShot({ trackIndex }: { trackIndex: number }) {
-	const { setValue, watch } = useFormContext<TReleaseInsertForm>();
+	const { setValue, watch } = useFormContext<TReleaseUpsert>();
 	const handleFileChange = useCallback(
 		(newFiles: File[]) => {
 			setValue(`tracks.${trackIndex}.video_shot`, newFiles.at(0));

@@ -1,11 +1,11 @@
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Input } from '@heroui/input';
 import { Tooltip } from '@heroui/tooltip';
 import { useFormContext } from 'react-hook-form';
 
 export default function MainTracksData({ trackIndex }: { trackIndex: number }) {
-	const { register, formState } = useFormContext<TReleaseInsertForm>();
+	const { register, formState } = useFormContext<TReleaseUpsert>();
 
 	return (
 		<div className='grid grid-cols-2 gap-5'>

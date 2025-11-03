@@ -1,6 +1,6 @@
 'use client';
 
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
@@ -17,7 +17,7 @@ const possibleRoles = ['Исполнитель', 'feat.', 'Автор музык
 export default function PersonsAndRolesTrack({
 	trackIndex,
 }: TPersonsAndRolesTrack) {
-	const { control, register } = useFormContext<TReleaseInsertForm>();
+	const { control, register } = useFormContext<TReleaseUpsert>();
 
 	const {
 		fields: roles,

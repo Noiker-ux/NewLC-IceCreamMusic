@@ -1,10 +1,10 @@
 import { Textarea } from '@heroui/react';
 import { Tooltip } from '@heroui/tooltip';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { useFormContext } from 'react-hook-form';
 export default function TextTrack({ trackIndex }: { trackIndex: number }) {
-	const { register } = useFormContext<TReleaseInsertForm>();
+	const { register } = useFormContext<TReleaseUpsert>();
 	return (
 		<div>
 			<p className='font-bold'>Текст трека</p>

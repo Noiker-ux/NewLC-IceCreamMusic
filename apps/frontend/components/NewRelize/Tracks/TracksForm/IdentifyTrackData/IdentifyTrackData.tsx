@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Input } from '@heroui/input';
 import { Tooltip } from '@heroui/tooltip';
@@ -10,7 +10,7 @@ export default function IdentifyTrackData({
 }: {
 	trackIndex: number;
 }) {
-	const { register } = useFormContext<TReleaseInsertForm>();
+	const { register } = useFormContext<TReleaseUpsert>();
 
 	return (
 		<div>

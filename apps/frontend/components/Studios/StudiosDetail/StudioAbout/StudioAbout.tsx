@@ -1,7 +1,7 @@
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
 import Markdown from 'react-markdown';
-import { TStudioStatData } from 'sdk/lib/studio/studio.controller';
+import { TStudioStat } from 'shared/schema/studio.schema';
 
 export default function StudioAbout({
 	name,
@@ -19,7 +19,7 @@ export default function StudioAbout({
 		url: string;
 		studioId: string;
 	}[];
-	stats: TStudioStatData[];
+	stats: TStudioStat[];
 }) {
 	return (
 		<div className='overflow-hidden  py-24 sm:py-32'>

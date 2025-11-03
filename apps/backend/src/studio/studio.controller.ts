@@ -16,7 +16,7 @@ import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { StudioService } from './studio.service';
-import { TrueOmit } from '../../../../packages/shared/lib/types/omit';
+import { TrueOmit } from 'shared/types/omit';
 
 export type TStudio = InferInsertModel<typeof schema.studios>;
 
@@ -26,10 +26,10 @@ export type TStudioTeam = InferInsertModel<typeof schema.studioTeam>;
 
 export type TStudioStat = InferInsertModel<typeof schema.studioStats>;
 
-export type TCompleteStudioData = TStudio & {
-  photos: TStudioPhoto[];
-  team: TStudioTeam[];
-  stats: TStudioStat[];
+export type TCompleteStudioData = Required<TStudio> & {
+  photos: Required<TStudioPhoto>[];
+  team: Required<TStudioTeam>[];
+  stats: Required<TStudioStat>[];
 };
 
 export type TGetStudiosResponse = TCompleteStudioData[];
