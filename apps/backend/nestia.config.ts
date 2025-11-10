@@ -18,7 +18,7 @@ const NESTIA_CONFIG: INestiaConfig = {
   output: 'src/sdk',
   distribute: '../../packages/sdk',
   // assert: true,
-  // primitive: true,
+  primitive: true,
   swagger: {
     openapi: '3.1',
     output: 'swagger/swagger.json',

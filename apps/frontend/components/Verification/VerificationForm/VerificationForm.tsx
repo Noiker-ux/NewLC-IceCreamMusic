@@ -10,11 +10,14 @@ import { BsFillTelephoneFill } from 'react-icons/bs';
 import { TVerificationFormSchema } from 'shared/schema/verification.schema';
 import { Toaster, toast } from 'sonner';
 import { actionPostVerify } from './actionPostVerify';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 export default function VerificationForm() {
 	const methods = useForm<TVerificationFormSchema>({});
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const watchFile = methods.watch('contract');
+	const router = useRouter();
 	const onSubmit: SubmitHandler<TVerificationFormSchema> = useCallback(
 		async (data) => {
 			const verificationPromise = actionPostVerify({
@@ -42,6 +45,7 @@ export default function VerificationForm() {
 					return {
 						message: `${responce.message}`,
 						className: '!bg-red-300 !border-red-600 !text-red-800',
+						duration: 500,
 					};
 				},
 			});
@@ -51,35 +55,32 @@ export default function VerificationForm() {
 			if (result.success) {
 				const contractUploadToast = toast('Загружаем файл контракта');
 
-				const totalBytes = data.contract.size;
+				const uploadResult = await axios
+					.put(result.data.contract, data.contract, {
+						onUploadProgress(progress: ProgressEvent) {
+							toast.loading(
+								`${Math.round((progress.loaded * 100) / progress.total)}%`,
+								{
+									id: contractUploadToast,
+								},
+							);
+						},
+					})
+					.then(() => true as const)
+					.catch(() => false as const);
 
-				let uploaded = 0;
-
-				const progressTrackingStream = new TransformStream({
-					transform(chunk, controller) {
-						controller.enqueue(chunk);
-						uploaded += chunk.byteLength;
-
-						toast(`${Math.round(uploaded / totalBytes)}%`, {
-							id: contractUploadToast,
-						});
-					},
-					flush() {
-						toast.success(`${Math.round(uploaded / totalBytes)}%`, {
-							id: contractUploadToast,
-						});
-					},
-				});
-
-				await fetch(result.data.contract, {
-					method: 'PUT',
-					body: data.contract.stream().pipeThrough(progressTrackingStream),
-					duplex: 'half',
-					headers: {
-						'Content-Type': 'application/octet-stream',
-						'Content-Length': String(totalBytes),
-					},
-				} as RequestInit);
+				if (uploadResult)
+					toast.success('Загрузка завершена', {
+						id: contractUploadToast,
+						className: '!bg-green-300 !border-green-600 !text-green-800',
+					});
+				else {
+					toast.error('Ошибка загрузки', {
+						id: contractUploadToast,
+						className: '!bg-red-300 !border-red-600 !text-red-800',
+					});
+				}
+				router.push('/dashboard/main/news');
 			}
 		},
 		[],
