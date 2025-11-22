@@ -52,7 +52,7 @@ export type TPayoutTicketData = InferSelectModel<typeof schema.payouts>;
 
 export type TGetPayoutTicketsResponse = {
   data: (TPayoutTicketData & {
-    user: Pick<TSelectUserSchema, 'id' | 'name'>;
+    user: Pick<TSelectUserSchema, 'id' | 'name' | 'email' | 'avatar'>;
   })[];
 };
 
@@ -324,7 +324,7 @@ export class FinanceController {
         where: eq(schema.payouts.confirmed, params.confirmed ?? false),
         with: {
           user: {
-            columns: { id: true, name: true },
+            columns: { id: true, name: true, avatar: true, email: true },
           },
         },
         limit: params.size,
@@ -351,7 +351,9 @@ export class FinanceController {
           eq(schema.payouts.userId, user?.id),
         ),
         with: {
-          user: { columns: { id: true, name: true } },
+          user: {
+            columns: { id: true, name: true, avatar: true, email: true },
+          },
         },
         limit: params.size,
         offset: (params.page - 1) * params.size,
@@ -374,10 +376,7 @@ export class FinanceController {
       where: eq(schema.payouts.id, ticketId),
       with: {
         user: {
-          columns: {
-            id: true,
-            name: true,
-          },
+          columns: { id: true, name: true, avatar: true, email: true },
         },
       },
     });

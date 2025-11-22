@@ -290,11 +290,7 @@ text.inner-text {
 		padding: 2rem;
 	}
 }
-<<<<<<< HEAD
 
 #map > ymaps:last-child:not(:first-child) {
-=======
-#map > ymaps:last-child {
->>>>>>> frontendUpdate
 	display: none;
 }

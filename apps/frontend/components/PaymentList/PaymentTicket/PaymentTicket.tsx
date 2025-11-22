@@ -42,6 +42,13 @@ export default function PaymentTicket({
 		<div className='bg-zinc-900 rounded-xl p-5 flex justify-between'>
 			<div>
 				<p>Тикет на выплату</p>
+				<div>
+					<p>
+						пользователь {payout.user.name} {'<'}
+						{payout.user.email}
+						{'>'}
+					</p>
+				</div>
 				<p>Получатель карты: {payout.recieverName}</p>
 				<p>Номер карты: {payout.accountNumber}</p>
 				<p>Сумма выплаты: {MoneyFormatter(payout.amount ?? 0)}</p>

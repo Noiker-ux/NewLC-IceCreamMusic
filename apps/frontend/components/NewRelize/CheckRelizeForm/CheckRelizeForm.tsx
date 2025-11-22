@@ -63,7 +63,7 @@ export default function CheckRelizeForm({ release }: TCheckReleaseForm) {
 						className={cn('min-w-[110px] h-[110px] relative rounded-md', {
 							'border-white border-[2px]': !!!releaseValues.preview,
 						})}>
-						{releaseValues.preview && !release && (
+						{!!releaseValues.preview && (
 							<Image
 								src={URL.createObjectURL(releaseValues.preview)}
 								fill

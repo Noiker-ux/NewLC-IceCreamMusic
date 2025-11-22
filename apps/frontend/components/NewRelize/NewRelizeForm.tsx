@@ -384,6 +384,8 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 		setCurrentTab('Upload');
 	};
 
+	const formPreview = methods.watch('preview');
+
 	return (
 		<FormProvider {...methods}>
 			<form
@@ -398,9 +400,11 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 							<div className='w-full grid grid-cols-4 gap-5'>
 								<Preview
 									preview={
-										release
+										!!release
 											? `${process.env.NEXT_PUBLIC_S3_URL}/previews/${release.id}.${release.preview}`
-											: undefined
+											: formPreview
+												? URL.createObjectURL(formPreview)
+												: undefined
 									}
 								/>
 								<div className='col-span-3  bg-zinc-900 rounded-xl'>
