@@ -442,19 +442,21 @@ export default function NewRelizeForm({ release }: TReleaseEdit) {
 							</Button>
 						</Tab>
 						<Tab key='Upload' title='Загрузка'>
-							{uploadResults.length > 0 &&
-								uploadResults.map((upload) => {
-									return (
-										<UploadVisualizer
-											key={upload.url}
-											file={upload.file}
-											title={upload.title}
-											result={upload.result}
-											progress={upload.progress}
-											retryAction={upload.retry}
-										/>
-									);
-								})}
+							<div className='flex flex-col gap-5'>
+								{uploadResults.length > 0 &&
+									uploadResults.map((upload) => {
+										return (
+											<UploadVisualizer
+												key={upload.url}
+												file={upload.file}
+												title={upload.title}
+												result={upload.result}
+												progress={upload.progress}
+												retryAction={upload.retry}
+											/>
+										);
+									})}
+							</div>
 							{uploadResults.length === 0 && <p>Нечего загружать</p>}
 							{uploadResults.every((upload) => upload.result?.success) && (
 								<button

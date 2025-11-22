@@ -1,6 +1,8 @@
 'use client';
 
 import { TActionResult } from '@/components/Account/actionGetPersonalData';
+import { Button } from '@heroui/button';
+import { Progress } from '@heroui/progress';
 
 export type TUploadBase = {
 	file: File;
@@ -41,16 +43,28 @@ export const UploadVisualizer = ({
 	result,
 }: TFileUploader) => {
 	return (
-		<div>
+		<div className='bg-zinc-900 p-5 rounded-xl'>
 			<div>{title}</div>
-			<div>Size: {file.size}</div>
-			<div>Progress: {progress}</div>
-			<div>Result: {JSON.stringify(result)}</div>
+			<Progress
+				className='w-1/2'
+				showValueLabel={true}
+				aria-label='Загрузка...'
+				color='success'
+				value={progress * 100}
+			/>
+			<div>
+				{result?.success == true
+					? 'Загрузка прошла успешна'
+					: 'Ошибка при отгрузке релиза'}
+			</div>
 			{result && !result.success && (
 				<div>
-					<button type='button' onClick={() => retryAction?.()}>
-						повторить загрузку
-					</button>
+					<Button
+						color='secondary'
+						type='button'
+						onPress={() => retryAction?.()}>
+						Повторить загрузку
+					</Button>
 				</div>
 			)}
 		</div>
