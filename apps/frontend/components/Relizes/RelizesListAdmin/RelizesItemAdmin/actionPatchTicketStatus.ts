@@ -1,6 +1,10 @@
 'use server';
+import ReleaseReject from '@/emails/RelizesMessages/ReleaseReject';
+import ReleaseSuccess from '@/emails/RelizesMessages/ReleaseSuccess';
 import { sessionCookieName } from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { createSMTPClient } from '@/utils/createSMTPClient';
+import { render } from '@react-email/render';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { functional } from 'sdk';
@@ -27,7 +31,7 @@ export default async function actionPatchTicketStatus(
 	});
 
 	if (!!reason && status === 'rejected') {
-		await functional.api.v1.releases.moderation
+		const res = await functional.api.v1.releases.moderation
 			.updateReleaseModerationStatus(connection, releaseId, {
 				status,
 				rejectReason: reason,
@@ -38,10 +42,32 @@ export default async function actionPatchTicketStatus(
 					message: e.message,
 				};
 			});
+
+		if (res.success) {
+			const transport = await createSMTPClient().catch(() => null);
+
+			if (!transport) {
+				return {
+					success: false as const,
+					error: 'Ошибка отправки письма',
+				};
+			}
+
+			const emailHTML = await render(
+				ReleaseReject({ rejectReason: reason, title: res.data.title }),
+			);
+
+			transport.sendMail({
+				from: 'info@icecreammusic.net',
+				to: res.data.email,
+				html: emailHTML,
+				subject: 'Изменение статуса релиза',
+			});
+		}
 	}
 
 	if (!!upc && status === 'approved') {
-		await functional.api.v1.releases.moderation
+		const res = await functional.api.v1.releases.moderation
 			.updateReleaseModerationStatus(connection, releaseId, {
 				status: status,
 				upc: upc,
@@ -52,6 +78,26 @@ export default async function actionPatchTicketStatus(
 					message: e.message,
 				};
 			});
+
+		if (res.success) {
+			const transport = await createSMTPClient().catch(() => null);
+
+			if (!transport) {
+				return {
+					success: false as const,
+					error: 'Ошибка отправки письма',
+				};
+			}
+
+			const emailHTML = await render(ReleaseSuccess({ title: res.data.title }));
+
+			transport.sendMail({
+				from: 'info@icecreammusic.net',
+				to: res.data.email,
+				html: emailHTML,
+				subject: 'Изменение статуса релиза',
+			});
+		}
 	}
 
 	return {

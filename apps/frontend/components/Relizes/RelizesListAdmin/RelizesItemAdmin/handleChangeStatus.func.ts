@@ -12,7 +12,12 @@ export const handleChangeStatus = ({
 	reason?: string;
 	upc?: string;
 }) => {
-	toast.promise(actionPatchTicketStatus(releaseId, status, reason, upc), {
+	toast.promise(actionPatchTicketStatus(releaseId, status, reason, upc).then(res=>{
+		if(!res.success) {
+			throw new Error(res.error)
+		}
+		return res;
+	}), {
 		loading: 'Загрузка...',
 		success: (responce) => {
 			return {
