@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."release" ALTER COLUMN "subtitle" DROP NOT NULL;
