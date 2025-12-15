@@ -142,6 +142,7 @@ export default function WorkWithRelize() {
 								type='text'
 								radius='sm'
 								{...field}
+								value={field.value ?? ''}
 							/>
 						)}
 					/>
