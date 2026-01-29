@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import dateISOFormatter from '@/utils/dateISOFormatter';
 import {
 	CheckBadgeIcon,
@@ -8,14 +8,11 @@ import {
 import { TimeInput } from '@heroui/date-input';
 import { Checkbox, DatePicker } from '@heroui/react';
 import { Tooltip } from '@heroui/tooltip';
-import {
-	parseZonedDateTime,
-	parseAbsoluteToLocal,
-} from '@internationalized/date';
-import { useEffect, useState } from 'react';
+import { parseAbsoluteToLocal, parseTime, Time } from '@internationalized/date';
+import { I18nProvider } from '@react-aria/i18n';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaClock } from 'react-icons/fa';
-import { I18nProvider } from '@react-aria/i18n';
 
 export type TAdditionParametersTrackData = {
 	trackIndex: number;
@@ -32,12 +29,7 @@ export default function AdditionParametersTrackData({
 	);
 
 	const [showDateInstantGratification, setShowDateInstantGratification] =
-		useState<boolean>(instantgratificationW ? true : false);
-
-	useEffect(() => {
-		if (!showDateInstantGratification)
-			setValue(`tracks.${trackIndex}.instant_gratification`, null);
-	}, [setValue, showDateInstantGratification, trackIndex]);
+		useState<boolean>(() => !!instantgratificationW);
 
 	return (
 		<div>
@@ -91,24 +83,19 @@ export default function AdditionParametersTrackData({
 					}
 					labelPlacement='outside'
 					startContent={<FaClock size={20} />}
-					defaultValue={parseZonedDateTime(
-						'2022-11-07T00:00[America/Los_Angeles]',
-					)}
 					granularity='minute'
 					hourCycle={24}
 					hideTimeZone
-					value={parseZonedDateTime(
-						`2022-11-07T${
-							previewStart.length ? previewStart : '13:00'
-						}[America/Los_Angeles]`,
-					)}
-					onChange={(e) => {
-						setValue(
-							`tracks.${trackIndex}.preview_start`,
-							`${e?.hour.toString().length === 1 ? '0' + e?.hour : e?.hour}:${
-								e?.minute.toString().length === 1 ? '0' + e?.minute : e?.minute
-							}`,
-						);
+					value={parseTime(previewStart)}
+					onChange={(newTime) => {
+						if (newTime) {
+							const hour = newTime.hour.toString().padStart(2, '0');
+							const minute = newTime.minute.toString().padStart(2, '0');
+							setValue(
+								`tracks.${trackIndex}.preview_start`,
+								`${hour}:${minute}`,
+							);
+						}
 					}}
 				/>
 			</div>
@@ -116,10 +103,13 @@ export default function AdditionParametersTrackData({
 				<Checkbox
 					size='md'
 					color='default'
-					value='Instant Gratification'
 					className='relative'
 					isSelected={showDateInstantGratification}
-					onValueChange={setShowDateInstantGratification}>
+					onValueChange={(v) => {
+						if (!v)
+							setValue(`tracks.${trackIndex}.instant_gratification`, undefined);
+						setShowDateInstantGratification(v);
+					}}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Instant Gratification</p>
 						<Tooltip
@@ -145,21 +135,22 @@ export default function AdditionParametersTrackData({
 							onChange={(value) => {
 								setValue(
 									`tracks.${trackIndex}.instant_gratification`,
-									value ? value.toDate() : new Date(),
+									value ? value.toDate() : undefined,
 								);
 							}}
-							value={parseAbsoluteToLocal(
-								dateISOFormatter(
-									instantgratificationW ? instantgratificationW : new Date(),
-								),
-							)}
+							value={
+								instantgratificationW
+									? parseAbsoluteToLocal(
+											dateISOFormatter(instantgratificationW),
+										)
+									: undefined
+							}
 						/>
 					</I18nProvider>
 				)}
 				<Checkbox
 					size='md'
 					color='default'
-					value='Focus track'
 					{...register(`tracks.${trackIndex}.focus`)}>
 					<div className='absolute -mt-[11px] z-50 flex gap-2 items-start	 min-w-80'>
 						<p className='text-md'>Focus track</p>

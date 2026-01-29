@@ -38,7 +38,7 @@ export default function SideBarBody({ menu }: { menu: TMenu[] }) {
 								}
 							}}
 							className={cn(
-								item.href && item.href.includes(path.split('/')[2])
+								item.href && item.href.includes(path.split('/').at(-1) ?? '')
 									? 'bg-indigo-700 text-white'
 									: 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
 								'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full',

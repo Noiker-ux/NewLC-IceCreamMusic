@@ -1,6 +1,6 @@
-FROM node:lts-alpine3.20 AS base
+FROM node:22.18.0-alpine3.22 AS base
 
-FROM base AS build
+FROM base AS dependencies
 
 WORKDIR /app
 
@@ -11,6 +11,18 @@ COPY ../package.json ./package.json
 COPY ../package-lock.json ./package-lock.json
 
 RUN npm install
+
+FROM base AS build
+
+WORKDIR /app
+
+COPY --from=dependencies /app/packages/db ./packages/db
+
+COPY --from=dependencies /app/node_modules ./node_modules
+
+COPY --from=dependencies /app/package.json ./package.json
+
+COPY --from=dependencies /app/package-lock.json ./package-lock.json
 
 RUN npm run build:migration --workspace=db
 

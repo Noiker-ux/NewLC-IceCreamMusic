@@ -1,23 +1,89 @@
 'use client';
-import { Input } from '@heroui/input';
-import { DatePicker } from '@heroui/date-picker';
-import { BsFillTelephoneFill } from 'react-icons/bs';
-import { Checkbox } from '@heroui/checkbox';
 import { Button } from '@heroui/button';
-import { ChangeEvent, useState } from 'react';
+import { Checkbox } from '@heroui/checkbox';
+import { DatePicker } from '@heroui/date-picker';
+import { Input } from '@heroui/input';
 import { getLocalTimeZone, today } from '@internationalized/date';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { TVerification } from 'sdk/lib/verification/verification.controller';
-import { action } from './action';
+import { BsFillTelephoneFill } from 'react-icons/bs';
+import { TVerificationFormSchema } from 'shared/schema/verification.schema';
+import { Toaster, toast } from 'sonner';
+import { actionPostVerify } from './actionPostVerify';
 
 export default function VerificationForm() {
-	const methods = useForm<TVerification>({});
+	const methods = useForm<TVerificationFormSchema>({});
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const watchFile = methods.watch('contract');
+	const onSubmit: SubmitHandler<TVerificationFormSchema> = useCallback(
+		async (data) => {
+			const verificationPromise = actionPostVerify({
+				...data,
+				contract: data.contract.name.split('.').slice(-1)[0].trim(),
+			});
 
-	const onSubmit: SubmitHandler<TVerification> = async (data) => {
-		action({
-			...data,
-		});
-	};
+			toast.promise(verificationPromise, {
+				loading: 'Загрузка...',
+				success: (responce) => {
+					if (!responce.success) {
+						return {
+							message: `${responce.error}`,
+							className: '!bg-red-300 !border-red-600 !text-red-800',
+							duration: 500,
+						};
+					}
+					return {
+						message: `Данные успешно отправлены на проверку`,
+						className: '!bg-green-300 !border-green-600 !text-green-800',
+						duration: 500,
+					};
+				},
+				error: (responce) => {
+					return {
+						message: `${responce.message}`,
+						className: '!bg-red-300 !border-red-600 !text-red-800',
+					};
+				},
+			});
+
+			const result = await verificationPromise;
+
+			if (result.success) {
+				const contractUploadToast = toast('Загружаем файл контракта');
+
+				const totalBytes = data.contract.size;
+
+				let uploaded = 0;
+
+				const progressTrackingStream = new TransformStream({
+					transform(chunk, controller) {
+						controller.enqueue(chunk);
+						uploaded += chunk.byteLength;
+
+						toast(`${Math.round(uploaded / totalBytes)}%`, {
+							id: contractUploadToast,
+						});
+					},
+					flush() {
+						toast.success(`${Math.round(uploaded / totalBytes)}%`, {
+							id: contractUploadToast,
+						});
+					},
+				});
+
+				await fetch(result.data.contract, {
+					method: 'PUT',
+					body: data.contract.stream().pipeThrough(progressTrackingStream),
+					duplex: 'half',
+					headers: {
+						'Content-Type': 'application/octet-stream',
+						'Content-Length': String(totalBytes),
+					},
+				} as RequestInit);
+			}
+		},
+		[],
+	);
 
 	const [phone, setPhone] = useState('');
 
@@ -34,6 +100,7 @@ export default function VerificationForm() {
 		<form
 			className='flex flex-col gap-5'
 			onSubmit={methods.handleSubmit(onSubmit)}>
+			<Toaster />
 			<div className='w-full'>
 				<p className='font-semibold text-xl'>Основная информация</p>
 				<p className='mt-1 text-xs'>
@@ -94,7 +161,10 @@ export default function VerificationForm() {
 						{...methods.register('birthDate')}
 						onChange={(value) => {
 							if (value) {
-								methods.setValue('birthDate', value.toDate(getLocalTimeZone()));
+								methods.setValue(
+									'birthDate',
+									value.toDate(getLocalTimeZone()).toISOString(),
+								);
 							}
 						}}
 						maxValue={today(getLocalTimeZone())}
@@ -180,7 +250,10 @@ export default function VerificationForm() {
 						{...methods.register('getDate')}
 						onChange={(value) => {
 							if (value) {
-								methods.setValue('getDate', value.toDate(getLocalTimeZone()));
+								methods.setValue(
+									'getDate',
+									value.toDate(getLocalTimeZone()).toISOString(),
+								);
 							}
 						}}
 						label='Дата получения'
@@ -265,6 +338,29 @@ export default function VerificationForm() {
 						type='text'
 						isRequired
 						radius='sm'
+					/>
+				</div>
+			</div>
+			<div className='w-full'>
+				<p className='font-semibold text-xl'>Подписанный договор</p>
+
+				<div className='mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+					<Button
+						onPress={() => {
+							fileInputRef.current?.click();
+						}}>
+						{(watchFile && watchFile.name) ?? 'Прикрепить договор'}
+					</Button>
+					<input
+						type='file'
+						ref={fileInputRef}
+						className='hidden'
+						onChange={(e) => {
+							const files = e.target.files;
+							let newFile = null;
+							if (files) newFile = files[0];
+							if (newFile) methods.setValue('contract', newFile);
+						}}
 					/>
 				</div>
 			</div>

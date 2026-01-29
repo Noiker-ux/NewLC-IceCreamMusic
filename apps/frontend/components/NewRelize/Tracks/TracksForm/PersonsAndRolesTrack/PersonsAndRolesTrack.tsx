@@ -1,11 +1,11 @@
 'use client';
 
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { Select, SelectItem } from '@heroui/select';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { motion } from 'motion/react';
 
 export type TPersonsAndRolesTrack = {
@@ -17,10 +17,7 @@ const possibleRoles = ['Исполнитель', 'feat.', 'Автор музык
 export default function PersonsAndRolesTrack({
 	trackIndex,
 }: TPersonsAndRolesTrack) {
-	const { control, register, setValue, watch } =
-		useFormContext<TReleaseInsertForm>();
-
-	const trackRoles = watch(`tracks.${trackIndex}.roles`);
+	const { control, register } = useFormContext<TReleaseInsertForm>();
 
 	const {
 		fields: roles,
@@ -30,8 +27,6 @@ export default function PersonsAndRolesTrack({
 		name: `tracks.${trackIndex}.roles`,
 		control,
 	});
-
-	
 
 	return (
 		<div>
@@ -52,7 +47,6 @@ export default function PersonsAndRolesTrack({
 				<motion.div
 					className='w-full flex py-2 gap-5 items-center'
 					key={role.id}>
-					
 					<Input
 						label={`Персона №${roleIndex + 1}`}
 						labelPlacement='outside'
@@ -61,26 +55,28 @@ export default function PersonsAndRolesTrack({
 						radius='sm'
 						{...register(`tracks.${trackIndex}.roles.${roleIndex}.person`)}
 					/>
-				
-					<Select
-						label='Выберите роль'
-						labelPlacement='outside'
-						radius='sm'
-						className='col-span-2'
-						placeholder='Выберите роль'
-						selectedKeys={[trackRoles[roleIndex].role]}
-						onChange={(event) =>
-							setValue(
-								`tracks.${trackIndex}.roles.${roleIndex}.role`,
-								event.target.value,
-							)
-						}>
-						{possibleRoles.map((r) => (
-							<SelectItem key={r} textValue={r}>
-								{r}
-							</SelectItem>
-						))}
-					</Select>
+
+					<Controller
+						control={control}
+						name={`tracks.${trackIndex}.roles.${roleIndex}.role`}
+						render={({ field: { ref, value, onChange } }) => (
+							<Select
+								ref={ref}
+								label='Выберите роль'
+								labelPlacement='outside'
+								radius='sm'
+								className='col-span-2'
+								placeholder='Выберите роль'
+								selectedKeys={[value]}
+								onChange={onChange}>
+								{possibleRoles.map((r) => (
+									<SelectItem key={r} textValue={r}>
+										{r}
+									</SelectItem>
+								))}
+							</Select>
+						)}
+					/>
 					<Button
 						color='default'
 						size='sm'

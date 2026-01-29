@@ -1,3 +1,4 @@
+'use client';
 import { advent } from '@/fonts/fonts';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';

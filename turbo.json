@@ -14,6 +14,9 @@
       "dependsOn": ["db#build"],
       "outputs": ["lib"]
     },
+    "frontend#build": {
+      "dependsOn": ["sdk#build"]
+    },
     "backend#build": {
       "dependsOn": ["db#build", "shared#build"]
     },

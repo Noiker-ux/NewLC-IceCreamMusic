@@ -8,16 +8,17 @@ const connection = createSDKConnection({
 });
 
 export default async function StudiosList() {
-	const studioData = await functional.v1.studios.getStudios(connection, {
+	const studioData = await functional.api.v1.studios.getStudios(connection, {
 		page: 1,
-		size: 20,
+		size: 1000,
 	});
 
 	return (
 		<div className='grid grid-cols-5 gap-2'>
 			{studioData.map((studia) => (
-				<Link href={`/studios/${studia.id}`} key={studia.id}>
+				<Link href={`/dashboard/studios/${studia.id}`} key={studia.id}>
 					<StudiosCard
+						id={studia.id}
 						name={studia.name}
 						preview={`${process.env.NEXT_PUBLIC_S3_URL}/studios/${studia.id}.${studia.logo}`}
 						rating={studia.rating}

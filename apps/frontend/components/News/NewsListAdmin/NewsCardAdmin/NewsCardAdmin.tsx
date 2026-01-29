@@ -8,20 +8,12 @@ import {
 import { Button } from '@heroui/button';
 import { Tooltip } from '@heroui/tooltip';
 import Image from 'next/image';
-import { TGetNewsResponse } from 'sdk/lib/news/news.controller';
-import { Primitive } from 'sdk';
 import Link from 'next/link';
-import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { useRouter } from 'next/navigation';
+import { Primitive } from 'sdk';
+import { TGetNewsResponse } from 'sdk/lib/news/news.controller';
+import NewsForm from '../NewsForm/NewsForm';
 import { action } from './actionDelete';
-import {
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	useDisclosure,
-} from '@heroui/modal';
-import NewsForm from './NewsForm/NewsForm';
 
 export default function NewsCardAdmin({
 	newsItem,
@@ -29,9 +21,12 @@ export default function NewsCardAdmin({
 	newsItem: Primitive<TGetNewsResponse>[number];
 }) {
 	const { id, title, preview, content, createdAt } = newsItem;
-	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+	const router = useRouter();
+
 	const deleteNews = async () => {
 		await action(id);
+		router.refresh();
 	};
 
 	return (
@@ -59,7 +54,10 @@ export default function NewsCardAdmin({
 										<p>Посмотреть полностью</p>
 									</div>
 								}>
-								<Button isIconOnly as={Link} href={`/admin/news/${id}`}>
+								<Button
+									isIconOnly
+									as={Link}
+									href={`/dashboard/admin/news/${id}`}>
 									<EyeIcon width={20} />
 								</Button>
 							</Tooltip>
@@ -69,9 +67,9 @@ export default function NewsCardAdmin({
 										<p>Редактировать</p>
 									</div>
 								}>
-								<Button isIconOnly onPress={onOpen}>
+								<NewsForm isIconOnly={true} editNews={newsItem}>
 									<PencilSquareIcon width={20} />
-								</Button>
+								</NewsForm>
 							</Tooltip>
 							<Tooltip content={<div className='p-2'>Удалить новость</div>}>
 								<Button
@@ -88,20 +86,6 @@ export default function NewsCardAdmin({
 				</div>
 				<p className='mt-1 line-clamp-4 overflow-hidden'>{content}</p>
 			</div>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-				<ModalContent>
-					{() => (
-						<>
-							<ModalHeader className='flex flex-col gap-1'>
-								Редактировать новость
-							</ModalHeader>
-							<ModalBody>
-								<NewsForm />
-							</ModalBody>
-						</>
-					)}
-				</ModalContent>
-			</Modal>
 		</div>
 	);
 }

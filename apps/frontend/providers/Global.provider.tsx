@@ -6,7 +6,7 @@ export default function GlobalProvider({ children }: PropsWithChildren) {
 	return (
 		<HeroUIProvider>
 			<ToastProvider placement='bottom-right' />
-			<>{children}</>
+			{children}
 		</HeroUIProvider>
 	);
 }

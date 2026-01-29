@@ -1,5 +1,12 @@
 import Link from 'next/link';
 import Authorization from '@/components/AuthttorizeAndRegistration/Auth/Auth';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Авторизация',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export default function Auth() {
 	return (
@@ -14,14 +21,18 @@ export default function Auth() {
 			<Authorization />
 			<p className={'mt-5'}>
 				Или{' '}
+<<<<<<< HEAD
 				<Link className={'text-white underline'} href='/signup'>
+=======
+				<Link className={'text-white underline'} href='/auth/signup'>
+>>>>>>> 3ea385da3d404015abbe2908d8e00c3ada67969a
 					зарегистрируйте
 				</Link>{' '}
 				новый, если у Вас нет аккаунта
 			</p>
 
 			<p className={'mt-5'}>
-				<Link className={'text-white'} href='/recover'>
+				<Link className={'text-white underline'} href='/auth/recover'>
 					Не помню пароль
 				</Link>
 			</p>

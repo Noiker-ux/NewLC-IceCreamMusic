@@ -1,8 +1,32 @@
 'use client';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { uploadBlob } from '@/shared/lib/upload/stream';
 import { Button } from '@heroui/button';
 import { Tab, Tabs } from '@heroui/tabs';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import {
+	createReleaseUpsertSchema,
+	releaseAreaSchema,
+	releaseInsertSchema,
+	releasePlatformsSchema,
+	releaseRolesSchema,
+	releaseUpdateSchema,
+	trackRolesSchema,
+	TReleaseData,
+	TReleaseUpsert,
+} from 'shared/schema/release.schema';
+import {
+	TUploadFile,
+	TUploadResult,
+	UploadVisualizer,
+} from '../Upload/UploadVisualizer';
+import { createRelease, updateRelease } from './actions';
+import AdditionalParams from './Additional/AdditionalParams/AdditionalParams';
+import CommentForModerator from './Additional/CommentForModerator/CommentForModerator';
+import YandexMusic from './Additional/YandexMusic/YandexMusic';
+import CheckRelizeForm from './CheckRelizeForm/CheckRelizeForm';
 import Countyes from './Relize/Countryes/Countryes';
 import Identify from './Relize/Identify/Identify';
 import Label from './Relize/Label/Label';
@@ -12,38 +36,364 @@ import Platfroms from './Relize/Platforms/Platfroms';
 import Preview from './Relize/Preview/Preview';
 import WorkWithRelize from './Relize/WorkWithRelize/WorkWithRelize';
 import Tracks from './Tracks/Tracks';
-import AdditionalParams from './Additional/AdditionalParams/AdditionalParams';
-import YandexMusic from './Additional/YandexMusic/YandexMusic';
-import CheckRelizeForm from './CheckRelizeForm/CheckRelizeForm';
-import CommentForModerator from './Additional/CommentForModerator/CommentForModerator';
-import { action } from './action';
 
-export default function NewRelizeForm() {
-	const methods = useForm<TReleaseInsertForm>({
+const localization: Partial<Record<TUploadFile['type'], string>> = {
+	preview: 'Файл превью',
+	track: 'Файл трека',
+	text_sync: 'Файл синхронизации текста',
+	video: 'Файл видео',
+	video_shot: 'Файл видео-шота',
+	ringtone: 'Файл рингтона',
+};
+
+type TReleaseEdit = {
+	release?: TReleaseData;
+};
+
+export default function NewRelizeForm({ release }: TReleaseEdit) {
+	const isUpdating = !!release;
+
+	const schema = createReleaseUpsertSchema(isUpdating);
+
+	const [currentTab, setCurrentTab] = useState<string | number>('Main');
+
+	const [tabsBlocked, setTabsBlocked] = useState(false);
+
+	const router = useRouter();
+
+	const [uploadResults, setUploadResults] = useState<TUploadResult[]>([]);
+
+	const methods = useForm<TReleaseUpsert>({
 		mode: 'onSubmit',
+		resolver: zodResolver(schema),
 		defaultValues: {
-			area: {
-				data: ['all'],
-			},
-			platforms: ['all'],
+			labelName: 'ICECREAMMUSIC',
+			...release,
+			preview: undefined,
+			roles: release?.roles ? releaseRolesSchema.parse(release.roles) : [],
+			area: release?.area
+				? releaseAreaSchema.parse(release.area)
+				: {
+						negate: false,
+						data: ['all'],
+					},
+			platforms: release?.platforms
+				? releasePlatformsSchema.parse(release.platforms)
+				: ['all'],
+			yandexSoonNewRelease: release?.yandexSoonNewRelease ?? undefined,
+			tracks: release?.tracks
+				? release.tracks.map((t) => {
+						const {
+							track,
+							text_sync,
+							ringtone,
+							video,
+							video_shot,
+							...trackData
+						} = t;
+						const roles = trackRolesSchema.parse(trackData.roles);
+						const author_rights = Number(trackData.author_rights);
+						return {
+							...trackData,
+							trackId: trackData.id,
+							roles,
+							author_rights,
+							instant_gratification: trackData.instant_gratification
+								? new Date(trackData.instant_gratification)
+								: undefined,
+						};
+					})
+				: [],
 		},
 	});
-	const {} = methods;
 
-	const onSubmit: SubmitHandler<TReleaseInsertForm> = (data) => {
-		console.log(data);
-		// action({
-		// 	...data,
-		// 	preview:
-		// 		data.preview.type.split('/')[data.preview.type.split('/').length - 1],
-		// });
+	const onSubmit: SubmitHandler<TReleaseUpsert> = async (data) => {
+		const filesToUpload: TUploadFile[] = [];
+
+		if (!isUpdating) {
+			const dataResult = await releaseInsertSchema.safeParse(data);
+
+			if (!dataResult.success) {
+				return;
+			}
+
+			const newReleaseData = dataResult.data;
+
+			const urlsResult = await createRelease({
+				...newReleaseData,
+				preview: newReleaseData.preview.name.split('.').at(-1)!,
+				tracks: newReleaseData.tracks.map((track) => ({
+					...track,
+					track: track.track.name.split('.').at(-1)!,
+					video: track.video?.name.split('.').at(-1),
+					video_shot: track.video_shot?.name.split('.').at(-1),
+					text_sync: track.text_sync?.name.split('.').at(-1),
+					ringtone: track.ringtone?.name.split('.').at(-1),
+				})),
+			});
+
+			if (!urlsResult.success) {
+				return;
+			}
+
+			filesToUpload.push({
+				file: newReleaseData.preview,
+				url: urlsResult.data.release.preview,
+				belongsTo: 'release',
+				type: 'preview',
+			});
+
+			const tracksLen = urlsResult.data.tracks.length;
+
+			for (let trackIndex = 0; trackIndex < tracksLen; trackIndex++) {
+				filesToUpload.push({
+					file: newReleaseData.tracks[trackIndex].track,
+					url: urlsResult.data.tracks[trackIndex].track,
+					type: 'track',
+					belongsTo: 'track',
+					trackIndex,
+				});
+
+				const trackTextSync = data.tracks[trackIndex].text_sync;
+				const trackTextSyncUrl = urlsResult.data.tracks[trackIndex].text_sync;
+
+				if (trackTextSync && trackTextSyncUrl) {
+					filesToUpload.push({
+						file: trackTextSync,
+						url: trackTextSyncUrl,
+						type: 'text_sync',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackVideo = data.tracks[trackIndex].video;
+				const trackVideoUrl = urlsResult.data.tracks[trackIndex].video;
+
+				if (trackVideo && trackVideoUrl) {
+					filesToUpload.push({
+						file: trackVideo,
+						url: trackVideoUrl,
+						type: 'video',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackVideoShot = data.tracks[trackIndex].video_shot;
+				const trackVideoShotUrl = urlsResult.data.tracks[trackIndex].video_shot;
+
+				if (trackVideoShot && trackVideoShotUrl) {
+					filesToUpload.push({
+						file: trackVideoShot,
+						url: trackVideoShotUrl,
+						type: 'video_shot',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackRingtone = data.tracks[trackIndex].ringtone;
+				const trackRingtoneUrl = urlsResult.data.tracks[trackIndex].ringtone;
+
+				if (trackRingtone && trackRingtoneUrl) {
+					filesToUpload.push({
+						file: trackRingtone,
+						url: trackRingtoneUrl,
+						type: 'ringtone',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+			}
+		} else {
+			const dataResult = await releaseUpdateSchema.safeParse(data);
+
+			if (!dataResult.success) {
+				return;
+			}
+
+			const updatedReleaseData = dataResult.data;
+
+			const urlsResult = await updateRelease(release.id, {
+				...updatedReleaseData,
+				preview: updatedReleaseData.preview?.name.split('.').at(-1),
+				tracks: updatedReleaseData?.tracks?.map((track) => ({
+					...track,
+					track: track?.track?.name.split('.').at(-1),
+					video: track.video?.name.split('.').at(-1),
+					video_shot: track.video_shot?.name.split('.').at(-1),
+					text_sync: track.text_sync?.name.split('.').at(-1),
+					ringtone: track.ringtone?.name.split('.').at(-1),
+				})),
+			});
+
+			if (
+				!urlsResult.success ||
+				(urlsResult.data.tracks.length === updatedReleaseData.tracks.length &&
+					!updatedReleaseData.tracks?.length)
+			) {
+				return;
+			}
+
+			if (!!urlsResult.data.release?.preview && updatedReleaseData.preview) {
+				filesToUpload.push({
+					file: updatedReleaseData.preview,
+					url: urlsResult.data.release.preview,
+					belongsTo: 'release',
+					type: 'preview',
+				});
+			}
+
+			for (
+				let trackIndex = 0;
+				trackIndex < urlsResult.data.tracks.length;
+				trackIndex++
+			) {
+				const trackFile = updatedReleaseData.tracks[trackIndex].track;
+				const trackUrl = urlsResult.data.tracks[trackIndex].track;
+
+				if (!!trackFile && !!trackUrl) {
+					filesToUpload.push({
+						file: trackFile,
+						url: trackUrl,
+						type: 'track',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackTextSync = updatedReleaseData.tracks[trackIndex].text_sync;
+				const trackTextSyncUrl = urlsResult.data.tracks[trackIndex].text_sync;
+
+				if (!!trackTextSync && !!trackTextSyncUrl) {
+					filesToUpload.push({
+						file: trackTextSync,
+						url: trackTextSyncUrl,
+						type: 'text_sync',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackVideo = updatedReleaseData.tracks[trackIndex].video;
+				const trackVideoUrl = urlsResult.data.tracks[trackIndex].video;
+
+				if (!!trackVideo && !!trackVideoUrl) {
+					filesToUpload.push({
+						file: trackVideo,
+						url: trackVideoUrl,
+						type: 'video',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackVideoShot = updatedReleaseData.tracks[trackIndex].video_shot;
+				const trackVideoShotUrl = urlsResult.data.tracks[trackIndex].video_shot;
+
+				if (!!trackVideoShot && !!trackVideoShotUrl) {
+					filesToUpload.push({
+						file: trackVideoShot,
+						url: trackVideoShotUrl,
+						type: 'video_shot',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+
+				const trackRingtone = updatedReleaseData.tracks[trackIndex].ringtone;
+				const trackRingtoneUrl = urlsResult.data.tracks[trackIndex].ringtone;
+
+				if (!!trackRingtone && !!trackRingtoneUrl) {
+					filesToUpload.push({
+						file: trackRingtone,
+						url: trackRingtoneUrl,
+						type: 'ringtone',
+						belongsTo: 'track',
+						trackIndex,
+					});
+				}
+			}
+		}
+
+		const uploadResults: TUploadResult[] = filesToUpload
+			.map((f) => {
+				let uploaderTitle = '';
+
+				if (f.belongsTo === 'release') {
+					uploaderTitle = `${localization[f.type]} к релизу`;
+				}
+
+				if (f.belongsTo === 'track') {
+					uploaderTitle = `${localization[f.type]} к треку №${f.trackIndex + 1}`;
+				}
+
+				return {
+					...f,
+					title: uploaderTitle,
+					progress: 0,
+				};
+			})
+			.map((upload, index) => {
+				const { retry } = uploadBlob({
+					file: upload.file,
+					uploadUrl: upload.url,
+					onProgress: (progress) => {
+						setUploadResults((prevResults) => {
+							const preUpdated = prevResults.slice(0, index);
+
+							const postUpdated = prevResults.slice(index + 1);
+
+							const updated: TUploadResult = {
+								...upload,
+								progress,
+							};
+							return [...preUpdated, updated, ...postUpdated];
+						});
+					},
+					onFinish: (result) => {
+						setUploadResults((prevResults) => {
+							const preUpdated = prevResults.slice(0, index);
+
+							const postUpdated = prevResults.slice(index + 1);
+
+							const updated: TUploadResult = {
+								...upload,
+								progress: 1,
+								result,
+							};
+
+							return [...preUpdated, updated, ...postUpdated];
+						});
+					},
+					meta: {
+						filename: upload.title,
+					},
+				});
+				return {
+					...upload,
+					retry,
+				};
+			});
+
+		setUploadResults(uploadResults);
+
+		setTabsBlocked(true);
+
+		setCurrentTab('Upload');
 	};
 
 	return (
 		<FormProvider {...methods}>
-			<form onSubmit={methods.handleSubmit(onSubmit)}>
+			<form
+				onSubmit={methods.handleSubmit(onSubmit, (data) => console.log(data))}>
 				<div className='w-full'>
-					<Tabs aria-label='Main'>
+					<Tabs
+						aria-label='Main'
+						isDisabled={tabsBlocked}
+						selectedKey={currentTab}
+						onSelectionChange={setCurrentTab}>
 						<Tab key='Main' title='Информация по релизу'>
 							<div className='w-full grid grid-cols-4 gap-5'>
 								<Preview />
@@ -67,7 +417,7 @@ export default function NewRelizeForm() {
 							</div>
 						</Tab>
 						<Tab key='Tracks' title='Список треков'>
-							<Tracks />
+							<Tracks isUpdating={isUpdating} />
 						</Tab>
 						<Tab key='Additional' title='Дополнительные параметры'>
 							<div className='flex flex-col gap-5'>
@@ -84,6 +434,33 @@ export default function NewRelizeForm() {
 								type='submit'>
 								Отправить релиз
 							</Button>
+						</Tab>
+						<Tab key='Upload' title='Загрузка'>
+							<div className='flex flex-col gap-5'>
+								{uploadResults.length > 0 &&
+									uploadResults.map((upload) => {
+										return (
+											<UploadVisualizer
+												key={upload.url}
+												file={upload.file}
+												title={upload.title}
+												result={upload.result}
+												progress={upload.progress}
+												retryAction={upload.retry}
+											/>
+										);
+									})}
+							</div>
+							{uploadResults.length === 0 && <p>Нечего загружать</p>}
+							{uploadResults.every((upload) => upload.result?.success) && (
+								<button
+									type='button'
+									onClick={() => {
+										router.push('/dashboard/relizes/my-relizes');
+									}}>
+									Завершить
+								</button>
+							)}
 						</Tab>
 					</Tabs>
 				</div>

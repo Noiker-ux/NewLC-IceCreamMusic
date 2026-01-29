@@ -1,3 +1,4 @@
+import { Payment } from '@a2seven/yoo-checkout';
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from '@nestia/core';
 import {
   BadRequestException,
@@ -10,21 +11,21 @@ import {
 } from '@nestjs/common';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
-import { and, eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
+import { and, asc, eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import {
+  authorRightsSchema,
   releaseAreaSchema,
   releaseRolesSchema,
   trackRolesSchema,
 } from 'shared/schema/release.schema';
-import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
-import { SessionService } from '../auth/session.service';
+import { SessionService, TUser } from '../auth/session.service';
+import { User } from '../auth/user.decorator';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
-import { ReleaseService } from './release.sercice';
-import { FinanceService } from '../finance/finance.service';
-import { Payment } from '@a2seven/yoo-checkout';
+import { ReleaseService } from './release.service';
+import { Primitive } from 'typia';
 
 export type TPromoLink = InferSelectModel<typeof schema.promoLinks>;
 
@@ -45,32 +46,37 @@ export type TGetSpecificReleaseResponse = {
   data: TCompleteReleaseData;
 };
 
-export type TReleaseInsert = Primitive<
-  Omit<InferInsertModel<typeof schema.release>, 'id' | 'authorId'>
+export type TReleaseInsert = Omit<
+  InferInsertModel<typeof schema.release>,
+  'id' | 'authorId' | 'confirmed' | 'status' | 'rejectReason'
 >;
 
-export type TTrackInsert = Primitive<
-  Omit<InferInsertModel<typeof schema.track>, 'id' | 'releaseId' | 'index'>
+export type TReleaseUpdate = Partial<TReleaseInsert>;
+
+export type TTrackInsert = Omit<
+  InferInsertModel<typeof schema.track>,
+  'id' | 'releaseId' | 'index'
+>;
+
+export type TTrackUpdate = Partial<
+  Omit<InferInsertModel<typeof schema.track>, 'releaseId'>
 >;
 
 export type TCreateReleaseBody = {
-  release: TReleaseInsert;
-  tracks: TTrackInsert[];
+  release: Primitive<TReleaseInsert>;
+  tracks: Primitive<TTrackInsert>[];
 };
 
 export type TCreateReleaseResponse = {
-  preview: string;
-  tracks: {
-    track: string;
-    text_sync?: string;
-    video?: string;
-    video_shot?: string;
-    ringtone?: string;
-  }[];
+  release: Pick<TRelease, 'preview'>;
+  tracks: Pick<
+    TTrack,
+    'track' | 'text_sync' | 'video' | 'video_shot' | 'ringtone'
+  >[];
 };
 
 export type TUpdateTrackBody = {
-  data: Primitive<Partial<Omit<TTrack, 'id' | 'releaseId'>>>;
+  data: TTrackUpdate;
 };
 
 export type TUpdateTrackResponse = {
@@ -81,24 +87,36 @@ export type TUpdateTrackResponse = {
   ringtone?: string;
 };
 
-export type TUpdateReleaseBody = { data: Primitive<Partial<TReleaseInsert>> };
+export type TUpdateReleaseBody = {
+  release: Primitive<TReleaseUpdate>;
+  tracks: Primitive<{ id: TTrack['id']; data: TTrackUpdate }>[];
+};
 
 export type TUpdateReleaseResponse = {
-  preview?: string;
+  release?: Partial<Pick<TRelease, 'preview'>>;
+  tracks: Partial<
+    Pick<TTrack, 'track' | 'text_sync' | 'video' | 'video_shot' | 'ringtone'>
+  >[];
 };
 
 export type TUpdateReleaseStatusBody = {
-  data: TRelease['status'];
+  status: TRelease['status'];
+  rejectReason?: string;
+  upc?: string;
 };
 
 export type TGetReleasePriceResponse = {
   data: Payment['receipt']['items'];
 };
 
+export type TGetReleasePeice = {
+  data: Payment['receipt']['items'];
+};
+
 @ApiTags('releases')
 @ApiSecurity('bearer')
 @UseGuards(AuthGuard)
-@Controller('releases')
+@Controller({ version: '1', path: 'releases' })
 export class ReleaseController {
   logger = new Logger(ReleaseController.name);
 
@@ -106,21 +124,35 @@ export class ReleaseController {
     @Inject('DB_TAG') private readonly db: DB,
     private readonly sessionService: SessionService,
     private readonly releaseService: ReleaseService,
-    private readonly financeService: FinanceService,
   ) {}
+
+  @AdminGuard()
+  @TypedRoute.Get('/status/:statusType')
+  async getReleases(
+    @TypedParam('statusType') statusType: TRelease['status'],
+    @TypedQuery() params: TPageQuery,
+  ): Promise<TGetReleaseListResponse> {
+    const releases = await this.db.query.release.findMany({
+      where: eq(schema.release.status, statusType),
+      with: {
+        tracks: { orderBy: asc(schema.track.index) },
+        promoLinks: true,
+      },
+      limit: params.size,
+      offset: (params.page - 1) * params.size,
+    });
+
+    return { data: releases };
+  }
 
   @TypedRoute.Get('my')
   async getMyReleases(
-    @Session() sessionToken: string,
+    @User() user: TUser,
     @TypedQuery() params: TPageQuery,
   ): Promise<TGetReleaseListResponse> {
-    const { user } = await this.sessionService.validateSession(sessionToken);
-
-    if (!user) throw new ForbiddenException('Необходима авторизация');
-
     const releases = await this.db.query.release.findMany({
       where: eq(schema.release.authorId, user.id),
-      with: { tracks: true, promoLinks: true },
+      with: { tracks: { orderBy: asc(schema.track.index) }, promoLinks: true },
       limit: params.size,
       offset: (params.page - 1) * params.size,
     });
@@ -140,41 +172,17 @@ export class ReleaseController {
     const release = await this.db.query.release.findFirst({
       where: eq(schema.release.id, releaseId),
       with: {
-        tracks: true,
+        tracks: { orderBy: asc(schema.track.index) },
         promoLinks: true,
       },
     });
 
     if (!release) throw new BadRequestException('Релиз не найден');
 
-    if (release.authorId !== user.id || !user.isAdmin)
+    if (release.authorId !== user.id && !user.isAdmin)
       throw new ForbiddenException('Недостаточно прав для просмотра релиза');
 
     return { data: release };
-  }
-
-  @TypedRoute.Get(':releaseId/price')
-  async getReleasePrice(
-    @Session() sessionToken: string,
-    @TypedParam('releaseId') releaseId: string,
-  ) {
-    const { user } = await this.sessionService.validateSession(sessionToken);
-
-    if (!user) throw new ForbiddenException('Необходима авторизация');
-
-    const release = await this.db.query.release.findFirst({
-      where: eq(schema.release.id, releaseId),
-    });
-
-    if (!release || release.authorId !== user.id)
-      throw new BadRequestException('Релиз не найден');
-
-    const subscriptionLevel = user.subscriptionLevel ?? 'none';
-
-    return this.financeService.calculateReleaseEstimate(
-      release.id,
-      subscriptionLevel,
-    );
   }
 
   @AdminGuard()
@@ -185,19 +193,13 @@ export class ReleaseController {
   ): Promise<TGetReleaseListResponse> {
     const releases = await this.db.query.release.findMany({
       where: eq(schema.release.authorId, userId),
-      with: { tracks: true, promoLinks: true },
+      with: { tracks: { orderBy: asc(schema.track.index) }, promoLinks: true },
       limit: params.size,
       offset: (params.page - 1) * params.size,
     });
 
     return { data: releases };
   }
-
-  // @TypedRoute.Get(':releaseId/tracks')
-  // async getReleaseTracks() {}
-
-  // @TypedRoute.Get(':releaseId/tracks/:trackId')
-  // async getReleaseTrack() {}
 
   @TypedRoute.Post()
   async createRelease(
@@ -262,10 +264,20 @@ export class ReleaseController {
 
         const trackRolesResult = trackRolesSchema.safeParse(currentTrack.roles);
 
-        if (trackRolesResult.success)
+        if (!trackRolesResult.success)
           throw new BadRequestException(
             `Не верный формат ролей в треке ${0} (${currentTrack.title})`,
           );
+
+        const authorRightsResult = authorRightsSchema.safeParse(
+          currentTrack.author_rights,
+        );
+
+        if (!authorRightsResult.success) {
+          throw new BadRequestException(
+            `Не верный формат прав автора в треке ${0} (${currentTrack.title})`,
+          );
+        }
 
         const trackInstantGratification = currentTrack.instant_gratification
           ? new Date(currentTrack.instant_gratification)
@@ -324,14 +336,19 @@ export class ReleaseController {
 
         trackUrls.push({
           track: trackPublicUrl,
-          text_sync: trackTextSyncPublicUrl,
-          ringtone: trackRingtonePublicUrl,
-          video: trackVideoPublicUrl,
-          video_shot: trackVideoShotPublicUrl,
+          text_sync: trackTextSyncPublicUrl ?? null,
+          ringtone: trackRingtonePublicUrl ?? null,
+          video: trackVideoPublicUrl ?? null,
+          video_shot: trackVideoShotPublicUrl ?? null,
         });
       }
 
-      return { preview: publicReleasePreviewUrl, tracks: trackUrls };
+      return {
+        release: {
+          preview: publicReleasePreviewUrl,
+        },
+        tracks: trackUrls,
+      };
     });
   }
 
@@ -429,59 +446,150 @@ export class ReleaseController {
 
   @TypedRoute.Patch(':releaseId')
   async updateRelease(
-    @Session() sessionToken: string,
+    @User() user: TUser,
     @TypedParam('releaseId') releaseId: string,
     @TypedBody() body: TUpdateReleaseBody,
   ): Promise<TUpdateReleaseResponse> {
-    const { user } = await this.sessionService.validateSession(sessionToken);
+    this.logger.log('releaseId', releaseId);
+    this.logger.log('body', body);
+    this.logger.log('user', user);
 
-    if (!user) throw new ForbiddenException('Необходима авторизация');
-
-    const { data } = body;
+    const { release, tracks } = body;
 
     return await this.db.transaction(async (tx) => {
-      const release = await tx.query.release.findFirst({
+      const existingRelease = await tx.query.release.findFirst({
         where: eq(schema.release.id, releaseId),
       });
 
-      if (!release) throw new BadRequestException('Релиз не найден');
+      if (!existingRelease) throw new BadRequestException('Релиз не найден');
 
-      if (release.authorId !== user.id)
+      if (existingRelease.authorId !== user.id)
         throw new ForbiddenException('Недостаточно прав');
 
-      const releasePreviewUrl = data.preview
+      const releasePreviewUrl = existingRelease.preview
         ? await this.releaseService.createPutUrl(
             'previews',
-            `${releaseId}.${data.preview}`,
+            `${releaseId}.${release.preview}`,
           )
         : '';
 
-      const releaseDate = data.releaseDate
-        ? new Date(data.releaseDate)
+      const releaseDate = release.releaseDate
+        ? new Date(release.releaseDate)
         : undefined;
 
-      const startDate = data.startDate ? new Date(data.startDate) : undefined;
-
-      const preorderDate = data.preorderDate
-        ? new Date(data.preorderDate)
+      const startDate = release.startDate
+        ? new Date(release.startDate)
         : undefined;
 
-      const yandexSoonNewRelease = data.yandexSoonNewRelease
-        ? new Date(data.yandexSoonNewRelease)
+      const preorderDate = release.preorderDate
+        ? new Date(release.preorderDate)
+        : undefined;
+
+      const yandexSoonNewRelease = release.yandexSoonNewRelease
+        ? new Date(release.yandexSoonNewRelease)
         : undefined;
 
       await tx
         .update(schema.release)
         .set({
-          ...data,
+          ...release,
           releaseDate,
           startDate,
           preorderDate,
           yandexSoonNewRelease,
         })
-        .where(eq(schema.release.id, release.id));
+        .where(eq(schema.release.id, releaseId));
 
-      return { preview: releasePreviewUrl };
+      const trackUrls: TUpdateReleaseResponse['tracks'] = [];
+
+      for (let trackIndex = 0; trackIndex < tracks.length; trackIndex++) {
+        const { id: trackId, data: trackData } = tracks[trackIndex];
+
+        const existingTrack = await tx.query.track.findFirst({
+          where: and(
+            eq(schema.track.id, trackId),
+            eq(schema.track.releaseId, releaseId),
+          ),
+        });
+
+        if (!existingTrack) {
+          throw new BadRequestException(
+            `Один или несколько треков не найдены в релизе`,
+          );
+        }
+
+        const authorRightsResult = authorRightsSchema.safeParse(
+          trackData.author_rights,
+        );
+
+        if (!!trackData.author_rights && !authorRightsResult.success) {
+          throw new BadRequestException(
+            `Неверные данные в правах автора трека`,
+          );
+        }
+
+        const instantGratification = trackData.instant_gratification
+          ? new Date(trackData.instant_gratification)
+          : undefined;
+
+        await tx
+          .update(schema.track)
+          .set({
+            ...trackData,
+            instant_gratification: instantGratification,
+          })
+          .where(eq(schema.track.id, trackId));
+
+        const releaseTrackUrl = trackData.track
+          ? await this.releaseService.createPutUrl(
+              'tracks',
+              `${trackId}.${trackData.track}`,
+            )
+          : undefined;
+
+        const trackTextSyncUrl = trackData.text_sync
+          ? await this.releaseService.createPutUrl(
+              'syncs',
+              `${trackId}.${trackData.text_sync}`,
+            )
+          : undefined;
+
+        const trackRingtoneUrl = trackData.ringtone
+          ? await this.releaseService.createPutUrl(
+              'ringtones',
+              `${trackId}.${trackData.ringtone}`,
+            )
+          : undefined;
+
+        const trackVideoUrl = trackData.video
+          ? await this.releaseService.createPutUrl(
+              'videos',
+              `${trackId}.${trackData.video}`,
+            )
+          : undefined;
+
+        const trackVideoShotUrl = trackData.video_shot
+          ? await this.releaseService.createPutUrl(
+              'videoshots',
+              `${trackId}.${trackData.video_shot}`,
+            )
+          : undefined;
+
+        trackUrls.push({
+          track: releaseTrackUrl,
+          text_sync: trackTextSyncUrl,
+          ringtone: trackRingtoneUrl,
+          video: trackVideoUrl,
+          video_shot: trackVideoShotUrl,
+        });
+      }
+
+      return {
+        release: {
+          preview: releasePreviewUrl,
+        },
+        tracks: trackUrls,
+      };
     });
   }
 
@@ -518,13 +626,35 @@ export class ReleaseController {
     @TypedParam('releaseId') releaseId: string,
     @TypedBody() body: TUpdateReleaseStatusBody,
   ): Promise<TSuccessionResponse> {
-    await this.db.transaction(async (tx) => {
-      await tx
-        .update(schema.release)
-        .set({ status: body.data })
-        .where(eq(schema.release.id, releaseId));
-    });
+    return await this.db.transaction(async (tx) => {
+      if (body.status === 'approved' && !!body.upc) {
+        await tx
+          .update(schema.release)
+          .set({ upc: body.upc, status: body.status })
+          .where(eq(schema.release.id, releaseId));
 
-    return { success: true };
+        return { success: true };
+      }
+
+      if (body.status === 'rejected' && !!body.rejectReason) {
+        await tx
+          .update(schema.release)
+          .set({ rejectReason: body.rejectReason, status: body.status })
+          .where(eq(schema.release.id, releaseId));
+
+        return { success: true };
+      }
+
+      if (body.status === 'moderating') {
+        await tx
+          .update(schema.release)
+          .set({ status: body.status })
+          .where(eq(schema.release.id, releaseId));
+
+        return { success: true };
+      }
+
+      throw new BadRequestException('Неверные данные');
+    });
   }
 }

@@ -1,40 +1,25 @@
+import {
+	callbackCoolieName,
+	sessionCookieName,
+	sessionCookieOptions,
+	stateCookieName,
+	verifierCookeiName,
+} from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { tokensSchema, accountSchema } from '@/shared/lib/oauth/yandex';
 import { buildHostUrl } from '@/shared/lib/url/url';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { functional } from 'sdk';
-import { z } from 'zod';
-
-const tokensSchema = z.object({
-	refresh_token: z.string(),
-	access_token: z.string(),
-	token_type: z.string(),
-	expires_in: z.number(),
-	scope: z.string().optional(),
-});
-
-const accountSchema = z.object({
-	id: z.string(),
-	first_name: z.string(),
-	last_name: z.string(),
-	display_name: z.string(),
-	default_email: z.string(),
-	sex: z.string(),
-	birthday: z.string(),
-	default_avatar_id: z.string(),
-	is_avatar_empty: z.boolean(),
-	default_phone: z.object({
-		id: z.number(),
-		number: z.string(),
-	}),
-});
 
 const connection = createSDKConnection({});
 
 export async function GET(request: NextRequest) {
-	const requestUrl = buildHostUrl(request);
+	const requestUrl = buildHostUrl(
+		request.nextUrl.pathname + request.nextUrl.search,
+	);
 
-	const badRedirectUrl = requestUrl.clone();
+	const badRedirectUrl = new URL(requestUrl);
 
 	badRedirectUrl.search = '';
 
@@ -50,9 +35,9 @@ export async function GET(request: NextRequest) {
 
 	const cookiesStore = await cookies();
 
-	const cookieState = cookiesStore.get('icecream-yandex-state')?.value;
+	const cookieState = cookiesStore.get(stateCookieName)?.value;
 
-	const codeVerifier = cookiesStore.get('icecream-yandex-verifier')?.value;
+	const codeVerifier = cookiesStore.get(verifierCookeiName)?.value;
 
 	if (
 		!code ||
@@ -110,8 +95,6 @@ export async function GET(request: NextRequest) {
 
 	const userAccount = await accountResponse.json();
 
-	console.log(userAccount);
-
 	const accountValidationResult = accountSchema.safeParse(userAccount);
 
 	if (!accountValidationResult.success) {
@@ -129,7 +112,7 @@ export async function GET(request: NextRequest) {
 		'https://avatars.yandex.net/get-yapic',
 	);
 
-	const tokenRes = await functional.v1.auth.oauth.OAuthSignin(connection, {
+	const tokenRes = await functional.api.v1.auth.oauth.OAuthSignin(connection, {
 		provider: 'yandex',
 		providerAccountId: validAccount.id,
 		accessToken: validTokens.access_token,
@@ -141,22 +124,19 @@ export async function GET(request: NextRequest) {
 		name: validAccount.display_name,
 		avatar: avatarUrl.href,
 		verified: true,
-		phone: validAccount.default_phone.number,
+		phone: validAccount.default_phone?.number,
 	});
 
-	cookiesStore.delete('icecream-yandex-verifier');
+	cookiesStore.delete(verifierCookeiName);
 
-	cookiesStore.delete('icecream-yandex-state');
+	cookiesStore.delete(stateCookieName);
 
-	const callbackUrl = cookiesStore.get('icecream-callback')?.value;
+	const callbackUrl = cookiesStore.get(callbackCoolieName)?.value;
 
-	cookiesStore.delete('icecream-callback');
+	cookiesStore.delete(callbackCoolieName);
 
-	cookiesStore.set('icecream-auth', tokenRes.session_token, {
-		httpOnly: true,
-		secure: true,
-		sameSite: 'lax',
-		path: '/',
+	cookiesStore.set(sessionCookieName, tokenRes.session_token, {
+		...sessionCookieOptions,
 		maxAge: 60 * 60 * 24 * 30,
 	});
 
@@ -164,7 +144,7 @@ export async function GET(request: NextRequest) {
 		return NextResponse.redirect(callbackUrl, { headers: request.headers });
 	}
 
-	const goodRedirectUrl = badRedirectUrl.clone();
+	const goodRedirectUrl = new URL(badRedirectUrl);
 
 	goodRedirectUrl.pathname = '/';
 

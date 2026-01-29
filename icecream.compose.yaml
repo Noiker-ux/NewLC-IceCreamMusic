@@ -1,43 +1,65 @@
 services:
-  icecream_crud:
-    container_name: icecream_cron
-    image: icecreammusic_cron:latest
+  icecream-backend:
+    container_name: icecream_backend
+    image: icecream-backend:latest
+    extra_hosts:
+      - host.docker.internal:host-gateway
     environment:
+      #DB
       DB_USER: ${DB_USER:?error}
       DB_PASSWORD: ${DB_PASSWORD:?error}
       DB_HOST: postgres
       DB_PORT: ${DB_PORT:?error}
       DB_NAME: ${DB_NAME:?error}
+      #AUTH
+      SALT_ROUNDS: ${SALT_ROUNDS:?error}
+      #S3
+      S3_HOST: ${S3_HOST:?error}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:?error}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:?error}
+      S3_USE_SSL: ${S3_USE_SSL:?error}
+      NEXT_PUBLIC_S3_URL: ${NEXT_PUBLIC_S3_URL:?error}
+      #YOOKASSA
+      YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID:?error}
+      YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY:?error}
+      #NEXT
+      NEXT_PUBLIC_DOMAIN: ${NEXT_PUBLIC_DOMAIN:?error}
+      #BACKEND
+      SHOW_API_DOCS: ${SHOW_API_DOCS:?error}
     env_file:
       - .env
     restart: unless-stopped
     networks:
       - icecream
     depends_on:
+      - minio
       - postgres
-  icecream:
-    container_name: icecream_app
-    image: icecreammusic:latest
+  icecream-frontend:
+    container_name: icecream_frontend
+    image: icecream-frontend:latest
     environment:
+      #AUTH
       SALT_ROUNDS: ${SALT_ROUNDS:?error}
-      DB_HOST: postgres
-      DB_PORT: ${DB_PORT:?error}
-      DB_USER: ${DB_USER:?error}
-      DB_PASSWORD: ${DB_PASSWORD:?error}
-      DB_NAME: ${DB_NAME:?error}
+      AUTH_VK_ID: ${AUTH_VK_ID:?error}
+      AUTH_VK_SECRET: ${AUTH_VK_SECRET:?error}
+      AUTH_VK_SERVICE: ${AUTH_VK_SERVICE:?error}
+      AUTH_YANDEX_ID: ${AUTH_YANDEX_ID:?error}
+      AUTH_YANDEX_SECRET: ${AUTH_YANDEX_SECRET:?error}
+      #SMTP
       SMTP_HOST: ${SMTP_HOST:?error}
       SMTP_PORT: ${SMTP_PORT:?error}
-      SMTP_USER: ${SMTP_USER:?error}
       SMTP_SECURE: ${SMTP_SECURE:?error}
+      SMTP_USER: ${SMTP_USER:?error}
       SMTP_PASSWORD: ${SMTP_PASSWORD:?error}
-      S3_HOST: minio
-      S3_PORT: 9000
-      S3_ACCESS_KEY: ${S3_ACCESS_KEY:?error}
+      #S3
       NEXT_PUBLIC_S3_URL: ${NEXT_PUBLIC_S3_URL:?error}
+      #FRONTEND
+      NEXT_PUBLIC_DOMAIN: ${NEXT_PUBLIC_DOMAIN:?error}
+      #YOOKASSA
       YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID:?error}
       YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY:?error}
-      NEXT_PUBLIC_DOMAIN: ${NEXT_PUBLIC_DOMAIN:?error}
-      NODE_ENV: ${NODE_ENV:?error}
+      #BACKEND
+      API_URL: ${API_URL:?error}
     env_file:
       - .env
     restart: unless-stopped
@@ -46,11 +68,13 @@ services:
     depends_on:
       - postgres
       - minio
+    # volumes:
+    #   - ./apps/frontend/public:./app/public
     # ports:
     #   - "3000:3000"
   migration_tool:
     container_name: icecream_migration_tool
-    image: icecreammusic_migration:18-01-2025-13-30
+    image: icecream-migration-tool:latest
     environment:
       DB_USER: ${DB_USER:?error}
       DB_PASSWORD: ${DB_PASSWORD:?error}
@@ -78,8 +102,8 @@ services:
     networks:
       - icecream
     restart: unless-stopped
-    # ports:
-    #   - "9000:9000"
+    ports:
+      - "9000:9000"
     #   - "9001:9001"
   postgres: #port 5432
     container_name: icecream_data
@@ -118,6 +142,8 @@ services:
   proxy_manager:
     container_name: icecream_proxy
     image: "jc21/nginx-proxy-manager:latest"
+    extra_hosts:
+      - host.docker.internal:host-gateway
     ports:
       - "80:80"
       - "81:81"

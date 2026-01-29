@@ -5,17 +5,19 @@ import { Input } from '@heroui/input';
 import { Select, SelectItem } from '@heroui/select';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
+
+const roles = ['Исполнитель', 'feat.'];
 
 export default function PersonsAndRoles() {
-	const roles = ['Исполнитель', 'feat.'];
-	const { control, formState, getValues } =
-		useFormContext<TReleaseInsertForm>();
+	const { control, formState, getValues } = useFormContext<TReleaseUpsert>();
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'roles' as const,
 		rules: { required: 'Добавьте хотя бы одну персону и приисвойте ему роль' },
 	});
+
+	const rolesValue = getValues('roles');
 
 	return (
 		<div className='p-5'>
@@ -32,25 +34,17 @@ export default function PersonsAndRoles() {
 							control={control}
 							name={`roles.${i}.person`}
 							rules={{ required: 'Обязательное поле' }}
-							render={({ field }) => (
+							render={({ field, fieldState }) => (
 								<Input
 									label={`Персона №${i + 1}`}
 									labelPlacement={'outside'}
 									placeholder={'Имя персоны'}
 									type='text'
-									defaultValue=''
 									radius='sm'
-									isInvalid={
-										formState.errors[`roles`] &&
-										formState.errors[`roles`][i] &&
-										!!formState.errors[`roles`][i].person
-									}
-									errorMessage={
-										formState.errors[`roles`] &&
-										formState.errors[`roles`][i] &&
-										formState.errors[`roles`][i].person?.message?.toString()
-									}
-									{...field}
+									isInvalid={!!fieldState.error}
+									errorMessage={fieldState.error?.message}
+									value={field.value}
+									onChange={field.onChange}
 								/>
 							)}
 						/>
@@ -58,26 +52,19 @@ export default function PersonsAndRoles() {
 							control={control}
 							name={`roles.${i}.role`}
 							rules={{ required: 'Обязательное поле' }}
-							render={({ field }) => (
+							render={({ field, fieldState }) => (
 								<Select
 									label='Выберите роль'
 									labelPlacement='outside'
 									radius='sm'
 									defaultSelectedKeys={['Исполнитель']}
 									placeholder='Выберите роль'
-									isInvalid={
-										formState.errors[`roles`] &&
-										formState.errors[`roles`][i] &&
-										!!formState.errors[`roles`][i].role
-									}
 									selectedKeys={field.value ? [field.value] : []}
-									onSelectionChange={field.onChange}
-									errorMessage={
-										formState.errors[`roles`] &&
-										formState.errors[`roles`][i] &&
-										formState.errors[`roles`][i].role?.message?.toString()
-									}
-									{...field}>
+									onSelectionChange={(e) => {
+										field.onChange(e.anchorKey);
+									}}
+									isInvalid={!!fieldState.error}
+									errorMessage={fieldState.error?.message}>
 									{roles.map((r) => (
 										<SelectItem key={r}>{r}</SelectItem>
 									))}
@@ -98,7 +85,7 @@ export default function PersonsAndRoles() {
 					</div>
 				))}
 				<div className='flex flex-col gap-2 mt-2 '>
-					{getValues('roles') && getValues('roles').length > 0 ? (
+					{rolesValue && rolesValue.length > 0 ? (
 						''
 					) : (
 						<span className='text-tiny text-danger'>

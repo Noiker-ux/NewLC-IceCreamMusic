@@ -4,6 +4,13 @@ import { FaTelegramPlane } from 'react-icons/fa';
 import { FaVk } from 'react-icons/fa';
 import { RiWhatsappFill } from 'react-icons/ri';
 import { FaViber } from 'react-icons/fa6';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | FAQ',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export const dynamic = 'force-dynamic';
 export default function FAQPage() {
@@ -31,7 +38,9 @@ export default function FAQPage() {
 					<ul className='mt-3 flex flex-col gap-2'>
 						<li className='flex gap-3 items-center'>
 							<FaTelegramPlane size={30} fill='#27a7e7' />
-							<a href=''>https://vk.com/audios314221407</a>
+							<a href='https://t.me/ICECREAMMUSICSUPPORTBOT'>
+								https://t.me/ICECREAMMUSICSUPPORTBOT
+							</a>
 						</li>
 						<li className='flex gap-3 items-center'>
 							<FaVk size={30} fill='#4d7198' />
@@ -39,18 +48,7 @@ export default function FAQPage() {
 								https://vk.com/icecreammusicru
 							</a>
 						</li>
-						<li className='flex gap-3 items-center'>
-							<RiWhatsappFill size={30} fill='#43d854' />
-							<a href=''>https://vk.com/audios314221407</a>
-						</li>
-						<li className='flex gap-3 items-center'>
-							<FaViber size={30} fill='#59267c' />
-							<a href=''>https://vk.com/audios314221407</a>
-						</li>
 					</ul>
-				</div>
-				<div className='w-3/12 flex justify-center mobile:hidden'>
-					{/* <LogoStroke className={'icepath'} /> */}
 				</div>
 			</div>
 		</div>

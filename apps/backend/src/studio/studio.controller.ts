@@ -9,56 +9,50 @@ import {
 } from '@nestjs/common';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
-import { eq, InferSelectModel } from 'drizzle-orm';
+import { eq, InferInsertModel } from 'drizzle-orm';
 import { Client } from 'minio';
 import { InjectMinio } from 'nestjs-minio';
-import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { StudioService } from './studio.service';
+import { TrueOmit } from '../../../../packages/shared/lib/types/omit';
 
-export type TStudioData = Primitive<InferSelectModel<typeof schema.studios>>;
+export type TStudio = InferInsertModel<typeof schema.studios>;
 
-export type TStudioPhotoData = Primitive<
-  InferSelectModel<typeof schema.studioPhotos>
->;
+export type TStudioPhoto = InferInsertModel<typeof schema.studioPhotos>;
 
-export type TStudioTeamData = Primitive<
-  InferSelectModel<typeof schema.studioTeam>
->;
+export type TStudioTeam = InferInsertModel<typeof schema.studioTeam>;
 
-export type TStudioStatData = Primitive<
-  InferSelectModel<typeof schema.studioStats>
->;
+export type TStudioStat = InferInsertModel<typeof schema.studioStats>;
 
-export type TCompleteStudioData = TStudioData & {
-  photos: TStudioPhotoData[];
-  team: TStudioTeamData[];
-  stats: TStudioStatData[];
+export type TCompleteStudioData = TStudio & {
+  photos: TStudioPhoto[];
+  team: TStudioTeam[];
+  stats: TStudioStat[];
 };
 
 export type TGetStudiosResponse = TCompleteStudioData[];
 
 export type TCreateStudioBody = {
-  studio: Omit<TStudioData, 'id'>;
-  photos: Omit<TStudioPhotoData, 'id' | 'studioId'>[];
-  employees: Omit<TStudioTeamData, 'id' | 'studioId'>[];
-  stats: Omit<TStudioStatData, 'id' | 'studioId'>[];
+  studio: Omit<TStudio, 'id'>;
+  photos: Omit<TStudioPhoto, 'id' | 'studioId'>[];
+  team: Omit<TStudioTeam, 'id' | 'studioId'>[];
+  stats: Omit<TStudioStat, 'id' | 'studioId'>[];
 };
 
 export type TCreateStudioResponse = {
-  studio: Pick<TStudioData, 'logo' | 'background'>;
-  photos: Pick<TStudioPhotoData, 'url'>[];
-  employees: Pick<TStudioTeamData, 'photo'>[];
+  studio: Pick<TStudio, 'logo' | 'background'>;
+  photos: Pick<TStudioPhoto, 'url'>[];
+  team: Pick<TStudioTeam, 'photo'>[];
 };
 
-export type TAddPhotoBody = Omit<TStudioPhotoData, 'id' | 'studioId'>;
+export type TAddPhotoBody = Omit<TStudioPhoto, 'id' | 'studioId'>;
 
-export type TAddPhotoResponse = Pick<TStudioPhotoData, 'url'>;
+export type TAddPhotoResponse = Pick<TStudioPhoto, 'url'>;
 
 export type TAddStudioEmployeeBody = {
-  data: Omit<TStudioTeamData, 'id' | 'studioId'>;
+  data: Omit<TStudioTeam, 'id' | 'studioId'>;
 };
 
 export type TAddStudioEmployeeResponse = {
@@ -70,20 +64,27 @@ export type TUpdateStudioEmployee = {
 };
 
 export type TAddStudioStatsBody = {
-  data: Omit<TStudioStatData, 'id' | 'studioId'>;
+  data: Omit<TStudioStat, 'id' | 'studioId'>;
 };
 
 export type TUpdateStudioBody = {
-  data: Partial<Omit<TStudioData, 'id'>>;
+  studio: Partial<TrueOmit<TStudio, 'id'>>;
+  photos: Partial<TrueOmit<TStudioPhoto, 'studioId'>>[];
+  team: Partial<TrueOmit<TStudioTeam, 'studioId'>>[];
+  stats: Partial<TrueOmit<TStudioStat, 'studioId'>>[];
 };
 
 export type TUpdateStudioResponse = {
-  logo: string;
-  background: string;
+  studio: {
+    logo: string;
+    background: string;
+  };
+  photos: { url: string }[];
+  team: { photo: string }[];
 };
 
 @ApiTags('studios')
-@Controller('studios')
+@Controller({ version: '1', path: 'studios' })
 export class StudioController {
   logger = new Logger(StudioController.name);
 
@@ -129,7 +130,7 @@ export class StudioController {
   async createStudio(
     @TypedBody() body: TCreateStudioBody,
   ): Promise<TCreateStudioResponse> {
-    const { photos, studio, employees, stats } = body;
+    const { photos, studio, team, stats } = body;
 
     const result = await this.db.transaction(async (tx) => {
       const newStudio = (
@@ -174,30 +175,30 @@ export class StudioController {
         photoUrls.push({ url: photoUrl });
       }
 
-      const employeesData = employees.map((e) => ({
+      const employeesData = team.map((e) => ({
         ...e,
         studioId: newStudio.id,
       }));
 
-      const newEmployees = await tx
+      const newTeam = await tx
         .insert(schema.studioTeam)
         .values(employeesData)
         .returning();
 
-      if (newEmployees.length !== employees.length)
+      if (newTeam.length !== team.length)
         throw new InternalServerErrorException(
           'Ошибка при создании фотографий студии',
         );
 
-      const employeePhotoUrls: TCreateStudioResponse['employees'] = [];
+      const teamPhotoUrls: TCreateStudioResponse['team'] = [];
 
-      for (const employee of newEmployees) {
+      for (const teammate of newTeam) {
         const photoUrl = await this.studioService.createPublicUrl(
           'studio-employees',
-          `${employee.id}.${employee.photo}`,
+          `${teammate.id}.${teammate.photo}`,
         );
 
-        employeePhotoUrls.push({ photo: photoUrl });
+        teamPhotoUrls.push({ photo: photoUrl });
       }
 
       const statsData = stats.map((s) => ({ ...s, studioId: newStudio.id }));
@@ -217,14 +218,14 @@ export class StudioController {
         photos: photoUrls,
         logo: logoPublicUrl,
         background: backgroundPublicUrl,
-        employees: employeePhotoUrls,
+        team: teamPhotoUrls,
       };
     });
 
     return {
       studio: { logo: result.logo, background: result.background },
       photos: result.photos,
-      employees: result.employees,
+      team: result.team,
     };
   }
 
@@ -436,49 +437,68 @@ export class StudioController {
     return { success: true };
   }
 
-  @ApiSecurity('bearer')
-  @UseGuards(AuthGuard)
-  @AdminGuard()
-  @TypedRoute.Patch(':studioId')
-  async updateStudio(
-    @TypedBody() body: TUpdateStudioBody,
-    @TypedParam('studioId') studioId: string,
-  ): Promise<TUpdateStudioResponse> {
-    const { data } = body;
+  // @ApiSecurity('bearer')
+  // @UseGuards(AuthGuard)
+  // @AdminGuard()
+  // @TypedRoute.Patch(':studioId')
+  // async updateStudio(
+  //   @TypedBody() body: TUpdateStudioBody,
+  //   @TypedParam('studioId') studioId: string,
+  // ): Promise<TUpdateStudioResponse> {
+  //   const { studio, stats, team, photos } = body;
 
-    return await this.db.transaction(async (tx) => {
-      const studio = await tx.query.studios.findFirst({
-        where: eq(schema.studios.id, studioId),
-      });
+  //   return await this.db.transaction(async (tx) => {
+  //     const existingStudio = await tx.query.studios.findFirst({
+  //       where: eq(schema.studios.id, studioId),
+  //     });
 
-      if (!studio) throw new BadRequestException('Студия не найдена');
+  //     if (!existingStudio) throw new BadRequestException('Студия не найдена');
 
-      const noLogoResult = await tx
-        .update(schema.studios)
-        .set(data)
-        .where(eq(schema.studios.id, studioId))
-        .returning();
+  //     const noLogoResult = await tx
+  //       .update(schema.studios)
+  //       .set(studio)
+  //       .where(eq(schema.studios.id, studioId))
+  //       .returning();
 
-      if (noLogoResult.length !== 1)
-        throw new InternalServerErrorException('Ошибка при обновлении студии');
+  //     if (noLogoResult.length !== 1)
+  //       throw new InternalServerErrorException('Ошибка при обновлении студии');
 
-      const logoUrl = data.logo
-        ? await this.studioService.createPublicUrl(
-            'studios',
-            `${studioId}:${data.logo}`,
-          )
-        : '';
+  //     const logoUrl = studio.logo
+  //       ? await this.studioService.createPublicUrl(
+  //           'studios',
+  //           `${studioId}:${studio.logo}`,
+  //         )
+  //       : '';
 
-      const backgroundUrl = data.background
-        ? await this.studioService.createPublicUrl(
-            'studio-backgrounds',
-            `${studioId}:${data.background}`,
-          )
-        : '';
+  //     const backgroundUrl = studio.background
+  //       ? await this.studioService.createPublicUrl(
+  //           'studio-backgrounds',
+  //           `${studioId}:${studio.background}`,
+  //         )
+  //       : '';
 
-      return { logo: logoUrl, background: backgroundUrl };
-    });
-  }
+  //     const statLen = stats.length;
+
+  //     for (let statIndex = 0; statIndex < statLen; statIndex++) {
+  //       const stat = stats[statIndex];
+
+  //       const statId = stat.id;
+
+  //       const statName = stat.name;
+
+  //       const statValue = stat.value;
+
+  //       if (!statId && statName && statValue) {
+  //         await tx
+  //           .insert(schema.studioStats)
+  //           .values({ name: statName, studioId: studioId, value: statValue })
+  //           .returning();
+  //       }
+  //     }
+
+  //     return { logo: logoUrl, background: backgroundUrl };
+  //   });
+  // }
 
   @ApiSecurity('bearer')
   @UseGuards(AuthGuard)

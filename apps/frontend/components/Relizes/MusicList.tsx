@@ -1,4 +1,4 @@
-import { CiPlay1 } from 'react-icons/ci';
+import { CiPlay1, CiPause1 } from 'react-icons/ci';
 
 import { Button } from '@heroui/button';
 
@@ -6,82 +6,122 @@ import { Tooltip } from '@heroui/tooltip';
 
 import {
 	MusicalNoteIcon,
-	Bars3BottomLeftIcon,
 	PlayCircleIcon,
 	DocumentTextIcon,
 	ArrowDownTrayIcon,
+	VideoCameraIcon,
 } from '@heroicons/react/24/outline';
-export default function MusicList() {
+import { TTrack } from 'shared/schema/release.schema';
+import { Primitive } from 'sdk';
+import React, { useRef } from 'react';
+import { cn } from '@/utils/cn';
+import { toast } from 'sonner';
+import Link from 'next/link';
+import ModalTextTrack from './ModalTextTrack';
+import FileList from './FileList';
+
+export default function MusicList({ tracks }: { tracks: Primitive<TTrack>[] }) {
+	const ringtoneRef = useRef<HTMLAnchorElement | null>(null);
+	const syncTextRef = useRef<HTMLAnchorElement | null>(null);
+	const videoRef = useRef<HTMLAnchorElement | null>(null);
+	const videoShotRef = useRef<HTMLAnchorElement | null>(null);
+	const trackRef = useRef<HTMLAnchorElement | null>(null);
+	const trackRefAudio = useRef<HTMLAudioElement | null>(null);
+
+	const [play, setPlay] = React.useState(false);
+	const handlePlayAudio = () => {
+		if (trackRefAudio.current) {
+			if (!play) {
+				trackRefAudio.current.play();
+				setPlay(true);
+			} else {
+				trackRefAudio.current.pause();
+				setPlay(false);
+			}
+		} else {
+			toast.error('Не удалось воспроизвести трек');
+		}
+	};
+
 	return (
 		<div className='mt-3'>
-			<div className='grid grid-cols-[50px,50px,1fr,1fr,1fr,1fr,1fr,200px] border-t-1 border-b-1  border-zinc-800 justify-between py-2 px-5'>
-				<p>№</p>
-				<p></p>
-				<p className='text-center'>Название</p>
-				<p className='text-center'>Исполнитель</p>
-				<p className='text-center'>Длительность</p>
-				<p className='text-center'>Доля прав</p>
-				<p className='text-center'>Сервисы</p>
-				<p className='text-end'>Файл</p>
-			</div>
+			<div
+				className='grid grid-cols-[50px,50px,1fr,1fr,1fr,1fr,1fr,200px] border-t-1  items-center
+			 border-zinc-800 justify-between py-2 gap-y-2 px-5'>
+				<p className='border-zinc-800 pb-2 border-b-1'>№</p>
+				<p className='border-zinc-800 pb-2 border-b-1'> </p>
+				<p className='border-zinc-800 pb-2 text-center border-b-1'>Название</p>
+				<p className='border-zinc-800 pb-2 text-center border-b-1'>
+					Подзаголовок
+				</p>
+				<p className='border-zinc-800 pb-2 text-center border-b-1'>
+					Длительность
+				</p>
+				<p className='border-zinc-800 pb-2 text-center border-b-1'>Доля прав</p>
+				<p className='border-zinc-800 pb-2 text-center border-b-1'>Сервисы</p>
+				<p className='border-zinc-800 pb-2 text-end border-b-1'>Файл</p>
 
-			<div className='grid gap-y-2 items-center grid-cols-[50px,50px,1fr,1fr,1fr,1fr,1fr,200px] py-2 px-5'>
-				<p>1</p>
-				<Button isIconOnly variant='light'>
-					<CiPlay1 />
-				</Button>
-				<p className='text-center'>Ведьма</p>
-				<p className='text-center'>Роки</p>
-				<p className='text-center'>02:36</p>
-				<p className='text-center'>100%</p>
-				<div className='flex justify-center items-center'>
-					<Tooltip
-						content={
-							<div className='p-2'>
-								<p>Рингтон доступен</p>
-							</div>
-						}>
-						<Button isIconOnly variant='light'>
-							<MusicalNoteIcon width={20} />
+				{tracks.map((track) => (
+					<React.Fragment key={track.title}>
+						<p>{track.index + 1}</p>
+						<Button
+							isIconOnly
+							variant='light'
+							onPress={() => {
+								handlePlayAudio();
+							}}>
+							{play ? <CiPause1 /> : <CiPlay1 />}
+							<figure className='hidden'>
+								<audio
+									ref={trackRefAudio}
+									controls
+									src={`${process.env.NEXT_PUBLIC_S3_URL}/tracks/${track.id}.${track.track}`}></audio>
+							</figure>
 						</Button>
-					</Tooltip>
-					<Tooltip
-						content={
-							<div className='p-2'>
-								<p>Текст трека доступен</p>
-							</div>
-						}>
-						<Button isIconOnly variant='light'>
-							<Bars3BottomLeftIcon width={20} />
-						</Button>
-					</Tooltip>
-					<Tooltip
-						content={
-							<div className='p-2'>
-								<p>Синхронизированный текст трека доступен</p>
-							</div>
-						}>
-						<Button isIconOnly variant='light'>
-							<DocumentTextIcon width={20} />
-						</Button>
-					</Tooltip>
-					<Tooltip
-						content={
-							<div className='p-2'>
-								<p>Видео доступно</p>
-								<p>Нажмите чтобы увидеть UPC, ISRC</p>
-							</div>
-						}>
-						<Button isIconOnly variant='light'>
-							<PlayCircleIcon width={20} />
-						</Button>
-					</Tooltip>
-				</div>
-				<div className='flex justify-end items-center'>
-					<Button isIconOnly className='bg-indigo-700'>
-						<ArrowDownTrayIcon width={20} />
-					</Button>
-				</div>
+						<p className='text-center'>{track.title}</p>
+						<p className='text-center'>{track.subtitle}</p>
+						<p className='text-center'>
+							{(Number(trackRefAudio.current?.duration) / 60).toFixed(2)}
+						</p>
+						<p className='text-center'>{track.author_rights}%</p>
+						<div className='flex justify-center items-center gap-2'>
+							<FileList
+								disabled={false}
+								track={{
+									id: track.id,
+									ringtone: track.ringtone,
+									video: track.video,
+									text_sync: track.text_sync,
+									text: track.text,
+									video_shot: track.video_shot,
+									track: track.track,
+								}}
+								downloadTrackFile={false}
+							/>
+						</div>
+						<div className='flex justify-end items-center'>
+							<Button
+								isIconOnly
+								className='bg-indigo-700'
+								onPress={() => {
+									if (!track.track) {
+										toast.error('Не удалось скачать трек');
+										return;
+									}
+									trackRef.current?.click();
+								}}>
+								<ArrowDownTrayIcon width={20} />
+								<Link
+									download={true}
+									href={`${process.env.NEXT_PUBLIC_S3_URL}/tracks/${track.id}.${track.track}`}
+									className='hidden'
+									ref={trackRef}>
+									track
+								</Link>
+							</Button>
+						</div>
+					</React.Fragment>
+				))}
 			</div>
 		</div>
 	);

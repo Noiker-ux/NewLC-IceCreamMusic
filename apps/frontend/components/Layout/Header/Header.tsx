@@ -1,36 +1,23 @@
-'use client';
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
-import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
-import Notification from '../Notification/Notification';
+import { actionGetPersonalData } from '@/components/Account/actionGetPersonalData';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import SideBarMobile from '../SideBar/SideBarMobile/SideBarMobile';
-import Image from 'next/image';
 
-export default function Header() {
-	const userNavigation = [
-		{ name: 'Мой профиль', href: '/account/profile' },
-		{ name: 'Выход', href: '#' },
+import Link, { LinkProps } from 'next/link';
+import ModalPayout from '../ModalPayout/ModalPayout';
+import { actionLogOut } from '../SideBar/SideBarFooter/actionLogOut';
+import ShowUser from './ShowUser';
+
+export default async function Header() {
+	const userNavigation: (LinkProps & { name: string })[] = [
+		{ name: 'Мой профиль', href: '/dashboard/account/profile' },
 	];
-
-	const [sidebarOpen, setSidebarOpen] = useState(false);
-
+	const AccountData = await actionGetPersonalData();
 	return (
 		<>
-			<SideBarMobile
-				sidebarOpen={sidebarOpen}
-				setSidebarOpen={setSidebarOpen}
-			/>
 			<div
 				style={{ boxShadow: `1px 1px 30px 30px #0a0a0a` }}
 				className='sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4   bg-[var(--background)] px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8'>
-				<button
-					type='button'
-					onClick={() => setSidebarOpen(true)}
-					className='-m-2.5 p-2.5 text-gray-700 lg:hidden'>
-					<span className='sr-only'>Open sidebar</span>
-					<Bars3Icon aria-hidden='true' className='size-6' />
-				</button>
-
+				<SideBarMobile />
 				{/* Separator */}
 				<div aria-hidden='true' className='h-6 w-px bg-gray-900/10 lg:hidden' />
 
@@ -40,42 +27,48 @@ export default function Header() {
 						<p>Сервис работает</p>
 					</div>
 					<div className='flex items-center gap-x-4 lg:gap-x-6'>
-						<Notification />
+						{/* <Notification /> */}
 						{/* Profile dropdown */}
+						{AccountData.success && (
+							<span className='uppercase'>
+								{AccountData.data.subscriptionLevel}
+							</span>
+						)}
+						{AccountData.success && (
+							<ModalPayout maxBalance={AccountData.data.balance}>
+								{AccountData.data.balance.toFixed(2)}
+							</ModalPayout>
+						)}
+
+						{AccountData.success &&
+							(AccountData.data.isVerifiedAuthor ? (
+								<span className='text-green-600 fw-600'>Верифицирован </span>
+							) : (
+								<span className='text-red-700 fw-600'>Не верифицирован </span>
+							))}
+
 						<Menu as='div' className='relative'>
 							<MenuButton className='-m-1.5 flex items-center p-1.5'>
 								<span className='sr-only'>Open user menu</span>
-								<Image
-									width={32}
-									height={32}
-									alt=''
-									src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-									className='size-8 rounded-full bg-zinc-900'
-								/>
-								<span className='hidden lg:flex lg:items-center'>
-									<span
-										aria-hidden='true'
-										className='ml-4 text-sm/6 font-semibold '>
-										Tom Cook
-									</span>
-									<ChevronDownIcon
-										aria-hidden='true'
-										className='ml-2 size-5 text-gray-400'
-									/>
-								</span>
+								<ShowUser />
 							</MenuButton>
 							<MenuItems
 								transition
 								className='absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-zinc-800 py-2 ring-1 shadow-lg ring-gray-900/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in'>
-								{userNavigation.map((item) => (
-									<MenuItem key={item.name}>
-										<a
-											href={item.href}
-											className='block px-3 py-1 text-sm/6  data-focus:bg-gray-50 data-focus:outline-hidden'>
-											{item.name}
-										</a>
-									</MenuItem>
-								))}
+								{userNavigation.map((item) => {
+									{
+										const { name, ...otherProps } = item;
+										return (
+											<MenuItem key={name}>
+												<Link
+													{...otherProps}
+													className='block px-3 py-1 text-sm/6  data-focus:bg-gray-50 data-focus:outline-hidden'>
+													{name}
+												</Link>
+											</MenuItem>
+										);
+									}
+								})}
 							</MenuItems>
 						</Menu>
 					</div>

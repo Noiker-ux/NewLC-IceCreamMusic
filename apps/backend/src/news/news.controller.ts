@@ -10,7 +10,6 @@ import {
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
@@ -20,8 +19,9 @@ export type TNewsData = InferSelectModel<typeof schema.news>;
 
 export type TGetNewsResponse = TNewsData[];
 
-export type TCreateNews = Primitive<
-  Omit<InferInsertModel<typeof schema.news>, 'id' | 'createdAt'>
+export type TCreateNews = Omit<
+  InferInsertModel<typeof schema.news>,
+  'id' | 'createdAt'
 >;
 
 export type TUpdateNews = Partial<TCreateNews>;
@@ -39,7 +39,7 @@ export type TGetNewsByIdResponse = {
 };
 
 @ApiTags('news')
-@Controller('news')
+@Controller({ version: '1', path: 'news' })
 export class NewsController {
   logger = new Logger(NewsController.name);
 

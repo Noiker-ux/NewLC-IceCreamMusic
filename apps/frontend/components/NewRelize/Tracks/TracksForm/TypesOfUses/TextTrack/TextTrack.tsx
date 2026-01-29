@@ -1,7 +1,7 @@
 import { Textarea } from '@heroui/react';
 import { Tooltip } from '@heroui/tooltip';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { TReleaseInsertForm } from '@/schema/release.schema';
+import { TReleaseInsertForm } from 'shared/schema/release.schema';
 import { useFormContext } from 'react-hook-form';
 export default function TextTrack({ trackIndex }: { trackIndex: number }) {
 	const { register } = useFormContext<TReleaseInsertForm>();

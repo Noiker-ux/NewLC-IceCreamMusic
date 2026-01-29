@@ -1,7 +1,14 @@
 import NewsDetail from '@/components/News/NewsDetail/NewsDetail';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
-import { functional, Primitive } from 'sdk';
-import { TGetNewsByIdResponse } from 'sdk/lib/news/news.controller';
+import { functional } from 'sdk';
+import { checkUserAdmin } from '../../checkUserAdmin';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Админ панель Новости',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +23,9 @@ export default async function NewsDetailPageAdmin({
 }: {
 	params: Promise<{ detail: string }>;
 }) {
-	const newsDetail = await functional.v1.news.getNewsById(
+	await checkUserAdmin();
+
+	const newsDetail = await functional.api.v1.news.getNewsById(
 		connection,
 		(await params).detail,
 	);

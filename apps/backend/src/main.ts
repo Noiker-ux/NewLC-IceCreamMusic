@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConsoleLogger } from '@nestjs/common';
+import { ConsoleLogger, VersioningType } from '@nestjs/common';
 import { NestiaSwaggerComposer } from '@nestia/sdk';
 import { SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 const swaggerCDN = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.7.2';
 
@@ -16,9 +17,15 @@ async function bootstrap() {
 
   app.enableCors();
 
-  app.setGlobalPrefix('v1');
+  app.setGlobalPrefix('api');
 
-  if (JSON.parse(process.env.SHOW_API_DOCS ?? 'false')) {
+  app.enableVersioning({ prefix: 'v', type: VersioningType.URI });
+
+  const config = app.get(ConfigService);
+
+  const nodeEnv = config.get<string>('NODE_ENV');
+
+  if (nodeEnv === 'development') {
     const document = await NestiaSwaggerComposer.document(app, {
       openapi: '3.1',
       servers: [

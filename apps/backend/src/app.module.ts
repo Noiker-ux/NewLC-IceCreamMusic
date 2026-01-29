@@ -1,24 +1,25 @@
 import { DrizzlePGModule } from '@knaadh/nestjs-drizzle-pg';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ScheduleModule } from '@nestjs/schedule';
 import * as dbSchema from 'db/schema';
-import { AuthModule } from './auth/auth.module';
-import { TaskModule } from './task/task.module';
-import { VerificationModule } from './verification/verification.module';
-import { FinanceModule } from './finance/finance.module';
 import { NestMinioModule } from 'nestjs-minio';
+import { AnalytickMdule } from './analytics/analytics.module';
+import { AppController } from './app.controller';
+import { AuthModule } from './auth/auth.module';
 import { FAQModule } from './faq/faq.module';
+import { FinanceModule } from './finance/finance.module';
 import { NewsModule } from './news/news.module';
 import { PromoLinkModule } from './promo-link/promo-link.module';
-import { StudioModule } from './studio/studio.module';
 import { ReleaseModule } from './release/release.module';
+import { StudioModule } from './studio/studio.module';
+import { TaskModule } from './task/task.module';
 import { UserModule } from './user/user.module';
-import { AppController } from './app.controller';
-import { AnalytickMdule } from './analytics/analytics.module';
+import { VerificationModule } from './verification/verification.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     DrizzlePGModule.registerAsync({
       tag: 'DB_TAG',
@@ -48,20 +49,21 @@ import { AnalytickMdule } from './analytics/analytics.module';
       inject: [ConfigService],
       useFactory(config: ConfigService) {
         const s3Endpoint = config.getOrThrow<string>('S3_HOST');
-        const s3Port = config.getOrThrow<number>('S3_PORT');
+        const s3port = config.get<number>('S3_PORT');
         const s3AccessKey = config.getOrThrow<string>('S3_ACCESS_KEY');
         const s3SecretKey = config.getOrThrow<string>('S3_SECRET_KEY');
+        const s3UseSSLValue = config.getOrThrow<string>('S3_USE_SSL');
+        const s3UseSSL = s3UseSSLValue === 'true';
 
         return {
           endPoint: s3Endpoint,
-          port: s3Port,
-          useSSL: false,
+          port: !!s3port ? s3port : undefined,
+          useSSL: s3UseSSL,
           accessKey: s3AccessKey,
           secretKey: s3SecretKey,
         };
       },
     }),
-    ScheduleModule.forRoot(),
     AuthModule,
     AnalytickMdule,
     FAQModule,

@@ -1,0 +1,1 @@
+ALTER TABLE "icecream"."verification" ADD COLUMN "contract" text DEFAULT '' NOT NULL;

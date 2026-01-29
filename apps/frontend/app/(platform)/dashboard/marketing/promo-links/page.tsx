@@ -1,6 +1,13 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import PromoLinkCartLong from '@/components/PromoLink/PromoLinkCartLong/PromoLinkCartLong';
 import { Input } from '@heroui/input';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Промо ссылки',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export default function PromoLinksPage() {
 	return (

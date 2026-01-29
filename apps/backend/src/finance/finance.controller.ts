@@ -13,13 +13,12 @@ import {
 } from '@nestjs/common';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
-import { and, eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
+import { and, eq, InferInsertModel, InferSelectModel, sql } from 'drizzle-orm';
 import { premiumPlans } from 'shared/helpers/premiumPlans';
 import {
   releaseMetadataSchema,
   subscriptionMetadataSchema,
 } from 'shared/schema/order.schema';
-import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
@@ -27,6 +26,9 @@ import { SessionService } from '../auth/session.service';
 import { checkout, currency } from '../shared/checkout';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { FinanceService } from './finance.service';
+import { users } from 'db/schema';
+
+export type TSelectUserSchema = InferSelectModel<typeof users>;
 
 export type TCreateOrderResponse = {
   redirect_url: string;
@@ -49,7 +51,9 @@ export type TMakeOrderResponse = {
 export type TPayoutTicketData = InferSelectModel<typeof schema.payouts>;
 
 export type TGetPayoutTicketsResponse = {
-  data: TPayoutTicketData[];
+  data: (TPayoutTicketData & {
+    user: Pick<TSelectUserSchema, 'id' | 'name'>;
+  })[];
 };
 
 export type TGetPayoutTicketsQuery = TPageQuery & {
@@ -61,17 +65,28 @@ export type TGetPayoutTicketResponse = {
 };
 
 export type TCreatePayoutTicketBody = {
-  data: Primitive<
-    Pick<InferInsertModel<typeof schema.payouts>, 'recieverName' | 'amount'>
+  data: Pick<
+    InferInsertModel<typeof schema.payouts>,
+    'recieverName' | 'amount' | 'accountNumber'
   >;
 };
 
 export type TUpdatePayoutTicketStatusBody = {
-  data: Pick<Primitive<TPayoutTicketData>, 'confirmed'>;
+  data: Pick<TPayoutTicketData, 'confirmed'>;
+};
+
+export type TReceiptItems = Payment['receipt']['items'];
+
+export type TGetSubscriptionEstimateResponse = {
+  data: TReceiptItems;
+};
+
+export type TGetReleaseEstimateResponse = {
+  data: TReceiptItems;
 };
 
 @ApiTags('finance')
-@Controller('finance')
+@Controller({ version: '1', path: 'finance' })
 export class FinanceController {
   logger = new Logger(FinanceController.name);
 
@@ -137,7 +152,7 @@ export class FinanceController {
         premiumPlans[body.subscriptionLevel].name
       }"`;
 
-      returnPath = '/dashboard/news';
+      returnPath = '/dashboard/main/news';
 
       orderMetadata = { subscriptionLevel: body.subscriptionLevel };
 
@@ -167,7 +182,7 @@ export class FinanceController {
       `Basic ${btoa(`${process.env.YOOKASSA_SHOP_ID}:${process.env.YOOKASSA_SECRET_KEY}`)}`,
     );
 
-    headers.append('Idempotence-Key', '');
+    headers.append('Idempotence-Key', `${Date.now()}`);
 
     const payment = await checkout
       .createPayment({
@@ -283,6 +298,7 @@ export class FinanceController {
             freeReleases:
               premiumPlans[subscriptionResult.data.subscriptionLevel!]
                 .freeReleases,
+            subscriptionExpires: expireDate,
           })
           .where(eq(schema.users.id, order.userId));
       }
@@ -306,6 +322,11 @@ export class FinanceController {
     return {
       data: await this.db.query.payouts.findMany({
         where: eq(schema.payouts.confirmed, params.confirmed ?? false),
+        with: {
+          user: {
+            columns: { id: true, name: true },
+          },
+        },
         limit: params.size,
         offset: (params.page - 1) * params.size,
       }),
@@ -329,6 +350,9 @@ export class FinanceController {
           eq(schema.payouts.confirmed, params.confirmed ?? false),
           eq(schema.payouts.userId, user?.id),
         ),
+        with: {
+          user: { columns: { id: true, name: true } },
+        },
         limit: params.size,
         offset: (params.page - 1) * params.size,
       }),
@@ -348,6 +372,14 @@ export class FinanceController {
 
     const ticket = await this.db.query.payouts.findFirst({
       where: eq(schema.payouts.id, ticketId),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     if (!ticket) throw new NotFoundException('Тикет не найден');
@@ -375,6 +407,7 @@ export class FinanceController {
       userId: user.id,
       amount: body.data.amount,
       recieverName: body.data.recieverName,
+      accountNumber: body.data.accountNumber,
       confirmed: false,
     });
 
@@ -389,13 +422,75 @@ export class FinanceController {
     @TypedParam('ticketId') ticketId: string,
     @TypedBody() body: TUpdatePayoutTicketStatusBody,
   ): Promise<TSuccessionResponse> {
-    await this.db
-      .update(schema.payouts)
-      .set({
-        confirmed: body.data.confirmed,
-      })
-      .where(eq(schema.payouts.id, ticketId));
+    await this.db.transaction(async (tx) => {
+      const ticket = await tx.query.payouts.findFirst({
+        where: eq(schema.payouts.id, ticketId),
+      });
+
+      if (!ticket) throw new BadRequestException('Тикет не найден');
+
+      await tx
+        .update(schema.payouts)
+        .set({
+          confirmed: body.data.confirmed,
+        })
+        .where(eq(schema.payouts.id, ticket.id));
+
+      if (body.data.confirmed) {
+        await tx
+          .update(schema.users)
+          .set({
+            balance: sql`${schema.users.balance} - ${ticket.amount ?? 0}`,
+          })
+          .where(eq(schema.users.id, ticket.userId));
+      }
+    });
 
     return { success: true };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @TypedRoute.Get('/subscription/:level')
+  getSubscriptionEstimate(
+    @TypedParam('level')
+    level: NonNullable<TSelectUserSchema['subscriptionLevel']>,
+  ): TGetSubscriptionEstimateResponse {
+    const result = this.financeService.calculateSubscriptionEstimate(level);
+
+    return {
+      data: result,
+    };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @TypedRoute.Get('/release/:releaseId')
+  async getReleaseEstimate(
+    @Session() sessionToken: string,
+    @TypedParam('releaseId') releaseId: string,
+  ): Promise<TGetReleaseEstimateResponse> {
+    const { user } = await this.sessionService.validateSession(sessionToken);
+
+    if (!user) {
+      throw new UnauthorizedException('Не авторизован');
+    }
+
+    const release = await this.db.query.release.findFirst({
+      where: eq(schema.release.id, releaseId),
+    });
+
+    if (!release || release.authorId !== user.id) {
+      throw new NotFoundException('Релиз не найден');
+    }
+
+    const result = await this.financeService.calculateReleaseEstimate(
+      releaseId,
+      user.subscriptionLevel ?? 'none',
+    );
+
+    return {
+      data: result,
+    };
   }
 }

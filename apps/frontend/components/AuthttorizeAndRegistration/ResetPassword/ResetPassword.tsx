@@ -1,11 +1,14 @@
 'use client';
-import { resetPasswordSchema, TResetPassword } from '@/schema/reset.schema';
+import {
+	resetPasswordSchema,
+	TResetPassword,
+} from 'shared/schema/reset.schema';
+import { Button } from '@heroui/button';
+import { Input } from '@heroui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { resetPassword } from '@/actions/auth';
-import classNames from 'classnames';
-import { Input } from '@heroui/input';
-import { Button } from '@heroui/button';
+import { resetPassword } from './action';
+import { useRouter } from 'next/navigation';
 
 type TResetPasswordForm = {
 	token: string;
@@ -21,18 +24,31 @@ export function ResetPasswordForm({ token }: TResetPasswordForm) {
 		defaultValues: {},
 	});
 
+	const router = useRouter();
+
 	return (
 		<form
-			className={classNames('w100', 'center', 'col', 'gap10')}
-			onSubmit={handleSubmit((data) => resetPassword(data.password, token))}>
+			className='w-full flex flex-col gap-5 center col gap10'
+			onSubmit={handleSubmit(async (data) => {
+				const result = await resetPassword(token, data.password);
+
+				if (result.success) {
+					router.push('/auth/signin');
+					return;
+				}
+
+				alert(result.error);
+			})}>
 			<Input
 				label='Введите новый пароль'
 				type='password'
+				className='w-full'
 				{...register('password')}
 			/>
 			<Input
 				label='Повторите пароль'
 				type='password'
+				className='w-full'
 				{...register('confirm')}
 			/>
 			<Button

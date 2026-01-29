@@ -1,14 +1,11 @@
-'use client';
-import StudiosPreview from './StudiosPreview/StudiosPreview';
 import { cn } from '@/utils/cn';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Mousewheel, Parallax, FreeMode, Autoplay } from 'swiper/modules';
-import style from './StudioDetail.module.css';
-import 'swiper/css';
-import Image from 'next/image';
-import StudioAbout from './StudioAbout/StudioAbout';
-import StudiosTeam from './StudiosTeam/StudiosTeam';
 import { TCompleteStudioData } from 'sdk/lib/studio/studio.controller';
+import StudioAbout from './StudioAbout/StudioAbout';
+import StudioPhotos from './StudioPhoto/StudioPhotos';
+import StudiosPreview from './StudiosPreview/StudiosPreview';
+import StudiosTeam from './StudiosTeam/StudiosTeam';
+import YMap from './StudioMap/StudioMap';
+import Link from 'next/link';
 export default function StudioDetail({
 	studio,
 }: {
@@ -35,37 +32,30 @@ export default function StudioDetail({
 					)}>
 					Фотографии студии:
 				</h2>
-				<Swiper
-					modules={[Mousewheel, Parallax, FreeMode, Autoplay]}
-					freeMode={true}
-					spaceBetween={50}
-					parallax={true}
-					breakpoints={{
-						0: {
-							slidesPerView: 2.5,
-						},
-						680: {
-							slidesPerView: 3.5,
-						},
-					}}>
-					<div className={cn(style['slider__wrapper'])}>
-						{studio.photos.map((photo) => (
-							<SwiperSlide key={photo.id} className={cn(style['slider__item'])}>
-								<Image
-									src={`${process.env.NEXT_PUBLIC_S3_URL}/studio-photos/${photo.id}.${
-										photo.url
-									}`}
-									alt=''
-									width={500}
-									height={500}
-									className={style['slider__img']}
-								/>
-							</SwiperSlide>
-						))}
-					</div>
-				</Swiper>
+				<StudioPhotos
+					photos={studio.photos.map((p) => ({
+						...p,
+						url: `${process.env.NEXT_PUBLIC_S3_URL}/studio-photos/${p.id}.${
+							p.url
+						}`,
+					}))}
+				/>
 			</div>
-			<StudiosTeam people={studio.team} />
+			{studio.team.length > 0 && <StudiosTeam people={studio.team} />}
+			{studio.lattitude && studio.longitude && (
+				<div className='mt-10'>
+					<YMap
+						lattitude={studio.lattitude}
+						longitude={studio.longitude}
+						address={studio.address}
+					/>
+				</div>
+			)}
+			{studio.contatUrl && (
+				<div className='mt-5'>
+					<Link href={studio.contatUrl}>Контакт</Link>
+				</div>
+			)}
 		</>
 	);
 }

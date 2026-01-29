@@ -15,6 +15,7 @@ export default function TarifCard({ tarifItem }: TTarifItem) {
 		listAdvantage,
 		price,
 		linkDetail,
+		buyLink,
 	} = tarifItem;
 
 	return (
@@ -54,12 +55,11 @@ export default function TarifCard({ tarifItem }: TTarifItem) {
 							<p className=' mt-2 '>{description}</p>
 							<ul
 								className={clsx(
-									'mt-3 grid gap-5 gap-x-4 w-fit',
-									listAdvantage.length > 3 && 'grid-cols-2 mobile:grid-cols-1',
+									'mt-3 grid gap-1 gap-x-4 w-fit list-none',
+									listAdvantage.length > 3 && 'grid-cols-1 mobile:grid-cols-1',
 								)}>
 								{listAdvantage.map((advantage) => (
-									<li key={advantage} className='relative  pl-3 ml-3'>
-										<FaRegCheckCircle className='absolute -left-3 top-1' />{' '}
+									<li key={advantage} className='relative  '>
 										{advantage}
 									</li>
 								))}
@@ -70,7 +70,7 @@ export default function TarifCard({ tarifItem }: TTarifItem) {
 						<Link className='btn' href={linkDetail}>
 							Подробнее
 						</Link>
-						<Link className='btn' href={'/'}>
+						<Link className='btn' href={buyLink}>
 							Оформить
 						</Link>
 					</div>

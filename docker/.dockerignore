@@ -1,14 +1,12 @@
 .next
 dist
 node_modules
-.env
 *.tar
 data
 letsencrypt
 .gitignore
 .git
 .eslintrc.json
-.env
 nodemon.json
 lib
 .turbo

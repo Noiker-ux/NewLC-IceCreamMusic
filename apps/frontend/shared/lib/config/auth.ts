@@ -1,4 +1,4 @@
-import { TAuthUserSchema } from '@/schema/user.schema';
+import { TAuthUserSchema } from 'shared/schema/user.schema';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
 export const routeTypes = ['guest', 'public'] as const;
@@ -7,17 +7,13 @@ export type RouteType = (typeof routeTypes)[number];
 
 export const routes: Record<RouteType, string[]> = {
 	guest: [
-		'/auth/signin',
-		'/auth/signup',
-		'/auth/confirm',
-		'/auth/recover',
-		'/auth/reset',
+		'/auth/*',
 	],
 	public: [
 		'/signout',
 		'/questions',
 		'/terms',
-		'/distributions',
+		'/distribution',
 		'/platforms',
 		'/',
 	],
@@ -25,11 +21,19 @@ export const routes: Record<RouteType, string[]> = {
 
 export const defaultAuthRedirect = '/dashboard';
 
-export const defaultAdminRedirect = '/admin/releases';
+export const defaultAdminRedirect = '/dashboard/admin/releases';
 
 export type TSessionData = TAuthUserSchema;
 
 export const sessionCookieName = 'icecream-auth';
+
+export const stateCookieName = 'icecream-state';
+
+export const challengeCookeiName = 'icecream-challenge';
+
+export const verifierCookeiName = 'icecream-verifier';
+
+export const callbackCoolieName = 'icecream-callback';
 
 export const sessionCookieOptions: Required<
 	Omit<

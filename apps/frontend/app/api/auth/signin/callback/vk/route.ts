@@ -1,40 +1,25 @@
+import {
+	callbackCoolieName,
+	sessionCookieName,
+	sessionCookieOptions,
+	stateCookieName,
+	verifierCookeiName,
+} from '@/shared/lib/config/auth';
 import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { accountSchema, tokensSchema } from '@/shared/lib/oauth/vk';
 import { buildHostUrl } from '@/shared/lib/url/url';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { functional } from 'sdk';
-import { z } from 'zod';
-
-const tokensSchema = z.object({
-	refresh_token: z.string(),
-	access_token: z.string(),
-	id_token: z.string(),
-	token_type: z.string(),
-	expires_in: z.number(),
-	user_id: z.number(),
-	state: z.string(),
-	scope: z.string(),
-});
-
-const accountSchema = z.object({
-	user: z.object({
-		user_id: z.string(),
-		first_name: z.string(),
-		last_name: z.string(),
-		avatar: z.string(),
-		email: z.string(),
-		sex: z.number(),
-		verified: z.boolean(),
-		birthday: z.string(),
-	}),
-});
 
 const connection = createSDKConnection({});
 
 export async function GET(request: NextRequest) {
-	const requestUrl = buildHostUrl(request);
+	const requestUrl = buildHostUrl(
+		request.nextUrl.pathname + request.nextUrl.search,
+	);
 
-	const badRedirectUrl = requestUrl.clone();
+	const badRedirectUrl = new URL(requestUrl);
 
 	badRedirectUrl.search = '';
 
@@ -52,9 +37,9 @@ export async function GET(request: NextRequest) {
 
 	const cookiesStore = await cookies();
 
-	const cookieState = cookiesStore.get('example-state')?.value;
+	const cookieState = cookiesStore.get(stateCookieName)?.value;
 
-	const codeVerifier = cookiesStore.get('example-verifier')?.value;
+	const codeVerifier = cookiesStore.get(verifierCookeiName)?.value;
 
 	if (
 		!code ||
@@ -96,6 +81,7 @@ export async function GET(request: NextRequest) {
 	const tokensResult = tokensSchema.safeParse(tokensData);
 
 	if (!tokensResult.success) {
+		console.error(new Date().toISOString() + ' ' + tokensResult.error.message);
 		return badRedirect;
 	}
 
@@ -136,7 +122,7 @@ export async function GET(request: NextRequest) {
 		new Date().getTime() + validTokens.expires_in * 1000,
 	);
 
-	const session = await functional.v1.auth.oauth
+	const session = await functional.api.v1.auth.oauth
 		.OAuthSignin(connection, {
 			providerAccountId: validAccount.user_id,
 			provider: 'vk',
@@ -148,7 +134,7 @@ export async function GET(request: NextRequest) {
 			scope: validTokens.scope,
 			name: `${validAccount.first_name} ${validAccount.last_name}`,
 			avatar: validAccount.avatar,
-			verified: validAccount.verified,
+			verified: true,
 		})
 		.catch((e) => console.error(new Date().toISOString() + ' ' + e.message));
 
@@ -156,21 +142,16 @@ export async function GET(request: NextRequest) {
 		return badRedirect;
 	}
 
-	cookiesStore.delete('icecream-vk-verifier');
+	cookiesStore.delete(verifierCookeiName);
 
-	cookiesStore.delete('icecream-vk-state');
+	cookiesStore.delete(stateCookieName);
 
-	const callbackUrl = cookiesStore.get('icecream-callback')?.value;
+	const callbackUrl = cookiesStore.get(callbackCoolieName)?.value;
 
-	cookiesStore.delete('icecream-callback');
+	cookiesStore.delete(callbackCoolieName);
 
-	cookiesStore.delete('icecream-callback');
-
-	cookiesStore.set('icecream-auth', session.session_token, {
-		httpOnly: true,
-		secure: true,
-		sameSite: 'lax',
-		path: '/',
+	cookiesStore.set(sessionCookieName, session.session_token, {
+		...sessionCookieOptions,
 		maxAge: 60 * 60 * 24 * 30,
 	});
 
@@ -178,7 +159,7 @@ export async function GET(request: NextRequest) {
 		return NextResponse.redirect(callbackUrl, { headers: request.headers });
 	}
 
-	const goodRedirectUrl = badRedirectUrl.clone();
+	const goodRedirectUrl = new URL(badRedirectUrl);
 
 	goodRedirectUrl.pathname = '/dashboard';
 

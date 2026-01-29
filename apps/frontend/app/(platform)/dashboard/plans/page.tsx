@@ -1,6 +1,13 @@
 import { TarifList } from '@/components/TarifCard/Tarif.list';
 import TarifCard from '@/components/TarifCard/TarifCard';
+import { Metadata } from 'next';
 import Image from 'next/image';
+
+export const metadata: Metadata = {
+	title: 'ICECREAMMUSIC | Тарифы',
+	description:
+		'ICECREAMMUSIC - Управляйте своим творчеством, продажами и маркетингом в одном месте, чтобы сделать вашу музыку заметной и доступной миллионам слушателей!',
+};
 
 export default function PlansPage() {
 	return (

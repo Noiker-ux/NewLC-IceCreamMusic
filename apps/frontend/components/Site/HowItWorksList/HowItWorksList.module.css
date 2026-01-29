@@ -1,0 +1,35 @@
+.wrapper {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 60px;
+	border-radius: 20px;
+
+	padding: 2rem 2rem;
+	color: var(--text-color);
+	border: 1px solid var(--border-color);
+	background-color: var(--card-BG-color);
+	box-shadow: 0px -1px 16px 1px var(--card-BG-color);
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 50px;
+}
+
+.desc {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+@media screen and (max-width: 1100px) {
+	.wrapper {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+@media screen and (max-width: 600px) {
+	.wrapper {
+		grid-template-columns: 1fr;
+	}
+}

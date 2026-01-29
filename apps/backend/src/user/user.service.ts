@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { type DB, schema } from 'db';
 import { eq } from 'drizzle-orm';
 import { Client } from 'minio';
@@ -8,29 +7,18 @@ import { InjectMinio } from 'nestjs-minio';
 @Injectable()
 export class UserService {
   constructor(
-    private readonly config: ConfigService,
     @InjectMinio() private readonly s3Client: Client,
     @Inject('DB_TAG') private readonly db: DB,
   ) {}
 
   async createPublicUrl(fileName: string) {
-    const s3PublicUrl = new URL(this.config.getOrThrow('NEXT_PUBLIC_S3_URL'));
-
-    const privateUrl = await this.s3Client.presignedPutObject(
+    const s3UploadUrl = await this.s3Client.presignedPutObject(
       'avatars',
       fileName,
       60 * 60,
     );
 
-    const publicUrl = new URL(privateUrl);
-
-    publicUrl.hostname = s3PublicUrl.hostname;
-
-    publicUrl.port = '';
-
-    publicUrl.protocol = s3PublicUrl.protocol;
-
-    return publicUrl.href;
+    return s3UploadUrl;
   }
 
   async deleteAssets(userId: string) {

@@ -47,3 +47,4 @@ data
 **/lib
 !apps/**/lib
 .turbo
+.vscode/**

@@ -8,15 +8,15 @@ import {
   Logger,
   UseGuards,
 } from '@nestjs/common';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { schema, type DB } from 'db';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { TPageQuery, TSuccessionResponse } from '../shared/types';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
-import { Primitive } from 'typia';
 import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
+import { TPageQuery, TSuccessionResponse } from '../shared/types';
+import { VerificationService } from './verification.service';
 
 export type TVerification = InferSelectModel<typeof schema.verification>;
 
@@ -25,11 +25,9 @@ export type VerificationTicketsResponse = TVerification[];
 export type TStatus = 'approved' | 'rejected' | 'moderating';
 
 export type TTicketRegistrationData = {
-  data: Primitive<
-    Omit<
-      InferInsertModel<typeof schema.verification>,
-      'rejectReason' | 'status' | 'userId' | 'id'
-    >
+  data: Omit<
+    InferInsertModel<typeof schema.verification>,
+    'rejectReason' | 'status' | 'userId' | 'id'
   >;
 };
 
@@ -41,8 +39,30 @@ export type TTicketUpdateBody = {
   data: Partial<TTicketRegistrationData['data']>;
 };
 
+export type TRegisterVerificationTicketResponse = {
+  data: {
+    contract: string;
+  };
+};
+
+export type TGetVerificationToken = {
+  data: TVerification | null;
+};
+
+export type TGetDownloadUrl = {
+  data: {
+    contract: string;
+  };
+};
+
+export type TUpdateCurrentVerificationTicketResponse = {
+  data: {
+    contract: string | null;
+  };
+};
+
 @ApiTags('verification')
-@Controller('verification')
+@Controller({ version: '1', path: 'verification' })
 @ApiSecurity('bearer')
 @UseGuards(AuthGuard)
 export class VerificationController {
@@ -51,6 +71,7 @@ export class VerificationController {
   constructor(
     @Inject('DB_TAG') private readonly db: DB,
     private readonly sessionService: SessionService,
+    private readonly verificationService: VerificationService,
   ) {}
 
   @AdminGuard()
@@ -72,7 +93,7 @@ export class VerificationController {
   async registerVerifiactionTicket(
     @TypedBody() body: TTicketRegistrationData,
     @Session() sessionToken: string,
-  ): Promise<TSuccessionResponse> {
+  ): Promise<TRegisterVerificationTicketResponse> {
     const { user } = await this.sessionService.validateSession(sessionToken);
 
     if (!user) throw new ForbiddenException('Недостаточно прав');
@@ -82,7 +103,7 @@ export class VerificationController {
 
     const { getDate, birthDate, ...insertionData } = body.data;
 
-    const rows = await this.db
+    const ticket = await this.db
       .insert(schema.verification)
       .values({
         userId: user.id,
@@ -90,16 +111,105 @@ export class VerificationController {
         getDate: new Date(getDate),
         birthDate: new Date(birthDate),
       })
+      .returning()
+      .then((result) => result[0])
       .catch((e) => this.logger.error(e));
 
-    if (!rows) throw new InternalServerErrorException('Что-то пошло не так');
+    if (!ticket) throw new InternalServerErrorException('Что-то пошло не так');
 
-    return { success: true };
+    const uploadContractUrl = await this.verificationService.createPublicUrl(
+      `${ticket.id}.${ticket.contract}`,
+    );
+
+    return {
+      data: {
+        contract: uploadContractUrl,
+      },
+    };
   }
 
-  // @AdminGuard()
-  // @TypedRoute.Delete(':ticketId')
-  // async deleteTicket() {}
+  @TypedRoute.Get('/current')
+  async getCurrentUserVerificationTicket(
+    @Session() sessionToken: string,
+  ): Promise<TGetVerificationToken> {
+    const { user } = await this.sessionService.validateSession(sessionToken);
+
+    if (!user) throw new ForbiddenException('Недостаточно прав');
+
+    const ticket = await this.db.query.verification.findFirst({
+      where: eq(schema.verification.userId, user.id),
+    });
+
+    if (!ticket)
+      return {
+        data: null,
+      };
+
+    return { data: ticket };
+  }
+
+  @TypedRoute.Patch('/current')
+  async updateCurrentUserVerificationTicket(
+    @Session() sessionToken: string,
+    @TypedBody() body: TTicketUpdateBody,
+  ): Promise<TUpdateCurrentVerificationTicketResponse> {
+    const { user } = await this.sessionService.validateSession(sessionToken);
+
+    if (!user) throw new ForbiddenException('Недостаточно прав');
+
+    const ticket = await this.db.query.verification.findFirst({
+      where: eq(schema.verification.userId, user.id),
+    });
+
+    if (!ticket) throw new BadRequestException('Тикета не существует');
+
+    const birthDate = body.data.birthDate
+      ? new Date(body.data.birthDate)
+      : undefined;
+
+    const getDate = body.data.getDate ? new Date(body.data.getDate) : undefined;
+
+    await this.db
+      .update(schema.verification)
+      .set({ ...body.data, birthDate, getDate })
+      .where(eq(schema.verification.id, ticket.id));
+
+    if (body.data.contract) {
+      const uploadContractUrl = await this.verificationService.createPublicUrl(
+        `${ticket.id}.${ticket.contract}`,
+      );
+
+      return {
+        data: {
+          contract: uploadContractUrl,
+        },
+      };
+    }
+
+    return {
+      data: {
+        contract: null,
+      },
+    };
+  }
+
+  @AdminGuard()
+  @TypedRoute.Get(':ticketId/contract')
+  async getContractDownloadUrl(
+    @TypedParam('ticketId') ticketId: string,
+  ): Promise<TGetDownloadUrl> {
+    const contractDownloadUrl =
+      await this.verificationService.getPublicUrl(ticketId);
+
+    if (!contractDownloadUrl)
+      throw new BadRequestException('Тикета не существует');
+
+    return {
+      data: {
+        contract: contractDownloadUrl,
+      },
+    };
+  }
 
   @TypedRoute.Patch(':ticketId')
   async updateTicket(

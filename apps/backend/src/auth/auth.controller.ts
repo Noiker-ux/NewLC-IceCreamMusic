@@ -6,16 +6,20 @@ import {
   InternalServerErrorException,
   Logger,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { compare } from 'bcrypt-ts';
 import { DB, schema, verificationTokenTypeValues } from 'db';
-import { and, eq, InferSelectModel } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { AuthService } from './auth.service';
 import { Session } from './session.decorator';
 import { SessionService } from './session.service';
 import { TSuccessionResponse } from '../shared/types';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from './auth.guard';
+import { User } from './user.decorator';
+import { TUserData } from '../user/user.controller';
 
 export type TOauthAccountData = {
   providerAccountId: string;
@@ -73,12 +77,10 @@ export type TRequestPasswordRecoveryResponse = {
   emailToken: string;
 };
 
-export type TUser = InferSelectModel<typeof schema.users>;
-
 export type TTokenValue = (typeof verificationTokenTypeValues)[number];
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller({ version: '1', path: 'auth' })
 export class AuthController {
   logger = new Logger(AuthController.name);
 
@@ -90,15 +92,8 @@ export class AuthController {
   ) {}
 
   @TypedRoute.Get()
-  async checkSessionToken(
-    @Session() token: string,
-  ): Promise<TCheckSessionResponse> {
-    const { user } = await this.sessionService.validateSession(token);
-
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
+  @UseGuards(AuthGuard)
+  checkSessionToken(@User() user: TUserData): TCheckSessionResponse {
     const { id, isAdmin, avatar, name } = user;
 
     let userAvatar = avatar;
@@ -256,6 +251,15 @@ export class AuthController {
             refresh_token: refreshToken,
             expires_at: new Date(expiresAt),
           });
+        }
+
+        if (account.provider === 'vk') {
+          await tx
+            .update(schema.users)
+            .set({
+              vk: account.providerAccountId,
+            })
+            .where(eq(schema.users.id, account.userId));
         }
       })
       .then(() => true)

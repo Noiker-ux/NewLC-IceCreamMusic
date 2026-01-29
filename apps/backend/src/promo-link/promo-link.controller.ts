@@ -44,7 +44,7 @@ export type TUpdatePromoLinkBody = {
 export type TAddPromoUrlBody = Omit<TPromoUrl, 'id' | 'promoLinkId'>;
 
 @ApiTags('promo-links')
-@Controller('promo-links')
+@Controller({ version: '1', path: 'promo-links' })
 export class PromoLinkController {
   logger = new Logger(PromoLinkController.name);
 

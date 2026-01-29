@@ -5,20 +5,19 @@ import {
   doublePrecision,
   jsonb,
   pgSchema,
+  primaryKey,
+  real,
+  smallint,
   text,
   timestamp,
   uuid,
-  smallint,
-  varchar,
-  primaryKey,
-  integer,
+  varchar
 } from "drizzle-orm/pg-core";
 import {
   subscriptionLevelValues,
   verificationStatusValues,
   verificationTokenTypeValues,
 } from "./types";
-import { real } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
 
@@ -108,9 +107,9 @@ export const accounts = schema.table(
 
     providerAccountId: varchar("provider_ccount_id", { length: 256 }).notNull(),
 
-    refresh_token: varchar("refresh_token", { length: 256 }),
+    refresh_token: varchar("refresh_token", { length: 1024 }),
 
-    access_token: varchar("access_token", { length: 256 }),
+    access_token: varchar("access_token", { length: 1024 }),
 
     expires_at: timestamp("expires_at", { mode: "date" }),
 
@@ -188,8 +187,6 @@ export const news = schema.table("news", {
   createdAt: timestamp("createdAt").defaultNow(),
 });
 
-// Придумать как хранить теги к новостям
-
 export const faq = schema.table("faq", {
   id: uuid("id").defaultRandom().primaryKey(),
 
@@ -237,6 +234,8 @@ export const verification = schema.table("verification", {
 
   status: verificationStatuses("status").notNull().default("moderating"),
   rejectReason: text("rejectReason"),
+
+  contract: text("contract").notNull().default(''),
 });
 
 export const verificationRelations = relations(verification, ({ one }) => ({
@@ -435,6 +434,8 @@ export const payouts = schema.table("payouts", {
 
   confirmed: boolean("confirmed").default(false),
 
+  accountNumber: text("accountNumber"),
+
   recieverName: text("recieverName"),
 
   amount: doublePrecision("amount"),
@@ -463,6 +464,12 @@ export const studios = schema.table("studios", {
   annotation: text("annotation"),
 
   description: text("description"),
+
+  lattitude: doublePrecision("lattitude"),
+
+  longitude: doublePrecision("longitude"),
+
+  contactUrl: text("contact_url"),
 });
 
 export const studios_relations = relations(studios, ({ many }) => ({

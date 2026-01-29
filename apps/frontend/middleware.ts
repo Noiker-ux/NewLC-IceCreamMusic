@@ -6,6 +6,7 @@ import {
 	defaultAdminRedirect,
 	defaultAuthRedirect,
 	routes,
+	sessionCookieName,
 } from '@/shared/lib/config/auth';
 import { TCheckSessionResponse } from 'sdk/lib/auth/auth.controller';
 
@@ -18,7 +19,7 @@ export const middleware = async function (request: NextRequest) {
 
 	const isPublicPath = pathTest(routes.public, nextUrl.href);
 
-	const sessionToken = await request.cookies.get('icecream-auth')?.value;
+	const sessionToken = await request.cookies.get(sessionCookieName)?.value;
 
 	if (!!sessionToken) {
 		const authHeaders = new Headers();
@@ -27,15 +28,16 @@ export const middleware = async function (request: NextRequest) {
 
 		const connecttion = createSDKConnection({
 			headers: authHeaders,
+			next: {
+				tags: ['authorization'],
+			},
 		});
 
-		const checkTokenResult = await functional.v1.auth
+		const checkTokenResult = await functional.api.v1.auth
 			.checkSessionToken(connecttion)
-			.catch((e) => {
-				return {
-					user: null,
-				};
-			});
+			.catch(() => ({
+				user: null,
+			}));
 
 		user = checkTokenResult.user;
 	}

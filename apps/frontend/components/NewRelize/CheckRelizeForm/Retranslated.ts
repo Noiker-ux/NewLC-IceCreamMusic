@@ -1,0 +1,28 @@
+import { TReleaseUpsert } from 'shared/schema/release.schema';
+
+export const Retranslated: Record<keyof TReleaseUpsert, string> & Record<string, string> = {
+	language: 'Язык метаданных',
+	title: 'Название релиза',
+	subtitle: 'Подзаголовок релиза',
+	type: 'Тип релиза',
+	genre: 'Жанр',
+	releaseDate: 'Дата релиза',
+	startDate: 'Дата начала',
+	preorderDate: 'Дата предзаказа',
+	tracks: 'Ошибка в загруженных треках',
+	preview: 'Отстутствует файл превью',
+	roles: 'Роли релиза',
+	invalid_type: 'Неверный тип данных',
+	Required: 'Обязательное поле',
+	labelName: 'Название лейбла',
+	area: 'Регионы',
+	platforms: 'Платформы',
+	performer: 'Исполнитель',
+	feat: 'feat.',
+	earlyStartInRussia: 'Начало релиза в России',
+	moderatorComment: 'Комментарий модератора',
+	realTimeDelivery: 'Доставка в реальном времени',
+	remixer: 'Ремиксер',
+	upc: 'UPC',
+	yandexSoonNewRelease: 'Яндекс скоро новый релиз',
+};

@@ -316,6 +316,41 @@
       "when": 1753280605531,
       "tag": "0044_right_millenium_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1753625034312,
+      "tag": "0045_careless_virginia_dare",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1754308150836,
+      "tag": "0046_hard_luminals",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1754349778382,
+      "tag": "0047_harsh_mongu",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1755610945660,
+      "tag": "0048_luxuriant_thunderbolt_ross",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1762171057172,
+      "tag": "0049_condemned_switch",
+      "breakpoints": true
     }
   ]
 }

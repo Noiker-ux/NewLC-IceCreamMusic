@@ -4,16 +4,14 @@ import { IConnection } from 'sdk';
 export function createSDKConnection(options: RequestInit): IConnection & {
 	options?: RequestInit;
 } {
-	// const headers = Object.fromEntries(
-	// 	new Headers(options.headers ?? {}).entries(),
-	// );
+	const headers = Object.fromEntries(
+		new Headers(options.headers ?? {}).entries(),
+	);
 
 	return {
 		host: process.env.API_URL!,
-		// options,
-		// headers,
-		async fetch(url, opts) {
-			return fetch(url, { ...opts, ...options });
-		},
+		options,
+		headers,
+		fetch,
 	};
 }
