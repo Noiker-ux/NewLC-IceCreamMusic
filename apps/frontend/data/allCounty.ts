@@ -3,6 +3,17 @@ export type TCountry = {
 	countryEn: string;
 	flag: string;
 };
+export const sngAreasArray = [
+	'Azerbaijan',
+	'Armenia',
+	'Belarus',
+	'Kazakhstan',
+	'Kyrgyzstan',
+	'Russian Federation',
+	'Moldova',
+	'Tajikistan',
+	'Uzbekistan',
+];
 
 export const allCounty: TCountry[] = [
 	{

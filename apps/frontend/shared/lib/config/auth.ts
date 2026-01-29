@@ -6,7 +6,13 @@ export const routeTypes = ['guest', 'public'] as const;
 export type RouteType = (typeof routeTypes)[number];
 
 export const routes: Record<RouteType, string[]> = {
-	guest: ['/signin', '/signup', '/confirm', '/recover', '/reset'],
+	guest: [
+		'/auth/signin',
+		'/auth/signup',
+		'/auth/confirm',
+		'/auth/recover',
+		'/auth/reset',
+	],
 	public: [
 		'/signout',
 		'/questions',

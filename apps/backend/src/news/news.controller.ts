@@ -7,21 +7,28 @@ import {
   Logger,
   UseGuards,
 } from '@nestjs/common';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
-import { eq, InferSelectModel } from 'drizzle-orm';
+import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
+import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { NewsService } from './news.service';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 export type TNewsData = InferSelectModel<typeof schema.news>;
 
 export type TGetNewsResponse = TNewsData[];
 
-export type TCreateNewsDataBody = Omit<TNewsData, 'id' | 'createdAt'>;
+export type TCreateNews = Primitive<
+  Omit<InferInsertModel<typeof schema.news>, 'id' | 'createdAt'>
+>;
 
-export type TUpdateNewsDataBody = Partial<TCreateNewsDataBody>;
+export type TUpdateNews = Partial<TCreateNews>;
+
+export type TCreateNewsDataBody = { data: TCreateNews };
+
+export type TUpdateNewsDataBody = { data: TUpdateNews };
 
 export type TUpdateNewsResponse = {
   preview: string;
@@ -73,7 +80,7 @@ export class NewsController {
     const previewUrl = await this.db
       .transaction(async (tx) => {
         const createdNews = (
-          await tx.insert(schema.news).values(body).returning()
+          await tx.insert(schema.news).values(body.data).returning()
         ).at(0);
 
         if (!createdNews) {
@@ -118,7 +125,7 @@ export class NewsController {
         const updatedNews = (
           await tx
             .update(schema.news)
-            .set(body)
+            .set(body.data)
             .where(eq(schema.news.id, newsId))
             .returning()
         ).at(0);
@@ -142,7 +149,7 @@ export class NewsController {
       );
     }
 
-    if (!body.preview) {
+    if (!body.data.preview) {
       return { preview: '' };
     }
 

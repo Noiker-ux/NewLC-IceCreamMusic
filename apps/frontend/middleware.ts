@@ -1,58 +1,72 @@
 import { MiddlewareConfig, NextRequest, NextResponse } from 'next/server';
+import { pathTest } from './shared/lib/url/url';
+import { createSDKConnection } from '@/shared/lib/config/sdk';
+import { functional } from 'sdk';
+import {
+	defaultAdminRedirect,
+	defaultAuthRedirect,
+	routes,
+} from '@/shared/lib/config/auth';
+import { TCheckSessionResponse } from 'sdk/lib/auth/auth.controller';
 
 export const middleware = async function (request: NextRequest) {
-	// const { nextUrl } = request;
+	const { nextUrl } = request;
 
-	// const token = request.cookies.get(sessionCookieName)?.value ?? 'not_token';
+	let user: TCheckSessionResponse['user'] | null = null;
 
-	// const { user } = await authClient(['auth']).auth.getUserByToken.query({
-	// 	token,
-	// });
+	const isGuestPath = pathTest(routes.guest, nextUrl.href);
 
-	// const isAuthorized = !!user;
+	const isPublicPath = pathTest(routes.public, nextUrl.href);
 
-	// const isGuestPath = pathTest(routes.guest, nextUrl.href);
+	const sessionToken = await request.cookies.get('icecream-auth')?.value;
 
-	// const isPublicPath = pathTest(routes.public, nextUrl.href);
+	if (!!sessionToken) {
+		const authHeaders = new Headers();
 
-	// console.log(
-	// 	'user',
-	// 	user,
-	// 	'isAuthorized',
-	// 	isAuthorized,
-	// 	'isGuestRoute',
-	// 	isGuestPath,
-	// 	'isPublicRoute',
-	// 	isPublicPath,
-	// );
+		authHeaders.set('Authorization', sessionToken);
 
-	// if (isAuthorized && isGuestPath) {
-	// 	const defaultRedirectUrl = nextUrl.clone();
+		const connecttion = createSDKConnection({
+			headers: authHeaders,
+		});
 
-	// 	defaultRedirectUrl.pathname = defaultAuthRedirect;
+		const checkTokenResult = await functional.v1.auth
+			.checkSessionToken(connecttion)
+			.catch((e) => {
+				return {
+					user: null,
+				};
+			});
 
-	// 	if (user.isAdmin) {
-	// 		defaultRedirectUrl.pathname = defaultAdminRedirect;
-	// 	}
+		user = checkTokenResult.user;
+	}
 
-	// 	return NextResponse.redirect(defaultRedirectUrl, {
-	// 		headers: request.headers,
-	// 	});
-	// }
+	if (!!user && isGuestPath) {
+		const defaultRedirectUrl = nextUrl.clone();
 
-	// if (!isGuestPath && !isPublicPath && !isAuthorized) {
-	// 	const signInUrl = nextUrl.clone();
+		defaultRedirectUrl.pathname = defaultAuthRedirect;
 
-	// 	signInUrl.pathname = '/signin';
+		if (user.isAdmin) {
+			defaultRedirectUrl.pathname = defaultAdminRedirect;
+		}
 
-	// 	return NextResponse.redirect(signInUrl, { headers: request.headers });
-	// }
+		return NextResponse.redirect(defaultRedirectUrl, {
+			headers: request.headers,
+		});
+	}
+
+	if (!isGuestPath && !isPublicPath && !user) {
+		const signInUrl = nextUrl.clone();
+
+		signInUrl.pathname = 'auth/signin';
+
+		return NextResponse.redirect(signInUrl, { headers: request.headers });
+	}
 
 	return NextResponse.next({ request });
 };
 
 export const config: MiddlewareConfig = {
 	matcher: [
-		'/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|_error).*)',
+		'/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|_error|assets).*)',
 	],
 };

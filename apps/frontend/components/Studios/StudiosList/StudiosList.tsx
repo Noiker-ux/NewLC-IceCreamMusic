@@ -1,20 +1,30 @@
+import { createSDKConnection } from '@/shared/lib/config/sdk';
 import StudiosCard from '../StudiosCard/StudiosCard';
+import { functional } from 'sdk';
+import Link from 'next/link';
 
-export default function StudiosList() {
+const connection = createSDKConnection({
+	next: { tags: ['Studios'] },
+});
+
+export default async function StudiosList() {
+	const studioData = await functional.v1.studios.getStudios(connection, {
+		page: 1,
+		size: 20,
+	});
+
 	return (
 		<div className='grid grid-cols-5 gap-2'>
-			<StudiosCard
-				name={'Slatt Records'}
-				preview={'logo.jpg'}
-				rating={4.8}
-				place={'Рижский пр., 13'}
-			/>
-			<StudiosCard
-				name={'MOSCOWKA'}
-				preview={'M2.png'}
-				rating={4.65}
-				place={'Дубнинская улица, 61, подъезд 4'}
-			/>
+			{studioData.map((studia) => (
+				<Link href={`/studios/${studia.id}`} key={studia.id}>
+					<StudiosCard
+						name={studia.name}
+						preview={`${process.env.NEXT_PUBLIC_S3_URL}/studios/${studia.id}.${studia.logo}`}
+						rating={studia.rating}
+						place={studia.address}
+					/>
+				</Link>
+			))}
 		</div>
 	);
 }

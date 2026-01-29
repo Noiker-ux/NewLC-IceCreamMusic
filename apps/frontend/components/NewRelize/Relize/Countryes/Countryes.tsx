@@ -1,5 +1,5 @@
 'use client';
-import { allCounty, TCountry } from '@/data/allCounty';
+import { allCounty, sngAreasArray, TCountry } from '@/data/allCounty';
 import { CheckboxGroup } from '@heroui/checkbox';
 import { Input } from '@heroui/input';
 import { Radio, RadioGroup } from '@heroui/radio';
@@ -16,18 +16,6 @@ import { IoMdClose } from 'react-icons/io';
 const allAreasArray = allCounty.map((area) => {
 	return area.countryEn;
 });
-
-const sngAreasArray = [
-	'Azerbaijan',
-	'Armenia',
-	'Belarus',
-	'Kazakhstan',
-	'Kyrgyzstan',
-	'Russian Federation',
-	'Moldova',
-	'Tajikistan',
-	'Uzbekistan',
-];
 
 export default function Countyes() {
 	const [searchCountry, setSearchCountry] = useState<TCountry[]>(allCounty);
@@ -80,8 +68,8 @@ export default function Countyes() {
 							{areas.data.includes('all')
 								? allCounty.length
 								: areas.data.includes('sng')
-								? 9
-								: areas.data.length}
+									? 9
+									: areas.data.length}
 							/{allCounty.length}
 						</div>
 					}
@@ -117,8 +105,8 @@ export default function Countyes() {
 								areas.data.includes('all')
 									? allAreasArray
 									: areas.data.includes('sng')
-									? sngAreasArray
-									: areas.data
+										? sngAreasArray
+										: areas.data
 							}
 							onChange={(value) => {
 								setValue('area', { negate: areas.negate, data: value });

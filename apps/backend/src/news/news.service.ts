@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { type Client } from 'minio';
 import { InjectMinio } from 'nestjs-minio';
 
 @Injectable()
 export class NewsService {
-  constructor(@InjectMinio() private readonly s3Client: Client) {}
+  constructor(
+    @InjectMinio() private readonly s3Client: Client,
+    private readonly config: ConfigService,
+  ) {}
 
   async createPreviewPostUrl(fileName: string) {
     return await this.s3Client.presignedPutObject(

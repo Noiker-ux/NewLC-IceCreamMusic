@@ -166,7 +166,7 @@ export default function WorkWithRelize() {
 							{allGenres.map((genreItem) => (
 								<SelectItem
 									className='capitalize'
-									key={genreItem.value}
+									key={genreItem.label}
 									textValue={genreItem.label}>
 									{genreItem.label}
 								</SelectItem>

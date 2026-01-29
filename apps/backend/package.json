@@ -8,7 +8,7 @@
   "scripts": {
     "build": "rimraf dist && webpack",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "node dist/server.js",
+    "start": "dotenvx run -- node dist/server.js",
     "dev": "dotenvx run -- nest start --watch",
     "sdk": "nestia sdk",
     "start:debug": "nest start --debug --watch",
@@ -38,6 +38,7 @@
     "@oslojs/encoding": "^1.1.0",
     "@oslojs/jwt": "^0.3.0",
     "bcrypt-ts": "^7.1.0",
+    "deep-object-diff": "^1.1.9",
     "drizzle-orm": "0.44.2",
     "drizzle-zod": "0.7.1",
     "minio": "^8.0.5",

@@ -1,11 +1,9 @@
+import { createSDKConnection } from '@/shared/lib/config/sdk';
 import { buildHostUrl } from '@/shared/lib/url/url';
-import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+import { functional } from 'sdk';
 import { z } from 'zod';
-import { db } from 'db';
-import * as schema from 'db/schema';
-import { createSession, generateToken } from '@/features/auth/lib/session';
-import { eq } from 'drizzle-orm';
 
 const tokensSchema = z.object({
 	refresh_token: z.string(),
@@ -30,6 +28,8 @@ const accountSchema = z.object({
 		birthday: z.string(),
 	}),
 });
+
+const connection = createSDKConnection({});
 
 export async function GET(request: NextRequest) {
 	const requestUrl = buildHostUrl(request);
@@ -136,82 +136,25 @@ export async function GET(request: NextRequest) {
 		new Date().getTime() + validTokens.expires_in * 1000,
 	);
 
-	const session = await db.transaction(async (sessionTx) => {
-		const account = await sessionTx.transaction(async (accountTx) => {
-			const existingAccount = await accountTx.query.accounts.findFirst({
-				with: { user: true },
-				where: (acc, { eq }) => eq(acc.providerAccountId, validAccount.user_id),
-			});
+	const session = await functional.v1.auth.oauth
+		.OAuthSignin(connection, {
+			providerAccountId: validAccount.user_id,
+			provider: 'vk',
+			email: validAccount.email,
+			tokenType: validTokens.token_type,
+			accessToken: validTokens.access_token,
+			refreshToken: validTokens.refresh_token,
+			expiresAt: tokenExpires.toISOString(),
+			scope: validTokens.scope,
+			name: `${validAccount.first_name} ${validAccount.last_name}`,
+			avatar: validAccount.avatar,
+			verified: validAccount.verified,
+		})
+		.catch((e) => console.error(new Date().toISOString() + ' ' + e.message));
 
-			if (!existingAccount) {
-				const user = await accountTx.transaction(async (userTx) => {
-					const existingUser = await userTx.query.users.findFirst({
-						where: (usr, { eq }) => eq(usr.email, validAccount.email),
-					});
-
-					if (existingUser) {
-						return existingUser;
-					}
-
-					const newUser = (
-						await userTx
-							.insert(schema.users)
-							.values({
-								email: validAccount.email,
-								emailVerified: new Date(),
-								name: `${validAccount.first_name} ${validAccount.last_name}`,
-								avatar: validAccount.avatar,
-							})
-							.returning()
-					)[0];
-
-					return newUser;
-				});
-
-				return (
-					await accountTx
-						.insert(schema.accounts)
-						.values({
-							userId: user.id,
-							providerAccountId: validAccount.user_id,
-							type: 'oauth',
-							provider: 'vk',
-							access_token: validTokens.access_token,
-							refresh_token: validTokens.refresh_token,
-							expires_at: tokenExpires,
-							token_type: validTokens.token_type,
-							scope: validTokens.scope,
-						})
-						.returning()
-				)[0];
-			}
-
-			return (
-				await accountTx
-					.update(schema.accounts)
-					.set({
-						access_token: validTokens.access_token,
-						refresh_token: validTokens.refresh_token,
-						expires_at: tokenExpires,
-					})
-					.where(
-						eq(
-							schema.accounts.providerAccountId,
-							existingAccount.providerAccountId,
-						),
-					)
-					.returning()
-			)[0];
-		});
-
-		const sessionToken = await generateToken();
-
-		const session = await createSession(sessionToken, account.userId);
-
-		return (
-			await sessionTx.insert(schema.sessions).values(session).returning()
-		)[0];
-	});
+	if (!session) {
+		return badRedirect;
+	}
 
 	cookiesStore.delete('icecream-vk-verifier');
 
@@ -221,7 +164,9 @@ export async function GET(request: NextRequest) {
 
 	cookiesStore.delete('icecream-callback');
 
-	cookiesStore.set('icecream-auth', session.sessionToken, {
+	cookiesStore.delete('icecream-callback');
+
+	cookiesStore.set('icecream-auth', session.session_token, {
 		httpOnly: true,
 		secure: true,
 		sameSite: 'lax',

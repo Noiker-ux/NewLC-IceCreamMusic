@@ -281,6 +281,41 @@
       "when": 1751476192871,
       "tag": "0039_colossal_toro",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1751998053593,
+      "tag": "0040_gorgeous_mister_sinister",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1752002100356,
+      "tag": "0041_brown_phalanx",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1752058624141,
+      "tag": "0042_late_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1752581684802,
+      "tag": "0043_lumpy_tigra",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1753280605531,
+      "tag": "0044_right_millenium_guard",
+      "breakpoints": true
     }
   ]
 }

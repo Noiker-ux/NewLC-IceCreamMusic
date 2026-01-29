@@ -18,6 +18,7 @@ import {
   verificationStatusValues,
   verificationTokenTypeValues,
 } from "./types";
+import { real } from "drizzle-orm/pg-core";
 
 export const schema = pgSchema("icecream");
 
@@ -306,13 +307,15 @@ export const release = schema.table("release", {
   yandexSoonNewRelease: timestamp("yandexSoonNewRelease"),
 });
 
-export const releaseRelations = relations(release, ({ one, many }) => ({
+export const release_relations = relations(release, ({ one, many }) => ({
   author: one(users, {
     fields: [release.authorId],
     references: [users.id],
   }),
 
   tracks: many(track),
+
+  promoLinks: many(promoLinks),
 }));
 
 export const track = schema.table("track", {
@@ -422,7 +425,7 @@ export const payment_methodRelations = relations(payment_method, ({ one }) => ({
 }));
 
 export const payouts = schema.table("payouts", {
-  id: uuid("id").primaryKey(),
+  id: uuid("id").primaryKey().defaultRandom(),
 
   userId: uuid("userId")
     .notNull()
@@ -449,21 +452,84 @@ export const studios = schema.table("studios", {
 
   logo: text("logo").notNull(),
 
+  background: text("background"),
+
   name: text("name").notNull(),
 
-  rating: smallint("rating").notNull().default(0),
+  rating: real("rating").notNull().default(0),
 
   address: text("address").notNull(),
 
+  annotation: text("annotation"),
+
   description: text("description"),
-
-  yearsOld: smallint("yearsOld"),
-
-  numberOfReleases: integer("number_of_releases"),
 });
 
 export const studios_relations = relations(studios, ({ many }) => ({
   photos: many(studioPhotos),
+  team: many(studioTeam),
+  stats: many(studioStats),
+}));
+
+export const studioPhotos = schema.table("studio_photos", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  name: text("name").notNull(),
+
+  url: text("url").notNull(),
+
+  studioId: uuid("studioId")
+    .notNull()
+    .references(() => studios.id, { onUpdate: "cascade", onDelete: "cascade" }),
+});
+
+export const studio_photos_relations = relations(studioPhotos, ({ one }) => ({
+  studio: one(studios, {
+    fields: [studioPhotos.studioId],
+    references: [studios.id],
+  }),
+}));
+
+export const studioTeam = schema.table("studio_team", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  studioId: uuid("studioId")
+    .notNull()
+    .references(() => studios.id, { onUpdate: "cascade", onDelete: "cascade" }),
+
+  photo: text("photo").notNull(),
+
+  name: text("name").notNull(),
+
+  position: text("position").notNull(),
+
+  place: text("place").notNull(),
+});
+
+export const studio_team_relations = relations(studioTeam, ({ one }) => ({
+  studio: one(studios, {
+    fields: [studioTeam.studioId],
+    references: [studios.id],
+  }),
+}));
+
+export const studioStats = schema.table("studio_stats", {
+  id: uuid("id").primaryKey().defaultRandom(),
+
+  studioId: uuid("studioId")
+    .notNull()
+    .references(() => studios.id, { onUpdate: "cascade", onDelete: "cascade" }),
+
+  name: text("name").notNull(),
+
+  value: text("value").notNull(),
+});
+
+export const studio_stats_relations = relations(studioStats, ({ one }) => ({
+  studio: one(studios, {
+    fields: [studioStats.studioId],
+    references: [studios.id],
+  }),
 }));
 
 export const analytics = schema.table("analytics", {
@@ -489,32 +555,6 @@ export const analytics_relations = relations(analytics, ({ one }) => ({
   user: one(users, {
     fields: [analytics.userId],
     references: [users.id],
-  }),
-}));
-
-export const studioPhotoTypes = schema.enum("studio_photo_types", [
-  "team_photo",
-  "studio_photo",
-]);
-
-export const studioPhotos = schema.table("studio_photos", {
-  id: uuid("id").primaryKey().defaultRandom(),
-
-  name: text("name").notNull(),
-
-  type: studioPhotoTypes("type").notNull(),
-
-  url: text("url").notNull(),
-
-  studioId: uuid("studioId")
-    .notNull()
-    .references(() => studios.id, { onUpdate: "cascade", onDelete: "cascade" }),
-});
-
-export const studio_photos_relations = relations(studioPhotos, ({ one }) => ({
-  studio: one(studios, {
-    fields: [studioPhotos.studioId],
-    references: [studios.id],
   }),
 }));
 

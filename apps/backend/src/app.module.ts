@@ -15,6 +15,7 @@ import { StudioModule } from './studio/studio.module';
 import { ReleaseModule } from './release/release.module';
 import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
+import { AnalytickMdule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { AppController } from './app.controller';
     }),
     ScheduleModule.forRoot(),
     AuthModule,
+    AnalytickMdule,
     FAQModule,
     FinanceModule,
     NewsModule,

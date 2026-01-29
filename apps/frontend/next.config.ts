@@ -4,10 +4,12 @@ const nextConfig: NextConfig = {
 	output: 'standalone',
 	reactStrictMode: true,
 	cleanDistDir: true,
+	allowedDevOrigins: ['localhost', 'www.baconcs.duckdns.org'],
 	experimental: {
 		serverActions: {
-			allowedOrigins: ['localhost'],
+			allowedOrigins: ['www.icecreammusic.net'],
 		},
+		viewTransition: true,
 	},
 	images: {
 		unoptimized: true,

@@ -1,34 +1,43 @@
 'use client';
 
-import { registerUser } from '@/actions/users';
 import {
 	signUpClientSchema,
 	TSignUpClientSchema,
 } from '@/schema/signup.schema';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
-
 import { zodResolver } from '@hookform/resolvers/zod';
-import { enqueueSnackbar } from 'notistack';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
+import { actionRegister } from './registerAction';
 
 const RegistrationWidget = () => {
-	const { handleSubmit, register } = useForm<TSignUpClientSchema>({
+	const methods = useForm({
 		resolver: zodResolver(
 			signUpClientSchema.refine(
 				(data) => data.confirmPassword === data.password,
+				{
+					message: 'Пароли не совпадают',
+					path: ['confirmPassword'],
+				},
 			),
 		),
-		defaultValues: {
-			confirmPassword: '',
-			email: '',
-			name: '',
-			password: '',
-		},
-		progressive: true,
 	});
 
+	const onSubmit: SubmitHandler<TSignUpClientSchema> = async (data) => {
+		const result = await actionRegister(data);
+		if (!result.success) {
+			methods.setError('email', {
+				message: JSON.parse(result.error).message,
+			});
+		}
+	};
+
+	const onSubmitError: SubmitErrorHandler<TSignUpClientSchema> = (data) => {
+		console.log('error', data);
+	};
+
 	return (
+<<<<<<< HEAD
 		<form
 			className={'flex w-[70%] mx-auto flex-col gap-5'}
 			onSubmit={handleSubmit((data) => {
@@ -62,6 +71,45 @@ const RegistrationWidget = () => {
 			/>
 			<Button type='submit'>Регистрация</Button>
 		</form>
+=======
+		<div>
+			<form
+				className={'flex flex-col gap-5'}
+				onSubmit={methods.handleSubmit(onSubmit, onSubmitError)}>
+				<Input
+					{...methods.register('email')}
+					label='Email'
+					type='email'
+					description={
+						methods.formState.errors.email && (
+							<p className='text-red-500'>
+								{methods.formState.errors.email.message}
+							</p>
+						)
+					}
+				/>
+				<Input {...methods.register('name')} label='Имя' type='text' />
+				<Input
+					{...methods.register('password')}
+					label='Пароль'
+					type='password'
+				/>
+				<Input
+					{...methods.register('confirmPassword')}
+					label='Подтвердите пароль'
+					type='password'
+					description={
+						methods.formState.errors.confirmPassword && (
+							<p className='text-red-500'>
+								{methods.formState.errors.confirmPassword.message}
+							</p>
+						)
+					}
+				/>
+				<Button type='submit'>Регистрация</Button>
+			</form>
+		</div>
+>>>>>>> origin/vk-auth
 	);
 };
 export default RegistrationWidget;

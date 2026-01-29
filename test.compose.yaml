@@ -1,0 +1,37 @@
+services:
+  backend:
+    container_name: icecream-backend
+    image: icecream-backend:latest
+    environment:
+      DB_USER: ${DB_USER:?error}
+      DB_PASSWORD: ${DB_PASSWORD:?error}
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT:?error}
+      DB_NAME: ${DB_NAME:?error}
+      SALT_ROUNDS: ${SALT_ROUNDS:?error}
+      SMTP_HOST: mail
+      SMTP_PORT: 1025
+      SMTP_SECURE: false
+      SMTP_USER: ${SMTP_USER:?error}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?error}
+      S3_HOST: minio
+      S3_PORT: 9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:?error}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:?error}
+      NEXT_PUBLIC_S3_URL: ${NEXT_PUBLIC_S3_URL:?error}
+      YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID:?error}
+      YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY:?error}
+      NEXT_PUBLIC_DOMAIN: ${NEXT_PUBLIC_DOMAIN:?error}
+      NODE_ENV: ${NODE_ENV:?error}
+      SHOW_API_DOCS: ${SHOW_API_DOCS:?error}
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - devnet
+
+networks:
+  devnet:
+    driver: bridge

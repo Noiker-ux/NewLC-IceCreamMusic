@@ -7,37 +7,71 @@ import {
   Logger,
   UseGuards,
 } from '@nestjs/common';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
 import { eq, InferSelectModel } from 'drizzle-orm';
 import { Client } from 'minio';
 import { InjectMinio } from 'nestjs-minio';
+import { Primitive } from 'typia';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { SessionService } from '../auth/session.service';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { StudioService } from './studio.service';
 
-export type TStudioData = InferSelectModel<typeof schema.studios>;
+export type TStudioData = Primitive<InferSelectModel<typeof schema.studios>>;
 
-export type TStudioPhotoData = InferSelectModel<typeof schema.studioPhotos>;
+export type TStudioPhotoData = Primitive<
+  InferSelectModel<typeof schema.studioPhotos>
+>;
 
-export type TCompleteStudioData = TStudioData & { photos: TStudioPhotoData[] };
+export type TStudioTeamData = Primitive<
+  InferSelectModel<typeof schema.studioTeam>
+>;
+
+export type TStudioStatData = Primitive<
+  InferSelectModel<typeof schema.studioStats>
+>;
+
+export type TCompleteStudioData = TStudioData & {
+  photos: TStudioPhotoData[];
+  team: TStudioTeamData[];
+  stats: TStudioStatData[];
+};
 
 export type TGetStudiosResponse = TCompleteStudioData[];
 
 export type TCreateStudioBody = {
   studio: Omit<TStudioData, 'id'>;
   photos: Omit<TStudioPhotoData, 'id' | 'studioId'>[];
+  employees: Omit<TStudioTeamData, 'id' | 'studioId'>[];
+  stats: Omit<TStudioStatData, 'id' | 'studioId'>[];
+};
+
+export type TCreateStudioResponse = {
+  studio: Pick<TStudioData, 'logo' | 'background'>;
+  photos: Pick<TStudioPhotoData, 'url'>[];
+  employees: Pick<TStudioTeamData, 'photo'>[];
 };
 
 export type TAddPhotoBody = Omit<TStudioPhotoData, 'id' | 'studioId'>;
 
-export type TCreateStudioResponse = {
-  studio: Pick<TStudioData, 'logo'>;
-  photos: Pick<TStudioPhotoData, 'url'>[];
+export type TAddPhotoResponse = Pick<TStudioPhotoData, 'url'>;
+
+export type TAddStudioEmployeeBody = {
+  data: Omit<TStudioTeamData, 'id' | 'studioId'>;
 };
 
-export type TAddPhotoResponse = Pick<TStudioPhotoData, 'url'>;
+export type TAddStudioEmployeeResponse = {
+  photo: string;
+};
+
+export type TUpdateStudioEmployee = {
+  data: Partial<TAddStudioEmployeeBody['data']>;
+};
+
+export type TAddStudioStatsBody = {
+  data: Omit<TStudioStatData, 'id' | 'studioId'>;
+};
 
 export type TUpdateStudioBody = {
   data: Partial<Omit<TStudioData, 'id'>>;
@@ -45,6 +79,7 @@ export type TUpdateStudioBody = {
 
 export type TUpdateStudioResponse = {
   logo: string;
+  background: string;
 };
 
 @ApiTags('studios')
@@ -55,7 +90,7 @@ export class StudioController {
   constructor(
     @Inject('DB_TAG') private readonly db: DB,
     @InjectMinio() private readonly s3Client: Client,
-    private readonly sessionService: SessionService,
+    private readonly studioService: StudioService,
   ) {}
 
   @TypedRoute.Get()
@@ -67,6 +102,8 @@ export class StudioController {
       offset: (params.page - 1) * params.size,
       with: {
         photos: true,
+        stats: true,
+        team: true,
       },
     });
   }
@@ -77,7 +114,7 @@ export class StudioController {
   ): Promise<TCompleteStudioData> {
     const studio = await this.db.query.studios.findFirst({
       where: eq(schema.studios.id, studioId),
-      with: { photos: true },
+      with: { photos: true, team: true, stats: true },
     });
 
     if (!studio) throw new BadRequestException('Студия не найдена');
@@ -92,9 +129,7 @@ export class StudioController {
   async createStudio(
     @TypedBody() body: TCreateStudioBody,
   ): Promise<TCreateStudioResponse> {
-    const { photos, studio } = body;
-
-    const publicUrl = new URL(process.env.NEXT_PUBLIC_S3_URL!);
+    const { photos, studio, employees, stats } = body;
 
     const result = await this.db.transaction(async (tx) => {
       const newStudio = (
@@ -104,30 +139,17 @@ export class StudioController {
       if (!newStudio)
         throw new InternalServerErrorException('Ошибка при создании студии');
 
-      const studioLogoUrl = await this.s3Client.presignedPutObject(
+      const logoPublicUrl = await this.studioService.createPublicUrl(
         'studios',
-        `${newStudio.id}:${newStudio.logo}`,
-        60 * 60,
+        `${newStudio.id}.${newStudio.logo}`,
       );
 
-      const logoUrl = new URL(studioLogoUrl);
-
-      logoUrl.host = publicUrl.host;
-
-      logoUrl.protocol = publicUrl.protocol;
-
-      logoUrl.port = '';
-
-      const publicLogoUrl = new URL(logoUrl);
-
-      publicLogoUrl.search = '';
-
-      const logoUpdateResult = await tx
-        .update(schema.studios)
-        .set({ logo: publicLogoUrl.href });
-
-      if (logoUpdateResult.rowCount !== 1)
-        throw new InternalServerErrorException('Не удалось обновить логотип');
+      const backgroundPublicUrl = newStudio.background
+        ? await this.studioService.createPublicUrl(
+            'studio-backgrounds',
+            `${newStudio.id}.${newStudio.background}`,
+          )
+        : '';
 
       const photosData = photos.map((p) => ({ ...p, studioId: newStudio.id }));
 
@@ -144,52 +166,77 @@ export class StudioController {
       const photoUrls: TCreateStudioResponse['photos'] = [];
 
       for (const photo of newPhotos) {
-        const photoUrl = await this.s3Client.presignedPutObject(
+        const photoUrl = await this.studioService.createPublicUrl(
           'studio-photos',
           `${photo.id}.${photo.url}`,
-          60 * 60,
         );
 
-        const dbUrl = new URL(photoUrl);
-
-        dbUrl.host = publicUrl.host;
-
-        dbUrl.protocol = publicUrl.protocol;
-
-        dbUrl.port = '';
-
-        photoUrls.push({ url: dbUrl.href });
-
-        dbUrl.search = '';
-
-        await tx
-          .update(schema.studioPhotos)
-          .set({
-            url: dbUrl.href,
-          })
-          .where(eq(schema.studioPhotos.id, photo.id));
+        photoUrls.push({ url: photoUrl });
       }
 
-      return { photos: photoUrls, logo: logoUrl.href };
+      const employeesData = employees.map((e) => ({
+        ...e,
+        studioId: newStudio.id,
+      }));
+
+      const newEmployees = await tx
+        .insert(schema.studioTeam)
+        .values(employeesData)
+        .returning();
+
+      if (newEmployees.length !== employees.length)
+        throw new InternalServerErrorException(
+          'Ошибка при создании фотографий студии',
+        );
+
+      const employeePhotoUrls: TCreateStudioResponse['employees'] = [];
+
+      for (const employee of newEmployees) {
+        const photoUrl = await this.studioService.createPublicUrl(
+          'studio-employees',
+          `${employee.id}.${employee.photo}`,
+        );
+
+        employeePhotoUrls.push({ photo: photoUrl });
+      }
+
+      const statsData = stats.map((s) => ({ ...s, studioId: newStudio.id }));
+
+      const newStats = await tx
+        .insert(schema.studioStats)
+        .values(statsData)
+        .returning();
+
+      if (newStats.length !== stats.length) {
+        throw new InternalServerErrorException(
+          'Ошибка при создании статистики студии',
+        );
+      }
+
+      return {
+        photos: photoUrls,
+        logo: logoPublicUrl,
+        background: backgroundPublicUrl,
+        employees: employeePhotoUrls,
+      };
     });
 
     return {
-      studio: { logo: result.logo },
+      studio: { logo: result.logo, background: result.background },
       photos: result.photos,
+      employees: result.employees,
     };
   }
 
   @ApiSecurity('bearer')
   @UseGuards(AuthGuard)
   @AdminGuard()
-  @TypedRoute.Post(':studioId/photo')
+  @TypedRoute.Post(':studioId/photos')
   async addStudioPhoto(
     @TypedParam('studioId') studioId: string,
     @TypedBody() body: TAddPhotoBody,
   ): Promise<TAddPhotoResponse> {
-    const publicUrl = new URL(process.env.NEXT_PUBLIC_S3_URL!);
-
-    const result = await this.db.transaction(async (tx) => {
+    return await this.db.transaction(async (tx) => {
       const studio = await tx.query.studios.findFirst({
         where: eq(schema.studios.id, studioId),
       });
@@ -206,45 +253,19 @@ export class StudioController {
       if (!newPhoto)
         throw new InternalServerErrorException('Не удалось добавить фото');
 
-      const photoUrl = await this.s3Client.presignedPutObject(
+      const photoUrl = await this.studioService.createPublicUrl(
         'studio-photos',
         `${newPhoto.id}.${newPhoto.url}`,
-        60 * 60,
       );
 
-      const publicPutUrl = new URL(photoUrl);
-
-      publicPutUrl.protocol = publicUrl.protocol;
-
-      publicPutUrl.host = publicUrl.host;
-
-      publicPutUrl.port = '';
-
-      const publicGetUrl = new URL(publicPutUrl);
-
-      publicGetUrl.search = '';
-
-      const updatedPhoto = await tx
-        .update(schema.studioPhotos)
-        .set({ url: publicGetUrl.href })
-        .where(eq(schema.studioPhotos.id, newPhoto.id))
-        .returning();
-
-      if (updatedPhoto.length !== 1)
-        throw new InternalServerErrorException(
-          'Не удалось обновить ссылку на фото',
-        );
-
-      return { url: updatedPhoto[0].url };
+      return { url: photoUrl };
     });
-
-    return result;
   }
 
   @ApiSecurity('bearer')
   @UseGuards(AuthGuard)
   @AdminGuard()
-  @TypedRoute.Delete(':studioId/photo/:photoId')
+  @TypedRoute.Delete(':studioId/photos/:photoId')
   async deleteStudioPhoto(
     @TypedParam('studioId') studioId: string,
     @TypedParam('photoId') photoId: string,
@@ -261,12 +282,10 @@ export class StudioController {
         .where(eq(schema.studioPhotos.id, photoId))
         .returning();
 
-      if (photos.length !== 1)
-        throw new InternalServerErrorException('Ошибка при удалении фото');
-
       const photo = photos.at(0);
 
-      if (!photo) throw new BadRequestException('Фото не найдено');
+      if (photos.length !== 1 || !photo)
+        throw new InternalServerErrorException('Ошибка при удалении фото');
 
       await this.s3Client
         .removeObject('studio-photos', `${photo.id}.${photo.url}`)
@@ -282,70 +301,183 @@ export class StudioController {
   @ApiSecurity('bearer')
   @UseGuards(AuthGuard)
   @AdminGuard()
-  @TypedRoute.Patch(':studioId')
-  async updateStudio(
-    @TypedBody() body: TUpdateStudioBody,
+  @TypedRoute.Post(':studioId/team')
+  async addStudioEmployee(
     @TypedParam('studioId') studioId: string,
-  ): Promise<TUpdateStudioResponse> {
-    const publicUrl = new URL(process.env.NEXT_PUBLIC_S3_URL!);
-
-    const result = await this.db.transaction(async (tx) => {
+    @TypedBody() body: TAddStudioEmployeeBody,
+  ): Promise<TAddStudioEmployeeResponse> {
+    return await this.db.transaction(async (tx) => {
       const studio = await tx.query.studios.findFirst({
         where: eq(schema.studios.id, studioId),
       });
 
       if (!studio) throw new BadRequestException('Студия не найдена');
 
-      if (!body.data.logo) {
-        const noLogoResult = await tx
-          .update(schema.studios)
-          .set(body.data)
-          .where(eq(schema.studios.id, studioId))
-          .returning();
+      const newEmployees = await tx
+        .insert(schema.studioTeam)
+        .values({ ...body.data, studioId: studio.id })
+        .returning();
 
-        if (noLogoResult.length !== 1)
-          throw new InternalServerErrorException(
-            'Ошибка при обновлении студии',
-          );
+      const employee = newEmployees.at(0);
 
-        return { logo: '' };
-      }
+      if (!employee || newEmployees.length !== 1)
+        throw new InternalServerErrorException(
+          'Ошибка при добавлении сотрудника',
+        );
 
-      const privateLogoUrl = await this.s3Client.presignedPutObject(
-        'studios',
-        `${studioId}:${body.data.logo}`,
-        60 * 60,
+      const photoUrl = await this.studioService.createPublicUrl(
+        'studio-employees',
+        `${employee.id}.${employee.photo}`,
       );
 
-      const publicLogoPutUrl = new URL(privateLogoUrl);
+      return { photo: photoUrl };
+    });
+  }
 
-      publicLogoPutUrl.protocol = publicUrl.protocol;
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Delete(':studioId/team/:employeeId')
+  async deleteStudioEmployee(
+    @TypedParam('studioId') studioId: string,
+    @TypedParam('employeeId') employeeId: string,
+  ): Promise<TSuccessionResponse> {
+    await this.db.transaction(async (tx) => {
+      const studio = await tx.query.studios.findFirst({
+        where: eq(schema.studios.id, studioId),
+      });
 
-      publicLogoPutUrl.host = publicUrl.host;
+      if (!studio) throw new BadRequestException('Студия не найдена');
 
-      publicLogoPutUrl.port = '';
+      const employees = await tx
+        .delete(schema.studioTeam)
+        .where(eq(schema.studioTeam.id, employeeId))
+        .returning();
 
-      const logoPutUrl = publicLogoPutUrl.href;
+      const employee = employees.at(0);
 
-      const publicLogoGetUrl = new URL(publicLogoPutUrl);
+      if (employees.length !== 1 || !employee)
+        throw new InternalServerErrorException('Ошибка при удалении фото');
 
-      publicLogoGetUrl.search = '';
+      await this.s3Client
+        .removeObject('studio-employees', `${employee.id}.${employee.photo}`)
+        .catch((e) => {
+          this.logger.error(e);
+          throw new InternalServerErrorException('Что-то пошло не так');
+        });
+    });
 
-      const logoGetUrl = publicLogoGetUrl.href;
+    return { success: true };
+  }
 
-      const logoResult = await tx
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Post(':studioId/stats')
+  async addStudioStats(
+    @TypedParam('studioId') studioId: string,
+    @TypedBody() body: TAddStudioStatsBody,
+  ): Promise<TSuccessionResponse> {
+    const { data } = body;
+
+    await this.db.transaction(async (tx) => {
+      const studio = await tx.query.studios.findFirst({
+        where: eq(schema.studios.id, studioId),
+      });
+
+      if (!studio) throw new BadRequestException('Студия не найдена');
+
+      const stats = await tx
+        .insert(schema.studioStats)
+        .values({ ...data, studioId: studio.id })
+        .returning();
+
+      if (stats.length !== 1)
+        throw new InternalServerErrorException(
+          'Ошибка при добавлении статистики',
+        );
+    });
+
+    return { success: true };
+  }
+
+  // @ApiSecurity('bearer')
+  // @UseGuards(AuthGuard)
+  // @AdminGuard()
+  // @TypedRoute.Patch(':studioId/stats/:statId')
+  // async updateStudioStats() {}
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Delete(':studioId/stats/:statId')
+  async deleteStudioStats(
+    @TypedParam('studioId') studioId: string,
+    @TypedParam('statId') statId: string,
+  ): Promise<TSuccessionResponse> {
+    await this.db.transaction(async (tx) => {
+      const studio = await tx.query.studios.findFirst({
+        where: eq(schema.studios.id, studioId),
+      });
+
+      if (!studio) throw new BadRequestException('Студия не найдена');
+
+      const stats = await tx
+        .delete(schema.studioStats)
+        .where(eq(schema.studioStats.id, statId))
+        .returning();
+
+      if (stats.length !== 1)
+        throw new InternalServerErrorException(
+          'Ошибка при добавлении статистики',
+        );
+    });
+
+    return { success: true };
+  }
+
+  @ApiSecurity('bearer')
+  @UseGuards(AuthGuard)
+  @AdminGuard()
+  @TypedRoute.Patch(':studioId')
+  async updateStudio(
+    @TypedBody() body: TUpdateStudioBody,
+    @TypedParam('studioId') studioId: string,
+  ): Promise<TUpdateStudioResponse> {
+    const { data } = body;
+
+    return await this.db.transaction(async (tx) => {
+      const studio = await tx.query.studios.findFirst({
+        where: eq(schema.studios.id, studioId),
+      });
+
+      if (!studio) throw new BadRequestException('Студия не найдена');
+
+      const noLogoResult = await tx
         .update(schema.studios)
-        .set({ ...body, logo: logoGetUrl })
+        .set(data)
         .where(eq(schema.studios.id, studioId))
         .returning();
 
-      if (logoResult.length !== 1)
+      if (noLogoResult.length !== 1)
         throw new InternalServerErrorException('Ошибка при обновлении студии');
 
-      return { logo: logoPutUrl };
-    });
+      const logoUrl = data.logo
+        ? await this.studioService.createPublicUrl(
+            'studios',
+            `${studioId}:${data.logo}`,
+          )
+        : '';
 
-    return result;
+      const backgroundUrl = data.background
+        ? await this.studioService.createPublicUrl(
+            'studio-backgrounds',
+            `${studioId}:${data.background}`,
+          )
+        : '';
+
+      return { logo: logoUrl, background: backgroundUrl };
+    });
   }
 
   @ApiSecurity('bearer')
@@ -363,23 +495,11 @@ export class StudioController {
 
       if (!studio) throw new BadRequestException('Студия не найдена');
 
-      for (const photo of studio.photos) {
-        const photoResult = await tx
-          .delete(schema.studioPhotos)
-          .where(eq(schema.studioPhotos.id, photo.id));
-
-        if (photoResult.rowCount !== 1)
-          throw new InternalServerErrorException('Ошибка при удалении фото');
-
-        await this.s3Client
-          .removeObject('studio-photos', photo.url)
-          .catch((e) => {
-            this.logger.error(e);
-            throw new InternalServerErrorException(
-              'Ошибка при удалении файла фото',
-            );
-          });
-      }
+      await this.studioService.deleteAssets(studio.id).catch(() => {
+        throw new InternalServerErrorException(
+          'Ошибка при удалении ассетов студии',
+        );
+      });
 
       const studioResult = await tx
         .delete(schema.studios)
@@ -387,11 +507,6 @@ export class StudioController {
 
       if (studioResult.rowCount !== 1)
         throw new InternalServerErrorException('Ошибка при удалении студии');
-
-      await this.s3Client.removeObject('studios', studio.logo).catch((e) => {
-        this.logger.error(e);
-        throw new InternalServerErrorException('Ошибка при удалении логотипа');
-      });
     });
 
     return { success: true };
