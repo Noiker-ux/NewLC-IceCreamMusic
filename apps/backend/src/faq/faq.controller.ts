@@ -9,9 +9,10 @@ import {
 import { type DB, schema } from 'db';
 import { eq, InferSelectModel } from 'drizzle-orm';
 import { AuthGuard } from '../auth/auth.guard';
-import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { AdminGuard } from '../auth/admin.guard';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { TSuccessionResponse } from '../shared/types/response';
+import { TPageQuery } from '../shared/types/page';
 
 export type TFAQData = InferSelectModel<typeof schema.faq>;
 

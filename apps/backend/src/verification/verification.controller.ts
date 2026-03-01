@@ -15,13 +15,20 @@ import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
-import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { VerificationService } from './verification.service';
 import { Primitive } from 'typia';
+import { TPageQuery } from '../shared/types/page';
+import {
+  TResponsePageData,
+  TSuccessionResponse,
+} from '../shared/types/response';
 
 export type TVerification = InferSelectModel<typeof schema.verification>;
 
-export type VerificationTicketsResponse = TVerification[];
+export type TGetVerificationTicketsResponse = {
+  data: TVerification[];
+  meta: TResponsePageData;
+};
 
 export type TStatus = 'approved' | 'rejected' | 'moderating';
 
@@ -80,14 +87,30 @@ export class VerificationController {
   async getVerificationTickets(
     @TypedParam('status') status: TStatus,
     @TypedQuery() pageData: TPageQuery = { page: 1, size: 10 },
-  ): Promise<VerificationTicketsResponse> {
+  ): Promise<TGetVerificationTicketsResponse> {
+    const safePage = pageData.page < 1 ? 1 : pageData.page;
+    const safeSize = pageData.size > 100 ? 100 : pageData.size;
+
+    const ticketFilter = eq(schema.verification.status, status);
+
+    const ticketCount = await this.db.$count(schema.verification, ticketFilter);
+
+    const totalPages = Math.ceil(ticketCount / safeSize);
+
     const tickets = await this.db.query.verification.findMany({
-      where: eq(schema.verification.status, status),
-      limit: pageData.size,
-      offset: (pageData.page - 1) * pageData.size,
+      where: ticketFilter,
+      limit: safeSize,
+      offset: (safePage - 1) * safeSize,
     });
 
-    return tickets;
+    return {
+      data: tickets,
+      meta: {
+        page: safePage,
+        pageSize: safeSize,
+        totalPages,
+      },
+    };
   }
 
   @TypedRoute.Post()

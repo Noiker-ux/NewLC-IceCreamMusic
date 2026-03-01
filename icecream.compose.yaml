@@ -89,7 +89,7 @@ services:
       - icecream
   minio: #port 9000
     container_name: icecream_s3
-    image: minio/minio
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
     volumes:
       - icecream_s3:/data
     environment:

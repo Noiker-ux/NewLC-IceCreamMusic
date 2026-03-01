@@ -14,7 +14,7 @@ import { and, eq, InferSelectModel } from 'drizzle-orm';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
-import { TSuccessionResponse } from '../shared/types';
+import { TSuccessionResponse } from '../shared/types/response';
 
 export type TPromoUrl = InferSelectModel<typeof schema.promoUrls>;
 

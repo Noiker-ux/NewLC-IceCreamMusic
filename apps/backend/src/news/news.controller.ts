@@ -12,8 +12,9 @@ import { DB, schema } from 'db';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { NewsService } from './news.service';
+import { TPageQuery } from '../shared/types/page';
+import { TSuccessionResponse } from '../shared/types/response';
 
 export type TNewsData = InferSelectModel<typeof schema.news>;
 

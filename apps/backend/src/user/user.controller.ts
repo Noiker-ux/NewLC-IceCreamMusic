@@ -13,10 +13,14 @@ import { DB, schema } from 'db';
 import { eq, InferSelectModel } from 'drizzle-orm';
 import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
-import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { UserService } from './user.service';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
+import { TPageQuery } from '../shared/types/page';
+import {
+  TResponsePageData,
+  TSuccessionResponse,
+} from '../shared/types/response';
 
 export type TUserData = Pick<
   InferSelectModel<typeof schema.users>,
@@ -49,6 +53,7 @@ export type TUpdateMeResponse = {
 
 export type TGetUsersResponse = {
   data: TUserData[];
+  meta: TResponsePageData;
 };
 
 export type TUpdateMeBody = {
@@ -83,11 +88,19 @@ export class UserController {
     private readonly sessionService: SessionService,
   ) {}
 
+  @AdminGuard()
   @TypedRoute.Get()
   async getUsers(@TypedQuery() params: TPageQuery): Promise<TGetUsersResponse> {
+    const safePage = params.page < 1 ? 1 : params.page;
+    const safeSize = params.size > 100 ? 100 : params.size;
+
+    const totalUsers = await this.db.$count(schema.users);
+
+    const totalPages = Math.ceil(totalUsers / safeSize);
+
     const users = await this.db.query.users.findMany({
-      limit: params.size,
-      offset: (params.page - 1) * params.size,
+      limit: safeSize,
+      offset: (safePage - 1) * safeSize,
       columns: {
         id: true,
         email: true,
@@ -109,7 +122,14 @@ export class UserController {
       },
     });
 
-    return { data: users };
+    return {
+      data: users,
+      meta: {
+        page: safePage,
+        pageSize: safeSize,
+        totalPages,
+      },
+    };
   }
 
   @TypedRoute.Get('me')

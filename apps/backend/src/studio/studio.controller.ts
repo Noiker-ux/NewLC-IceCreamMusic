@@ -14,9 +14,10 @@ import { Client } from 'minio';
 import { InjectMinio } from 'nestjs-minio';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
-import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { StudioService } from './studio.service';
 import { TrueOmit } from 'shared/types/omit';
+import { TPageQuery } from '../shared/types/page';
+import { TSuccessionResponse } from '../shared/types/response';
 
 export type TStudio = InferInsertModel<typeof schema.studios>;
 

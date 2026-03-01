@@ -24,9 +24,10 @@ import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
 import { checkout, currency } from '../shared/checkout';
-import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { FinanceService } from './finance.service';
 import { users } from 'db/schema';
+import { TPageQuery } from '../shared/types/page';
+import { TSuccessionResponse } from '../shared/types/response';
 
 export type TSelectUserSchema = InferSelectModel<typeof users>;
 

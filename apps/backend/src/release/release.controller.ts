@@ -23,9 +23,13 @@ import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
 import { SessionService, TUser } from '../auth/session.service';
 import { User } from '../auth/user.decorator';
-import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { ReleaseService } from './release.service';
 import { Primitive } from 'typia';
+import { TPageQuery } from '../shared/types/page';
+import {
+  TResponsePageData,
+  TSuccessionResponse,
+} from '../shared/types/response';
 
 export type TPromoLink = InferSelectModel<typeof schema.promoLinks>;
 
@@ -40,6 +44,7 @@ export type TCompleteReleaseData = TRelease & {
 
 export type TGetReleaseListResponse = {
   data: TCompleteReleaseData[];
+  meta: TResponsePageData;
 };
 
 export type TGetSpecificReleaseResponse = {
@@ -141,17 +146,33 @@ export class ReleaseController {
     @TypedParam('statusType') statusType: TRelease['status'],
     @TypedQuery() params: TPageQuery,
   ): Promise<TGetReleaseListResponse> {
+    const safePage = params.page < 1 ? 1 : params.page;
+    const safeSize = params.size > 100 ? 100 : params.size;
+
+    const releaseFilter = eq(schema.release.status, statusType);
+
+    const totalReleases = await this.db.$count(schema.release, releaseFilter);
+
+    const totalPages = Math.ceil(totalReleases / safeSize);
+
     const releases = await this.db.query.release.findMany({
-      where: eq(schema.release.status, statusType),
+      where: releaseFilter,
       with: {
         tracks: { orderBy: asc(schema.track.index) },
         promoLinks: true,
       },
-      limit: params.size,
-      offset: (params.page - 1) * params.size,
+      limit: safeSize,
+      offset: (safePage - 1) * safeSize,
     });
 
-    return { data: releases };
+    return {
+      data: releases,
+      meta: {
+        page: safePage,
+        pageSize: safeSize,
+        totalPages,
+      },
+    };
   }
 
   @TypedRoute.Get('my')
@@ -159,14 +180,30 @@ export class ReleaseController {
     @User() user: TUser,
     @TypedQuery() params: TPageQuery,
   ): Promise<TGetReleaseListResponse> {
+    const safePage = params.page < 1 ? 1 : params.page;
+    const safeSize = params.size > 100 ? 100 : params.size;
+
+    const releaseFilter = eq(schema.release.authorId, user.id);
+
+    const totalReleases = await this.db.$count(schema.release, releaseFilter);
+
+    const totalPages = Math.ceil(totalReleases / safeSize);
+
     const releases = await this.db.query.release.findMany({
-      where: eq(schema.release.authorId, user.id),
+      where: releaseFilter,
       with: { tracks: { orderBy: asc(schema.track.index) }, promoLinks: true },
-      limit: params.size,
-      offset: (params.page - 1) * params.size,
+      limit: safeSize,
+      offset: (safePage - 1) * safeSize,
     });
 
-    return { data: releases };
+    return {
+      data: releases,
+      meta: {
+        page: safePage,
+        pageSize: safeSize,
+        totalPages,
+      },
+    };
   }
 
   @TypedRoute.Get(':releaseId')
@@ -200,14 +237,30 @@ export class ReleaseController {
     @TypedParam('userId') userId: string,
     @TypedQuery() params: TPageQuery,
   ): Promise<TGetReleaseListResponse> {
+    const safePage = params.page < 1 ? 1 : params.page;
+    const safeSize = params.size > 100 ? 100 : params.size;
+
+    const releaseFilter = eq(schema.release.authorId, userId);
+
+    const totalReleases = await this.db.$count(schema.release, releaseFilter);
+
+    const totalPages = Math.ceil(totalReleases / safeSize);
+
     const releases = await this.db.query.release.findMany({
       where: eq(schema.release.authorId, userId),
       with: { tracks: { orderBy: asc(schema.track.index) }, promoLinks: true },
-      limit: params.size,
-      offset: (params.page - 1) * params.size,
+      limit: safeSize,
+      offset: (safePage - 1) * safeSize,
     });
 
-    return { data: releases };
+    return {
+      data: releases,
+      meta: {
+        page: safePage,
+        pageSize: safeSize,
+        totalPages,
+      },
+    };
   }
 
   @TypedRoute.Post()

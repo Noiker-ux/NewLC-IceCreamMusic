@@ -14,12 +14,12 @@ import { and, eq } from 'drizzle-orm';
 import { AuthService } from './auth.service';
 import { Session } from './session.decorator';
 import { SessionService } from './session.service';
-import { TSuccessionResponse } from '../shared/types';
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from './auth.guard';
 import { User } from './user.decorator';
 import { TUserData } from '../user/user.controller';
+import { TSuccessionResponse } from '../shared/types/response';
 
 export type TOauthAccountData = {
   providerAccountId: string;

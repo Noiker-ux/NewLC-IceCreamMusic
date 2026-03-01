@@ -1,15 +1,6 @@
-export type TSuccessionResponse = {
-  success: true;
-};
-
 export type TAmount = {
   value: string;
   currency: string;
-};
-
-export type TPageQuery = {
-  page: number;
-  size: number;
 };
 
 export type TStatus =

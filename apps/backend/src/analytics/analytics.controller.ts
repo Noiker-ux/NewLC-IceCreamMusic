@@ -11,13 +11,13 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { DB, schema } from 'db';
 import { eq, InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { TSuccessionResponse } from '../shared/types';
 import { AdminGuard } from '../auth/admin.guard';
 import { AuthGuard } from '../auth/auth.guard';
 import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
-import { TPageQuery } from '../shared/types';
 import { AnalyticsService } from './analytics.service';
+import { TPageQuery } from '../shared/types/page';
+import { TSuccessionResponse } from '../shared/types/response';
 
 export type TAnalytics = InferSelectModel<typeof schema.analytics>;
 
