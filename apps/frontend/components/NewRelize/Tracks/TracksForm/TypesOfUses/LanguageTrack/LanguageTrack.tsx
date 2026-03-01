@@ -1,10 +1,10 @@
 import { isoLangs } from '@/data/allLanguage';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { Select, SelectItem } from '@heroui/select';
 import { Controller, useFormContext } from 'react-hook-form';
 
 export default function LanguageTrack({ trackIndex }: { trackIndex: number }) {
-	const { control } = useFormContext<TReleaseInsertForm>();
+	const { control } = useFormContext<TReleaseUpsert>();
 	return (
 		<div>
 			<p className='font-bold'>Язык трека</p>
@@ -24,7 +24,7 @@ export default function LanguageTrack({ trackIndex }: { trackIndex: number }) {
 						className='w-1/2 pt-3'
 						ref={ref}
 						onChange={onChange}
-						selectedKeys={[value]}>
+						selectedKeys={value ? [value] : []}>
 						<>
 							<SelectItem key={'Без слов'} textValue='Без слов'>
 								Без слов

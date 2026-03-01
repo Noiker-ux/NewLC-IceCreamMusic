@@ -6,11 +6,9 @@ import StudiosPreview from './StudiosPreview/StudiosPreview';
 import StudiosTeam from './StudiosTeam/StudiosTeam';
 import YMap from './StudioMap/StudioMap';
 import Link from 'next/link';
-export default function StudioDetail({
-	studio,
-}: {
-	studio: TCompleteStudioData;
-}) {
+import { TStudioData } from 'shared/schema/studio.schema';
+import { Button } from '@heroui/button';
+export default function StudioDetail({ studio }: { studio: TStudioData }) {
 	return (
 		<>
 			<StudiosPreview
@@ -51,9 +49,11 @@ export default function StudioDetail({
 					/>
 				</div>
 			)}
-			{studio.contatUrl && (
+			{studio.contactUrl && (
 				<div className='mt-5'>
-					<Link href={studio.contatUrl}>Контакт</Link>
+					<Button as={Link} href={studio.contactUrl}>
+						Контакт
+					</Button>
 				</div>
 			)}
 		</>

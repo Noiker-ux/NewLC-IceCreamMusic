@@ -28,7 +28,11 @@ export async function actionCreateAnalytic({
 	});
 
 	await functional.api.v1.analytics.createAnalytics(connection, {
-		data: data,
+		data: {
+			...data,
+			periodStart: data.periodStart.toISOString(),
+			periodFinish: data.periodFinish.toISOString(),
+		},
 	});
 
 	await revalidateTag('admin-analytic');

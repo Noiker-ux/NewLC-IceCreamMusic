@@ -17,6 +17,7 @@ import { Session } from '../auth/session.decorator';
 import { SessionService } from '../auth/session.service';
 import { TPageQuery, TSuccessionResponse } from '../shared/types';
 import { VerificationService } from './verification.service';
+import { Primitive } from 'typia';
 
 export type TVerification = InferSelectModel<typeof schema.verification>;
 
@@ -26,7 +27,7 @@ export type TStatus = 'approved' | 'rejected' | 'moderating';
 
 export type TTicketRegistrationData = {
   data: Omit<
-    InferInsertModel<typeof schema.verification>,
+    Primitive<InferInsertModel<typeof schema.verification>>,
     'rejectReason' | 'status' | 'userId' | 'id'
   >;
 };

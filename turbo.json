@@ -4,7 +4,7 @@
   "ui": "tui",
   "tasks": {
     "sdk#build": {
-      "dependsOn": ["db#build", "shared#build", "backend#build"],
+      "dependsOn": ["shared#build", "backend#build"],
       "outputs": ["lib"]
     },
     "db#build": {
@@ -24,8 +24,13 @@
       "with": ["db#build"],
       "outputs": [".next/**", "!.next/cache/**", "dist", "lib"]
     },
-    "dev": {
-      "dependsOn": ["db#build", "shared#build", "sdk#build"],
+    "frontend#dev": {
+      "dependsOn": ["shared#build", "sdk#build"],
+      "cache": false,
+      "persistent": true
+    },
+    "backend#dev": {
+      "dependsOn": ["shared#build", "db#build"],
       "cache": false,
       "persistent": true
     },

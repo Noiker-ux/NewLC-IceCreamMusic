@@ -193,19 +193,21 @@ export default function RelizecCard({
 						<SquaresPlusIcon width={20} />
 					</Button>
 				</Tooltip>
-				<Tooltip
-					content={
-						<div className='p-2'>
-							<p>Редактировать релиз</p>
-						</div>
-					}>
-					<Button
-						as={Link}
-						href={`/dashboard/relizes/my-relizes/${release.id}/edit`}
-						isIconOnly>
-						<PencilSquareIcon width={20} />
-					</Button>
-				</Tooltip>
+				{!isAdmin && (
+					<Tooltip
+						content={
+							<div className='p-2'>
+								<p>Редактировать релиз</p>
+							</div>
+						}>
+						<Button
+							as={Link}
+							href={`/dashboard/relizes/my-relizes/${release.id}/edit`}
+							isIconOnly>
+							<PencilSquareIcon width={20} />
+						</Button>
+					</Tooltip>
+				)}
 				{/* <Tooltip
 					content={
 						<div className='p-2'>

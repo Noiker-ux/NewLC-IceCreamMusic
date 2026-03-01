@@ -33,8 +33,8 @@ export async function actionChangeAnalytic({
 
 	await functional.api.v1.analytics.updateAnalytics(connection, analyticsId, {
 		data: {
-			periodStart: data.data.periodStart,
-			periodFinish: data.data.periodFinish,
+			periodStart: data.data.periodStart?.toISOString(),
+			periodFinish: data.data.periodFinish?.toISOString(),
 			flourishReportMarkup: data.data.flourishReportMarkup,
 		},
 	});

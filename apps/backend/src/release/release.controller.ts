@@ -113,6 +113,15 @@ export type TGetReleasePeice = {
   data: Payment['receipt']['items'];
 };
 
+export type TUpdateReleaseStatusResponse = {
+  success: boolean;
+  error?: string;
+  data: {
+    title: string;
+    email: string;
+  };
+};
+
 @ApiTags('releases')
 @ApiSecurity('bearer')
 @UseGuards(AuthGuard)
@@ -450,10 +459,6 @@ export class ReleaseController {
     @TypedParam('releaseId') releaseId: string,
     @TypedBody() body: TUpdateReleaseBody,
   ): Promise<TUpdateReleaseResponse> {
-    this.logger.log('releaseId', releaseId);
-    this.logger.log('body', body);
-    this.logger.log('user', user);
-
     const { release, tracks } = body;
 
     return await this.db.transaction(async (tx) => {
@@ -625,15 +630,32 @@ export class ReleaseController {
   async updateReleaseModerationStatus(
     @TypedParam('releaseId') releaseId: string,
     @TypedBody() body: TUpdateReleaseStatusBody,
-  ): Promise<TSuccessionResponse> {
+  ): Promise<TUpdateReleaseStatusResponse> {
     return await this.db.transaction(async (tx) => {
+      const release = await tx.query.release.findFirst({
+        where: eq(schema.release.id, releaseId),
+        with: {
+          author: true,
+        },
+      });
+
+      if (!release) {
+        throw new BadRequestException('Релиз не найден');
+      }
+
       if (body.status === 'approved' && !!body.upc) {
         await tx
           .update(schema.release)
           .set({ upc: body.upc, status: body.status })
           .where(eq(schema.release.id, releaseId));
 
-        return { success: true };
+        return {
+          success: true,
+          data: {
+            title: release.title,
+            email: release.author.email,
+          },
+        };
       }
 
       if (body.status === 'rejected' && !!body.rejectReason) {
@@ -642,7 +664,17 @@ export class ReleaseController {
           .set({ rejectReason: body.rejectReason, status: body.status })
           .where(eq(schema.release.id, releaseId));
 
-        return { success: true };
+        if (!release) {
+          throw new BadRequestException('Неверные данные');
+        }
+
+        return {
+          success: true,
+          data: {
+            title: release.title,
+            email: release.author.email,
+          },
+        };
       }
 
       if (body.status === 'moderating') {
@@ -651,7 +683,17 @@ export class ReleaseController {
           .set({ status: body.status })
           .where(eq(schema.release.id, releaseId));
 
-        return { success: true };
+        if (!release) {
+          throw new BadRequestException('Неверные данные');
+        }
+
+        return {
+          success: true,
+          data: {
+            title: release.title,
+            email: release.author.email,
+          },
+        };
       }
 
       throw new BadRequestException('Неверные данные');

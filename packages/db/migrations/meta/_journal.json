@@ -351,6 +351,13 @@
       "when": 1762171057172,
       "tag": "0049_condemned_switch",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1765835008402,
+      "tag": "0050_boring_the_professor",
+      "breakpoints": true
     }
   ]
 }

@@ -35,7 +35,15 @@ export default function FormAnalytic({
 	const { isOpen, onOpenChange } = useDisclosure();
 
 	const methods = useForm<TCreateAnalyticsBody['data']>({
-		defaultValues: analytic,
+		defaultValues: {
+			...analytic,
+			periodStart: analytic?.periodStart
+				? new Date(analytic.periodStart)
+				: undefined,
+			periodFinish: analytic?.periodFinish
+				? new Date(analytic.periodFinish)
+				: undefined,
+		},
 	});
 
 	const router = useRouter();
@@ -107,10 +115,7 @@ export default function FormAnalytic({
 														}
 														onChange={(value) => {
 															if (value) {
-																methods.setValue(
-																	'periodStart',
-																	value.toDate().toISOString(),
-																);
+																methods.setValue('periodStart', value.toDate());
 															}
 														}}
 													/>
@@ -136,7 +141,7 @@ export default function FormAnalytic({
 															if (value) {
 																methods.setValue(
 																	'periodFinish',
-																	value.toDate().toISOString(),
+																	value.toDate(),
 																);
 															}
 														}}

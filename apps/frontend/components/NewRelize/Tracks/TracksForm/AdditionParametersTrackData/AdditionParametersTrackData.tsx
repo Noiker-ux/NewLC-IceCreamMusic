@@ -1,5 +1,5 @@
 'use client';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import dateISOFormatter from '@/utils/dateISOFormatter';
 import {
 	CheckBadgeIcon,
@@ -21,7 +21,7 @@ export type TAdditionParametersTrackData = {
 export default function AdditionParametersTrackData({
 	trackIndex,
 }: TAdditionParametersTrackData) {
-	const { setValue, watch, register } = useFormContext<TReleaseInsertForm>();
+	const { setValue, watch, register } = useFormContext<TReleaseUpsert>();
 
 	const previewStart = watch(`tracks.${trackIndex}.preview_start`);
 	const instantgratificationW = watch(
@@ -86,7 +86,7 @@ export default function AdditionParametersTrackData({
 					granularity='minute'
 					hourCycle={24}
 					hideTimeZone
-					value={parseTime(previewStart)}
+					value={previewStart ? parseTime(previewStart) : undefined}
 					onChange={(newTime) => {
 						if (newTime) {
 							const hour = newTime.hour.toString().padStart(2, '0');

@@ -263,7 +263,7 @@ export const release = schema.table("release", {
 
   title: text("title").notNull(),
 
-  subtitle: text("subtitle").notNull(),
+  subtitle: text("subtitle"),
 
   type: releaseTypes("type").notNull(),
 

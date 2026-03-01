@@ -1,7 +1,7 @@
 import { Checkbox } from '@heroui/checkbox';
 import { Tooltip } from '@heroui/tooltip';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { TReleaseInsertForm } from 'shared/schema/release.schema';
+import { TReleaseUpsert } from 'shared/schema/release.schema';
 import { useFormContext } from 'react-hook-form';
 
 export default function VersionsTrackData({
@@ -9,7 +9,7 @@ export default function VersionsTrackData({
 }: {
 	trackIndex: number;
 }) {
-	const { register } = useFormContext<TReleaseInsertForm>();
+	const { register } = useFormContext<TReleaseUpsert>();
 	return (
 		<div>
 			<p className='font-extrabold'>Версия трека</p>

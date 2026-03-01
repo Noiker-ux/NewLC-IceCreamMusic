@@ -1,6 +1,6 @@
 'use client';
 import FileList from '@/components/Relizes/FileList';
-import { TReleaseUpsert } from 'shared/schema/release.schema';
+import { TReleaseData, TReleaseUpsert } from 'shared/schema/release.schema';
 import { cn } from '@/utils/cn';
 import DateFormatter from '@/utils/dateFormatter';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -12,14 +12,16 @@ import Areas from './Areas/Areas';
 import Platforms from './Platfroms/Platforms';
 import { Retranslated } from './Retranslated';
 
-export default function CheckRelizeForm() {
+export type TCheckReleaseForm = {
+	release?: TReleaseData;
+};
+
+export default function CheckRelizeForm({ release }: TCheckReleaseForm) {
 	const { formState, getValues } = useFormContext<TReleaseUpsert>();
 
 	const [releaseValues] = useState(() => getValues());
 
 	const [showTracks, setShowTracks] = useState(false);
-
-	const [validForm, setValidForm] = useState('');
 
 	return (
 		<div className='mb-5'>
@@ -38,8 +40,8 @@ export default function CheckRelizeForm() {
 							<p className='text-lg'>
 								В форме присутствуют обязательные поля, которые вы пропустили:
 							</p>
-							{JSON.stringify(formState.errors)}
-							{/* {(
+							{/* {JSON.stringify(formState.errors)} */}
+							{(
 								Object.keys(formState.errors) as Array<
 									keyof typeof formState.errors
 								>
@@ -49,7 +51,7 @@ export default function CheckRelizeForm() {
 									{Retranslated[formState.errors[ek]?.type ?? '']} -{' '}
 									{Retranslated[formState.errors[ek]?.message ?? '']}
 								</p>
-							))} */}
+							))}
 						</>
 					)}
 				</div>
@@ -61,9 +63,17 @@ export default function CheckRelizeForm() {
 						className={cn('min-w-[110px] h-[110px] relative rounded-md', {
 							'border-white border-[2px]': !!!releaseValues.preview,
 						})}>
-						{releaseValues.preview && (
+						{!!releaseValues.preview && (
 							<Image
 								src={URL.createObjectURL(releaseValues.preview)}
+								fill
+								className={'object-cover'}
+								alt='release-preview'
+							/>
+						)}
+						{release && (
+							<Image
+								src={`${process.env.NEXT_PUBLIC_S3_URL}/previews/${release.id}.${release.preview}`}
 								fill
 								className={'object-cover'}
 								alt='release-preview'

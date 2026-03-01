@@ -1,14 +1,14 @@
 'use client';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
-import { TStudioPhotoData } from 'sdk/lib/studio/studio.controller';
 import 'swiper/css';
 import { Autoplay, FreeMode, Mousewheel, Parallax } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import style from './StudioPhotos.module.css';
+import { TStudioPhoto } from 'shared/schema/studio.schema';
 
 export type TStudioPhotos = {
-	photos: TStudioPhotoData[];
+	photos: TStudioPhoto[];
 };
 
 export default function StudioPhotos({ photos }: TStudioPhotos) {

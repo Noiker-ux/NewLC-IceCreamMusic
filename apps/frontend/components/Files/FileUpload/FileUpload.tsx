@@ -37,7 +37,7 @@ export const FileUpload = ({
 	alternative,
 	name,
 }: {
-	showImage?: boolean;
+	showImage?: string;
 	alternative?: boolean;
 	name: string;
 }) => {
@@ -54,7 +54,7 @@ export const FileUpload = ({
 	});
 
 	const fileUrl = useMemo(() => {
-		if (!file) return;
+		if (!file) return showImage;
 		return URL.createObjectURL(file);
 	}, [file]);
 

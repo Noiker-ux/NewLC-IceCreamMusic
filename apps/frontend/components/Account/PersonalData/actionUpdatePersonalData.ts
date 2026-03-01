@@ -28,7 +28,10 @@ export async function actionUpdatePersonalData(
 	});
 
 	const response = await functional.api.v1.users.me.updateMyInfo(connection, {
-		data,
+		data:{
+			...data,
+			birthDate: data.birthDate ? new Date(data.birthDate).toISOString() : undefined,
+		},
 	});
 
 	return {
